@@ -1,0 +1,24 @@
+[project]
+name = "efficient-kan"
+version = "0.1.0"
+description = "An efficient pure-PyTorch implementation of Kolmogorov-Arnold Network (KAN)."
+authors = [
+    {name = "Blealtan Cao", email = "blealtan@outlook.com"},
+]
+dependencies = [
+    "torch>=2.3.0",
+    "pytest>=8.2.0",
+    "tqdm>=4.66.2",
+    "torchvision>=0.18.0",
+]
+requires-python = ">=3.8"
+readme = "README.md"
+license = {text = "MIT"}
+
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
+
+
+[tool.pdm]
+distribution = true
