@@ -1,5 +1,6 @@
 from torch import nn
 from src.efficient_kan.kan import KANLinear
+#ESTE SCRIPT TIENE LAS CAPAS CONVOLUCIONALES NORMALES Y AL FINAL LA KAN EN VEZ DE UN MLP
 class CNN_KAN(nn.Module):
     def __init__(self):
         super().__init__()
