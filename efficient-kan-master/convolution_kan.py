@@ -1,6 +1,6 @@
 from torch import nn
 from src.efficient_kan.kan import KANLinear
-class CNNModel(nn.Module):
+class CNN_KAN(nn.Module):
     def __init__(self):
         super().__init__()
         self.conv1 = nn.Conv2d(3, 32, kernel_size=(3,3), stride=1, padding=1)
@@ -57,9 +57,9 @@ class CNNModel(nn.Module):
         return x
     
 
-class SimpleCNN(nn.Module):
+class CNN_KAN(nn.Module):
     def __init__(self):
-        super(SimpleCNN, self).__init__()
+        super(CNN_KAN, self).__init__()
         # Definir la arquitectura utilizando nn.Sequential
         self.model = nn.Sequential(
             # Primera capa convolucional
