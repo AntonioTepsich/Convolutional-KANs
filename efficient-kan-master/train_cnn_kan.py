@@ -9,9 +9,12 @@ import torch.nn as nn
 import torch.optim as optim
 import torchvision
 import torchvision.transforms as transforms
+from torchvision.datasets import MNIST
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 
+
+# ------------------------------------Cargando Dataset-----------------------------------
 # Load MNIST
 transform = transforms.Compose(
     [transforms.ToTensor(), transforms.Normalize((0.5,), (0.5,))]
@@ -24,6 +27,11 @@ valset = torchvision.datasets.MNIST(
 )
 trainloader = DataLoader(trainset, batch_size=64, shuffle=True)
 valloader = DataLoader(valset, batch_size=64, shuffle=False)
+
+
+
+
+# ------------------------------------Modelo-----------------------------------
 
 # Define model
 model = convolution_kan.CNN_KAN()
@@ -59,9 +67,7 @@ for epoch in range(10):
             images = images.to(device)
             output = model(images)
             val_loss += criterion(output, labels.to(device)).item()
-            val_accuracy += (
-                (output.argmax(dim=1) == labels.to(device)).float().mean().item()
-            )
+            val_accuracy += ((output.argmax(dim=1) == labels.to(device)).float().mean().item())
     val_loss /= len(valloader)
     val_accuracy /= len(valloader)
 

@@ -18,6 +18,29 @@ class KANLinear(torch.nn.Module):
         grid_eps=0.02,
         grid_range=[-1, 1],
     ):
+        """
+        Args:
+            in_features (int): Number of input features.
+            out_features (int): Number of output features.
+            grid_size (int): Number of grid points.
+            spline_order (int): Order of the spline.
+            scale_noise (float): Scale of the noise.
+            scale_base (float): Scale of the base weight.
+            scale_spline (float): Scale of the spline weight.
+            enable_standalone_scale_spline (bool): Whether to enable standalone scale for spline weight.
+            base_activation (torch.nn.Module): Activation function for the base weight.
+            grid_eps (float): Epsilon for the grid.
+            grid_range (list): Range of the grid.
+
+        Note:
+            The grid is initialized as a uniform grid with the given range and size. The
+            spline weight is initialized as a random tensor with the given scale and noise.
+            The base weight is initialized as a random tensor with the given scale.
+
+            The grid is updated by the input tensor. The spline weight is updated by the
+            input tensor and the unreduced spline output. The regularization loss is computed
+            as the mean absolute value of the spline weight.
+        """
         super(KANLinear, self).__init__()
         self.in_features = in_features
         self.out_features = out_features
