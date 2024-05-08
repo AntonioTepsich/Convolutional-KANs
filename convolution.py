@@ -1,3 +1,5 @@
+import torch
+
 import numpy as np
 from typing import List, Tuple, Union
 def _check_params(matrix, kernel, stride, dilation, padding):
@@ -29,11 +31,12 @@ def _check_params(matrix, kernel, stride, dilation, padding):
     assert out_dimensions_are_correct, 'Can\'t apply input parameters, one of resulting output dimension is non-positive.'
 
     return matrix, kernel, k, h_out, w_out
-def kan_conv2d(matrix: Union[List[List[float]], np.ndarray], 
+def kan_conv2d(matrix: Union[List[List[float]], np.ndarray], #but as torch tensors 
              kernel: Union[List[List[function]], np.ndarray], 
              stride: Tuple[int, int] = (1, 1), 
              dilation: Tuple[int, int] = (1, 1), 
              padding: Tuple[int, int] = (0, 0),
+             base= torch.nn.SiLU
              ) -> np.ndarray:
     """Makes a 2D convolution with the kernel over matrix using defined stride, dilation and padding along axes.
 
@@ -61,8 +64,10 @@ def kan_conv2d(matrix: Union[List[List[float]], np.ndarray],
             indices_y = [center_y + l * dilation[1] for l in range(-b[1], b[1] + 1)]
 
             submatrix = matrix[indices_x, :][:, indices_y]
-
-            matrix_out[i][j] = np.sum(np.multiply(submatrix, kernel))
+            for k0 in range(len(kernel)):
+                for k1 in range(len(kernel[0])):
+                    submatrix[k0][k1] = kernel[k0][k1][1]* (kernel[k0][k1][0](submatrix[k0][k1]) + base(submatrix[k0][k1])) # w * (phi(x) + b(x))
+            matrix_out[i][j] = torch.sum(submatrix).item()#np.sum(np.multiply(submatrix, kernel))
     return matrix_out
 
 
@@ -81,9 +86,9 @@ def apply_filter_to_image(image: np.ndarray,
     b = kernel.shape
     
     if rgb:
-        return np.dstack([conv2d(image[:, :, z], kernel, padding=(b[0]//2,  b[1]//2)) 
+        return torch.dstack([kan_conv2d(image[:, :, z], kernel, padding=(b[0]//2,  b[1]//2)) 
                       for z in range(3)]).astype('uint8')
-    return np.dstack(conv2d(image, kernel, padding=(b[0]//2,  b[1]//2))) 
+    return kan_conv2d(image, kernel, padding=(b[0]//2,  b[1]//2)) 
 def add_padding(matrix: np.ndarray, 
                 padding: Tuple[int, int]) -> np.ndarray:
     """Adds padding to the matrix. 

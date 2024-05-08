@@ -4,8 +4,8 @@ import torch
 import torch.nn.functional as F
 import math
 
-
-class KAN_Conv(torch.nn.Module):
+import convolution
+class KAN_Convolution(torch.nn.Module):
     def __init__(
         self,
         in_features = (28,28),
@@ -23,7 +23,7 @@ class KAN_Conv(torch.nn.Module):
         grid_eps=0.02,
         grid_range=[-1, 1],
     ):
-        super(KAN_Conv, self).__init__()
+        super(KAN_Convolution, self).__init__()
         self.in_features = in_features
         self.kernel_size = kernel_size
         self.grid_size = grid_size
@@ -155,16 +155,20 @@ class KAN_Conv(torch.nn.Module):
             else 1.0
         )
 
-    def forward(self, x: torch.Tensor):
+    def forward(self, x: torch.Tensor,update_grid = False):
         #Ver bien tema dimensiones
         #assert x.dim() == 2 and x.size(1) == self.in_features
 
-        base_output = F.linear(self.base_activation(x), self.base_weight)
-        spline_output = F.linear(
-            self.b_splines(x).view(x.size(0), -1),
-            self.scaled_spline_weight.view(self.out_features, -1),
-        )
-        return base_output + spline_output
+        #base_output = F.linear(self.base_activation(x), self.base_weight) #el b seria una matrix con b aplicado a cada uno de los pixeles
+        # spline_output = F.linear(
+        #     self.b_splines(x).view(x.size(0), -1),
+        #     self.scaled_spline_weight.view(self.out_features, -1),
+        # )
+        # return base_output + spline_output
+        if update_grid:
+            self.update_grid(x)
+        kernel  = torch.dstack((self.b_splines, self.base_weight)) 
+        return convolution.apply_filter_to_image(x, kernel, rgb = False)
 
     @torch.no_grad()
     def update_grid(self, x: torch.Tensor, margin=0.01):
@@ -237,8 +241,111 @@ class KAN_Conv(torch.nn.Module):
             + regularize_entropy * regularization_loss_entropy
         )
 
+from src.efficient_kan.kan import KANLinear
+from torch import nn
 
-class KAN(torch.nn.Module):
+#ESTE SCRIPT TIENE LAS CAPAS CONVOLUCIONALES NORMALES Y AL FINAL LA KAN EN VEZ DE UN MLP
+class KAN_Convolutional_Network(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.conv1 = KAN_Convolution(in_features = (28,28),
+            kernel_size= (2,2),
+            n_convs= 1,
+            stride = 1,
+            padding=None,
+            grid_size=5,
+            spline_order=3,
+            scale_noise=0.1,
+            scale_base=1.0,
+            scale_spline=1.0,
+            enable_standalone_scale_spline=True,
+            base_activation=torch.nn.SiLU,
+            grid_eps=0.02,
+            grid_range=[-1, 1],)
+        self.pool2 = nn.MaxPool2d(kernel_size=(2, 2))
+        self.flat = nn.Flatten() 
+        print("shape",self.flat)
+        self.kan1 = KANLinear(
+                    512,
+                    10,
+                    grid_size=10,
+                    spline_order=3,
+                    scale_noise=0.01,
+                    scale_base=1,
+                    scale_spline=1,
+                    base_activation=nn.SiLU,
+                    grid_eps=0.02,
+                    grid_range=[0,1],
+                )
+        #self.fc4 = nn.Linear(512, 10)
+        """
+        self.layers = torch.nn.ModuleList()
+
+        for in_features, out_features in zip(layers_hidden, layers_hidden[1:]):
+            self.layers.append(
+                KANLinear(
+                    in_features,
+                    out_features,
+                    grid_size=grid_size,
+                    spline_order=spline_order,
+                    scale_noise=scale_noise,
+                    scale_base=scale_base,
+                    scale_spline=scale_spline,
+                    base_activation=base_activation,
+                    grid_eps=grid_eps,
+                    grid_range=grid_range,
+                )
+            )"""
+    def forward(self, x):
+        # input 3x32x32, output 32x32x32
+        x = self.act1(self.conv1(x))
+        x = self.drop1(x)
+        # input 32x32x32, output 32x32x32
+        x = self.act2(self.conv2(x))
+        # input 32x32x32, output 32x16x16
+        x = self.pool2(x)
+        # input 32x16x16, output 8192
+        x = self.flat(x)
+        # input 8192, output 512
+        x = self.kan1(x) 
+        return x
+    
+
+class CNN_KAN(nn.Module):
+    def __init__(self):
+        super(CNN_KAN, self).__init__()
+        # Definir la arquitectura utilizando nn.Sequential
+        self.model = nn.Sequential(
+            # Primera capa convolucional
+            nn.Conv2d(in_channels=1, out_channels=16, kernel_size=3, padding=1),
+            nn.ReLU(),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+            
+            # Segunda capa convolucional
+            nn.Conv2d(in_channels=16, out_channels=32, kernel_size=3, padding=1),
+            nn.ReLU(),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+            
+            # Capa completamente conectada (FC)
+            nn.Flatten(),
+            KANLinear(
+                in_features=32*7*7, 
+                out_features=10,
+                grid_size=10,
+                spline_order=3,
+                scale_noise=0.01,
+                scale_base=1,
+                scale_spline=1,
+                base_activation=nn.SiLU,
+                grid_eps=0.02,
+                grid_range=[0,1],
+
+            ),
+        )
+
+    def forward(self, x):
+        return self.model(x)
+"""class KAN(torch.nn.Module):
     def __init__(
         self,
         layers_hidden,
@@ -285,39 +392,4 @@ class KAN(torch.nn.Module):
             for layer in self.layers
         )
 
-
-def conv(img, conv_filter):
-    if len(img.shape) > 2 or len(conv_filter.shape) > 3: # Check if number of image channels matches the filter depth.
-        if img.shape[-1] != conv_filter.shape[-1]:
-            print("Error: Number of channels in both image and filter must match.")
-            sys.exit()
-    if conv_filter.shape[1] != conv_filter.shape[2]: # Check if filter dimensions are equal.
-        print('Error: Filter must be a square matrix. I.e. number of rows and columns must match.')
-        sys.exit()
-    if conv_filter.shape[1]%2==0: # Check if filter diemnsions are odd.
-        print('Error: Filter must have an odd size. I.e. number of rows and columns must be odd.')
-        sys.exit()
-
-    # An empty feature map to hold the output of convolving the filter(s) with the image.
-    feature_maps = np.zeros((img.shape[0]-conv_filter.shape[1]+1, 
-                                img.shape[1]-conv_filter.shape[1]+1, 
-                                conv_filter.shape[0]))
-
-    # Convolving the image by the filter(s).
-    for filter_num in range(conv_filter.shape[0]):
-        print("Filter ", filter_num + 1)
-        curr_filter = conv_filter[filter_num, :] # getting a filter from the bank.
-        """ 
-        Checking if there are mutliple channels for the single filter.
-        If so, then each channel will convolve the image.
-        The result of all convolutions are summed to return a single feature map.
-        """
-        if len(curr_filter.shape) > 2:
-            conv_map = conv_(img[:, :, 0], curr_filter[:, :, 0]) # Array holding the sum of all feature maps.
-            for ch_num in range(1, curr_filter.shape[-1]): # Convolving each channel with the image and summing the results.
-                conv_map = conv_map + conv_(img[:, :, ch_num], 
-                                  curr_filter[:, :, ch_num])
-        else: # There is just a single channel in the filter.
-            conv_map = conv_(img, curr_filter)
-        feature_maps[:, :, filter_num] = conv_map # Holding feature map with the current filter.
-    return feature_maps # Returning all feature maps.
+"""
