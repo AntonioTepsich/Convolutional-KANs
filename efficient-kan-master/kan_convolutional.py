@@ -40,13 +40,13 @@ class KAN_Conv(torch.nn.Module):
         )
         self.register_buffer("grid", grid)
 
-        self.base_weight = torch.nn.Parameter(torch.Tensor(kernel_size)) #es el w. Tenemos en cuenta 1 sola convolucion
+        self.base_weight = torch.nn.Parameter(torch.Tensor(*kernel_size)) #es el w. Tenemos en cuenta 1 sola convolucion
         self.spline_weight = torch.nn.Parameter( #es el ci
-            torch.Tensor(kernel_size, grid_size + spline_order)
+            torch.Tensor(*kernel_size, grid_size + spline_order)
         )
         if enable_standalone_scale_spline:
             self.spline_scaler = torch.nn.Parameter(
-                torch.Tensor(kernel_size, in_features)
+                torch.Tensor(*kernel_size, in_features)
             )
 
         self.scale_noise = scale_noise
@@ -156,7 +156,8 @@ class KAN_Conv(torch.nn.Module):
         )
 
     def forward(self, x: torch.Tensor):
-        assert x.dim() == 2 and x.size(1) == self.in_features
+        #Ver bien tema dimensiones
+        #assert x.dim() == 2 and x.size(1) == self.in_features
 
         base_output = F.linear(self.base_activation(x), self.base_weight)
         spline_output = F.linear(

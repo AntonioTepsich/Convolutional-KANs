@@ -1,7 +1,0 @@
-matplotlib==3.6.2
-numpy==1.26.4
-scikit-learn==1.4.2
-setuptools==69.5.1
-sympy==1.11.1
-torch==2.2.2
-tqdm==4.66.2
