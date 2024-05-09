@@ -56,6 +56,8 @@ class KANLinear(torch.nn.Module):
             .expand(in_features, -1)
             .contiguous()
         )
+        print("dim",grid.dim())
+        print("in feat",in_features)
         self.register_buffer("grid", grid)
 
         self.base_weight = torch.nn.Parameter(torch.Tensor(out_features, in_features))

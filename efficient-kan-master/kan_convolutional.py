@@ -18,7 +18,7 @@ class KAN_Convolution(torch.nn.Module):
         scale_noise=0.1,
         scale_base=1.0,
         scale_spline=1.0,
-        enable_standalone_scale_spline=True,
+        enable_standalone_scale_spline=False,
         base_activation=torch.nn.SiLU,
         grid_eps=0.02,
         grid_range=[-1, 1],
@@ -35,19 +35,15 @@ class KAN_Convolution(torch.nn.Module):
                 torch.arange(-spline_order, grid_size + spline_order + 1) * h
                 + grid_range[0]
             )
-            .expand(in_features, -1)
+            .expand(math.prod(kernel_size), -1)
             .contiguous()
         )
         self.register_buffer("grid", grid)
-
-        self.base_weight = torch.nn.Parameter(torch.Tensor(*kernel_size)) #es el w. Tenemos en cuenta 1 sola convolucion
+        print("ker",math.prod(kernel_size))
+        self.base_weight = torch.nn.Parameter(torch.Tensor(1,math.prod(kernel_size))) #es el w. Tenemos en cuenta 1 sola convolucion
         self.spline_weight = torch.nn.Parameter( #es el ci
-            torch.Tensor(*kernel_size, grid_size + spline_order)
+            torch.Tensor(1,math.prod(kernel_size), grid_size + spline_order) #esta flateneado, osea que en vez de ser 2x2xc_is es 4xcis
         )
-        if enable_standalone_scale_spline:
-            self.spline_scaler = torch.nn.Parameter(
-                torch.Tensor(*kernel_size, in_features)
-            )
 
         self.scale_noise = scale_noise
         self.scale_base = scale_base
@@ -59,11 +55,12 @@ class KAN_Convolution(torch.nn.Module):
         self.reset_parameters()
 
     def reset_parameters(self):
+        print("dim base",self.base_weight.dim())
         torch.nn.init.kaiming_uniform_(self.base_weight, a=math.sqrt(5) * self.scale_base)
         with torch.no_grad():
             noise = (
                 (
-                    torch.rand(self.grid_size + 1, self.in_features, self.out_features)
+                    torch.rand(self.grid_size + 1,math.prod(self.kernel_size), 1)
                     - 1 / 2
                 )
                 * self.scale_noise
@@ -90,7 +87,7 @@ class KAN_Convolution(torch.nn.Module):
         Returns:
             torch.Tensor: B-spline bases tensor of shape (batch_size, in_features, grid_size + spline_order).
         """
-        assert x.dim() == 2 and x.size(1) == self.in_features
+        #assert x.dim() == 2 and x.size(1) == self.in_features #hacer esto bien
 
         grid: torch.Tensor = (
             self.grid
@@ -108,11 +105,11 @@ class KAN_Convolution(torch.nn.Module):
                 * bases[:, :, 1:]
             )
 
-        assert bases.size() == (
-            x.size(0),
-            self.in_features,
-            self.grid_size + self.spline_order,
-        )
+        # assert bases.size() == (
+        #     x.size(0),
+        #     self.in_features,
+        #     self.grid_size + self.spline_order,
+        # )
         return bases.contiguous()
 
     def curve2coeff(self, x: torch.Tensor, y: torch.Tensor):
@@ -126,8 +123,8 @@ class KAN_Convolution(torch.nn.Module):
         Returns:
             torch.Tensor: Coefficients tensor of shape (out_features, in_features, grid_size + spline_order).
         """
-        assert x.dim() == 2 and x.size(1) == self.in_features
-        assert y.size() == (x.size(0), self.in_features, self.out_features)
+        # assert x.dim() == 2 and x.size(1) == self.in_features
+        # assert y.size() == (x.size(0), self.in_features, self.out_features)
 
         A = self.b_splines(x).transpose(
             0, 1
@@ -140,11 +137,11 @@ class KAN_Convolution(torch.nn.Module):
             2, 0, 1
         )  # (out_features, in_features, grid_size + spline_order)
 
-        assert result.size() == (
-            self.out_features,
-            self.in_features,
-            self.grid_size + self.spline_order,
-        )
+        # assert result.size() == (
+        #     self.out_features,
+        #     self.in_features,
+        #     self.grid_size + self.spline_order,
+        # )
         return result.contiguous()
 
     @property
@@ -167,9 +164,13 @@ class KAN_Convolution(torch.nn.Module):
         # return base_output + spline_output
         if update_grid:
             self.update_grid(x)
-        kernel  = torch.dstack((self.b_splines, self.base_weight)) 
-        return convolution.apply_filter_to_image(x, kernel, rgb = False)
 
+        splines_cis_as_matrix =  self.spline_weight.view(*self.kernel_size)
+
+        kernel  = torch.dstack((splines_cis_as_matrix, self.base_weight.view(*self.kernel_size))) 
+        return convolution.apply_filter_to_image(x, kernel,self.b_splines,torch.nn.SiLU, rgb = False)
+    # def splines_to_matrix(self):
+    #     return [i.view(self.kernel_size[0],self.kernel_size[1]) for i in self.b_splines]
     @torch.no_grad()
     def update_grid(self, x: torch.Tensor, margin=0.01):
         assert x.dim() == 2 and x.size(1) == self.in_features
@@ -258,7 +259,7 @@ class KAN_Convolutional_Network(nn.Module):
             scale_noise=0.1,
             scale_base=1.0,
             scale_spline=1.0,
-            enable_standalone_scale_spline=True,
+            enable_standalone_scale_spline=False,
             base_activation=torch.nn.SiLU,
             grid_eps=0.02,
             grid_range=[-1, 1],)
@@ -277,31 +278,11 @@ class KAN_Convolutional_Network(nn.Module):
                     grid_eps=0.02,
                     grid_range=[0,1],
                 )
-        #self.fc4 = nn.Linear(512, 10)
-        """
-        self.layers = torch.nn.ModuleList()
 
-        for in_features, out_features in zip(layers_hidden, layers_hidden[1:]):
-            self.layers.append(
-                KANLinear(
-                    in_features,
-                    out_features,
-                    grid_size=grid_size,
-                    spline_order=spline_order,
-                    scale_noise=scale_noise,
-                    scale_base=scale_base,
-                    scale_spline=scale_spline,
-                    base_activation=base_activation,
-                    grid_eps=grid_eps,
-                    grid_range=grid_range,
-                )
-            )"""
     def forward(self, x):
         # input 3x32x32, output 32x32x32
-        x = self.act1(self.conv1(x))
-        x = self.drop1(x)
+        x = self.conv1(self.conv1(x))
         # input 32x32x32, output 32x32x32
-        x = self.act2(self.conv2(x))
         # input 32x32x32, output 32x16x16
         x = self.pool2(x)
         # input 32x16x16, output 8192
