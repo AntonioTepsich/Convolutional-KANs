@@ -78,6 +78,7 @@ def kan_conv2d(matrix: Union[List[List[float]], np.ndarray], #but as torch tenso
             indices_y = [center_y + l * dilation[1] for l in range(-b[1], b[1] + 1)]
 
             submatrix = matrix[indices_x, :][:, indices_y]
+            print("sub",submatrix.flatten())
             matrix_out[i][j] = kernel.forward(submatrix.flatten()).item()
             print("matrix out",matrix_out[i][j])
             #for k0 in range(kernel_side):
