@@ -65,6 +65,8 @@ def kan_conv2d(matrix: Union[List[List[float]], np.ndarray], #but as torch tenso
             indices_y = [center_y + l * dilation[1] for l in range(-b[1], b[1] + 1)]
 
             submatrix = matrix[indices_x, :][:, indices_y]
+            print("sub",submatrix)
+
             splines = b_splines_func(submatrix.flatten())
             splines= splines.view(len(kernel),len(kernel[0]))
             submatrix = kernel[:,:,1]* (kernel[:,:,0]*splines + base_func(submatrix)) 

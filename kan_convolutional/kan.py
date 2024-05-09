@@ -1,31 +1,49 @@
-import numpy as np
-import sys
 import torch
 import torch.nn.functional as F
 import math
 
-import convolution
-class KAN_Convolution(torch.nn.Module):
+
+class KANLinear(torch.nn.Module):
     def __init__(
         self,
-        in_features = (28,28),
-        kernel_size= (2,2),
-        n_convs= 1,
-        stride = 1,
-        padding=None,
+        in_features,
+        out_features,
         grid_size=5,
         spline_order=3,
         scale_noise=0.1,
         scale_base=1.0,
         scale_spline=1.0,
-        enable_standalone_scale_spline=False,
+        enable_standalone_scale_spline=True,
         base_activation=torch.nn.SiLU,
         grid_eps=0.02,
         grid_range=[-1, 1],
     ):
-        super(KAN_Convolution, self).__init__()
+        """
+        Args:
+            in_features (int): Number of input features.
+            out_features (int): Number of output features.
+            grid_size (int): Number of grid points.
+            spline_order (int): Order of the spline.
+            scale_noise (float): Scale of the noise.
+            scale_base (float): Scale of the base weight.
+            scale_spline (float): Scale of the spline weight.
+            enable_standalone_scale_spline (bool): Whether to enable standalone scale for spline weight.
+            base_activation (torch.nn.Module): Activation function for the base weight.
+            grid_eps (float): Epsilon for the grid.
+            grid_range (list): Range of the grid.
+
+        Note:
+            The grid is initialized as a uniform grid with the given range and size. The
+            spline weight is initialized as a random tensor with the given scale and noise.
+            The base weight is initialized as a random tensor with the given scale.
+
+            The grid is updated by the input tensor. The spline weight is updated by the
+            input tensor and the unreduced spline output. The regularization loss is computed
+            as the mean absolute value of the spline weight.
+        """
+        super(KANLinear, self).__init__()
         self.in_features = in_features
-        self.kernel_size = kernel_size
+        self.out_features = out_features
         self.grid_size = grid_size
         self.spline_order = spline_order
 
@@ -35,15 +53,21 @@ class KAN_Convolution(torch.nn.Module):
                 torch.arange(-spline_order, grid_size + spline_order + 1) * h
                 + grid_range[0]
             )
-            .expand(math.prod(kernel_size), -1)
+            .expand(in_features, -1)
             .contiguous()
         )
+        print("dim",grid.dim())
+        print("in feat",in_features)
         self.register_buffer("grid", grid)
-        print("ker",math.prod(kernel_size))
-        self.base_weight = torch.nn.Parameter(torch.Tensor(1,math.prod(kernel_size))) #es el w. Tenemos en cuenta 1 sola convolucion
-        self.spline_weight = torch.nn.Parameter( #es el ci
-            torch.Tensor(1,math.prod(kernel_size), grid_size + spline_order) #esta flateneado, osea que en vez de ser 2x2xc_is es 4xcis
+
+        self.base_weight = torch.nn.Parameter(torch.Tensor(out_features, in_features))
+        self.spline_weight = torch.nn.Parameter(
+            torch.Tensor(out_features, in_features, grid_size + spline_order)
         )
+        if enable_standalone_scale_spline:
+            self.spline_scaler = torch.nn.Parameter(
+                torch.Tensor(out_features, in_features)
+            )
 
         self.scale_noise = scale_noise
         self.scale_base = scale_base
@@ -55,12 +79,11 @@ class KAN_Convolution(torch.nn.Module):
         self.reset_parameters()
 
     def reset_parameters(self):
-        print("dim base",self.base_weight.dim())
         torch.nn.init.kaiming_uniform_(self.base_weight, a=math.sqrt(5) * self.scale_base)
         with torch.no_grad():
             noise = (
                 (
-                    torch.rand(self.grid_size + 1,math.prod(self.kernel_size), 1)
+                    torch.rand(self.grid_size + 1, self.in_features, self.out_features)
                     - 1 / 2
                 )
                 * self.scale_noise
@@ -87,7 +110,7 @@ class KAN_Convolution(torch.nn.Module):
         Returns:
             torch.Tensor: B-spline bases tensor of shape (batch_size, in_features, grid_size + spline_order).
         """
-        #assert x.dim() == 2 and x.size(1) == self.in_features #hacer esto bien
+        assert x.dim() == 2 and x.size(1) == self.in_features
 
         grid: torch.Tensor = (
             self.grid
@@ -105,11 +128,11 @@ class KAN_Convolution(torch.nn.Module):
                 * bases[:, :, 1:]
             )
 
-        # assert bases.size() == (
-        #     x.size(0),
-        #     self.in_features,
-        #     self.grid_size + self.spline_order,
-        # )
+        assert bases.size() == (
+            x.size(0),
+            self.in_features,
+            self.grid_size + self.spline_order,
+        )
         return bases.contiguous()
 
     def curve2coeff(self, x: torch.Tensor, y: torch.Tensor):
@@ -123,8 +146,8 @@ class KAN_Convolution(torch.nn.Module):
         Returns:
             torch.Tensor: Coefficients tensor of shape (out_features, in_features, grid_size + spline_order).
         """
-        # assert x.dim() == 2 and x.size(1) == self.in_features
-        # assert y.size() == (x.size(0), self.in_features, self.out_features)
+        assert x.dim() == 2 and x.size(1) == self.in_features
+        assert y.size() == (x.size(0), self.in_features, self.out_features)
 
         A = self.b_splines(x).transpose(
             0, 1
@@ -137,11 +160,11 @@ class KAN_Convolution(torch.nn.Module):
             2, 0, 1
         )  # (out_features, in_features, grid_size + spline_order)
 
-        # assert result.size() == (
-        #     self.out_features,
-        #     self.in_features,
-        #     self.grid_size + self.spline_order,
-        # )
+        assert result.size() == (
+            self.out_features,
+            self.in_features,
+            self.grid_size + self.spline_order,
+        )
         return result.contiguous()
 
     @property
@@ -152,25 +175,16 @@ class KAN_Convolution(torch.nn.Module):
             else 1.0
         )
 
-    def forward(self, x: torch.Tensor,update_grid = False):
-        #Ver bien tema dimensiones
-        #assert x.dim() == 2 and x.size(1) == self.in_features
+    def forward(self, x: torch.Tensor):
+        assert x.dim() == 2 and x.size(1) == self.in_features
 
-        #base_output = F.linear(self.base_activation(x), self.base_weight) #el b seria una matrix con b aplicado a cada uno de los pixeles
-        # spline_output = F.linear(
-        #     self.b_splines(x).view(x.size(0), -1),
-        #     self.scaled_spline_weight.view(self.out_features, -1),
-        # )
-        # return base_output + spline_output
-        if update_grid:
-            self.update_grid(x)
+        base_output = F.linear(self.base_activation(x), self.base_weight)
+        spline_output = F.linear(
+            self.b_splines(x).view(x.size(0), -1),
+            self.scaled_spline_weight.view(self.out_features, -1),
+        )
+        return base_output + spline_output
 
-        splines_cis_as_matrix =  self.spline_weight.view(*self.kernel_size)
-
-        kernel  = torch.dstack((splines_cis_as_matrix, self.base_weight.view(*self.kernel_size))) 
-        return convolution.apply_filter_to_image(x, kernel,self.b_splines,torch.nn.SiLU, rgb = False)
-    # def splines_to_matrix(self):
-    #     return [i.view(self.kernel_size[0],self.kernel_size[1]) for i in self.b_splines]
     @torch.no_grad()
     def update_grid(self, x: torch.Tensor, margin=0.01):
         assert x.dim() == 2 and x.size(1) == self.in_features
@@ -242,91 +256,8 @@ class KAN_Convolution(torch.nn.Module):
             + regularize_entropy * regularization_loss_entropy
         )
 
-from src.efficient_kan.kan import KANLinear
-from torch import nn
 
-#ESTE SCRIPT TIENE LAS CAPAS CONVOLUCIONALES NORMALES Y AL FINAL LA KAN EN VEZ DE UN MLP
-class KAN_Convolutional_Network(nn.Module):
-    def __init__(self):
-        super().__init__()
-        self.conv1 = KAN_Convolution(in_features = (28,28),
-            kernel_size= (2,2),
-            n_convs= 1,
-            stride = 1,
-            padding=None,
-            grid_size=5,
-            spline_order=3,
-            scale_noise=0.1,
-            scale_base=1.0,
-            scale_spline=1.0,
-            enable_standalone_scale_spline=False,
-            base_activation=torch.nn.SiLU,
-            grid_eps=0.02,
-            grid_range=[-1, 1],)
-        self.pool2 = nn.MaxPool2d(kernel_size=(2, 2))
-        self.flat = nn.Flatten() 
-        print("shape",self.flat)
-        self.kan1 = KANLinear(
-                    512,
-                    10,
-                    grid_size=10,
-                    spline_order=3,
-                    scale_noise=0.01,
-                    scale_base=1,
-                    scale_spline=1,
-                    base_activation=nn.SiLU,
-                    grid_eps=0.02,
-                    grid_range=[0,1],
-                )
-
-    def forward(self, x):
-        # input 3x32x32, output 32x32x32
-        x = self.conv1(self.conv1(x))
-        # input 32x32x32, output 32x32x32
-        # input 32x32x32, output 32x16x16
-        x = self.pool2(x)
-        # input 32x16x16, output 8192
-        x = self.flat(x)
-        # input 8192, output 512
-        x = self.kan1(x) 
-        return x
-    
-
-class CNN_KAN(nn.Module):
-    def __init__(self):
-        super(CNN_KAN, self).__init__()
-        # Definir la arquitectura utilizando nn.Sequential
-        self.model = nn.Sequential(
-            # Primera capa convolucional
-            nn.Conv2d(in_channels=1, out_channels=16, kernel_size=3, padding=1),
-            nn.ReLU(),
-            nn.MaxPool2d(kernel_size=2, stride=2),
-            
-            # Segunda capa convolucional
-            nn.Conv2d(in_channels=16, out_channels=32, kernel_size=3, padding=1),
-            nn.ReLU(),
-            nn.MaxPool2d(kernel_size=2, stride=2),
-            
-            # Capa completamente conectada (FC)
-            nn.Flatten(),
-            KANLinear(
-                in_features=32*7*7, 
-                out_features=10,
-                grid_size=10,
-                spline_order=3,
-                scale_noise=0.01,
-                scale_base=1,
-                scale_spline=1,
-                base_activation=nn.SiLU,
-                grid_eps=0.02,
-                grid_range=[0,1],
-
-            ),
-        )
-
-    def forward(self, x):
-        return self.model(x)
-"""class KAN(torch.nn.Module):
+class KAN(torch.nn.Module):
     def __init__(
         self,
         layers_hidden,
@@ -372,5 +303,3 @@ class CNN_KAN(nn.Module):
             layer.regularization_loss(regularize_activation, regularize_entropy)
             for layer in self.layers
         )
-
-"""
