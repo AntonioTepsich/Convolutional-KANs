@@ -3,7 +3,7 @@ import sys
 import torch
 import torch.nn.functional as F
 import math
-from kan_convolutional.KANLinear import KANLinear
+from KANLinear import KANLinear
 import convolution
 
 #Script que contiene la implementación del kernel con funciones de activación.
@@ -29,8 +29,20 @@ class KAN_Convolution_Linears(torch.nn.Module):
         self.grid_size = grid_size
         self.spline_order = spline_order
         self.kernel_size = kernel_size
-        self.layers = torch.nn.ModuleList()
-        for i in range(math.prod(kernel_size)):
+        self.convs = KANLinear(
+                    in_features = math.prod(kernel_size),
+                    out_features = 1,
+                    grid_size=grid_size,
+                    spline_order=spline_order,
+                    scale_noise=scale_noise,
+                    scale_base=scale_base,
+                    scale_spline=scale_spline,
+                    base_activation=base_activation,
+                    grid_eps=grid_eps,
+                    grid_range=grid_range,
+                )
+        #self.layers = torch.nn.ModuleList()
+        """for i in range(math.prod(kernel_size)):
             self.layers.append(
                 KANLinear(
                     in_features = 1,
@@ -45,10 +57,10 @@ class KAN_Convolution_Linears(torch.nn.Module):
                     grid_range=grid_range,
                 )
             )
-        
+        """
 
     def forward(self, x: torch.Tensor, update_grid=False):
-        return convolution.apply_filter_to_image(x, self.layers,self.kernel_size[0], rgb = False)
+        return convolution.apply_filter_to_image(x, self.convs,self.kernel_size[0], rgb = False)
         #for layer in self.layers:
          #   if update_grid:
          #       layer.update_grid(x)

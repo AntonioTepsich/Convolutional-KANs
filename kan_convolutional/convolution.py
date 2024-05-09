@@ -40,7 +40,7 @@ def _check_params(matrix, kernel, stride, dilation, padding):
 
     return matrix, kernel, k, h_out, w_out
 def kan_conv2d(matrix: Union[List[List[float]], np.ndarray], #but as torch tensors. Kernel side asume q el kernel es cuadrado
-             kernel: Union[List[List[float]], np.ndarray], 
+             kernel, 
              kernel_side,
              stride: Tuple[int, int] = (1, 1), 
              dilation: Tuple[int, int] = (1, 1), 
@@ -63,12 +63,10 @@ def kan_conv2d(matrix: Union[List[List[float]], np.ndarray], #but as torch tenso
     else:
         padding = (0,0)
     print("imagen",matrix.shape)
-    matrix=  matrix[0,0,:,:]
-    print("imagen",matrix.shape)
+    matrix=  matrix[0,0,:,:] #el primer 0 es del batch size, entonces ahora solo se haria la primera imagen del batch
 
     h_out, w_out,b = calc_out_dims(matrix, kernel_side, stride, dilation, padding)
     matrix_out = np.zeros((h_out, w_out))
-    print("b",b)
 
     center_x_0 = b[0] * dilation[0]
     center_y_0 = b[1] * dilation[1]
@@ -80,11 +78,12 @@ def kan_conv2d(matrix: Union[List[List[float]], np.ndarray], #but as torch tenso
             indices_y = [center_y + l * dilation[1] for l in range(-b[1], b[1] + 1)]
 
             submatrix = matrix[indices_x, :][:, indices_y]
-
-            for k0 in range(kernel_side):
-                 for k1 in range(kernel_side):
-                     submatrix[k0][k1] = kernel[k0*kernel_side+ k1](torch.tensor([submatrix[k0][k1]]))#kernel[k0][k1][1]* (kernel[k0][k1][0](submatrix[k0][k1]) + base_func(submatrix[k0][k1])) # w * (phi(x) + b(x))
-            matrix_out[i][j] = torch.sum(submatrix).item()
+            matrix_out[i][j] = kernel.forward(submatrix.flatten()).item()
+            print("matrix out",matrix_out[i][j])
+            #for k0 in range(kernel_side):
+            #     for k1 in range(kernel_side):
+             #        submatrix[k0][k1] = kernel()torch.tensor([submatrix[k0][k1]])#kernel[k0][k1][1]* (kernel[k0][k1][0](submatrix[k0][k1]) + base_func(submatrix[k0][k1])) # w * (phi(x) + b(x))
+            #matrix_out[i][j] = torch.sum(submatrix).item()
     return matrix_out
 
 
@@ -99,7 +98,6 @@ def apply_filter_to_image(image: np.ndarray,
     Returns:
         np.ndarray: image after applying kernel.
     """
-    kernel = np.asarray(kernel)
     
     if rgb:
         return torch.dstack([kan_conv2d(image[:, :, z], kernel, padding=padding) 
