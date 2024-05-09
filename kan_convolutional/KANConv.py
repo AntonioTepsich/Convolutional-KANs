@@ -3,8 +3,11 @@ import sys
 import torch
 import torch.nn.functional as F
 import math
-from kan import KANLinear
+from kan_convolutional.KANLinear import KANLinear
 import convolution
+
+#Script que contiene la implementación del kernel con funciones de activación.
+
 class KAN_Convolution_Linears(torch.nn.Module):
     def __init__(
         self,

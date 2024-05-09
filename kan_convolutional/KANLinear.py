@@ -2,7 +2,7 @@ import torch
 import torch.nn.functional as F
 import math
 
-
+# Script que contiene la implementación de la capa KANLinear
 class KANLinear(torch.nn.Module):
     def __init__(
         self,

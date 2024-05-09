@@ -1,6 +1,6 @@
 from torch import nn
 import torch.nn.functional as F
-import kan_conv_linears
+import kan_convolutional.KANConv as KanConv
 
 # Train on MNIST
 import torch
@@ -25,7 +25,7 @@ trainloader = DataLoader(trainset, batch_size=64, shuffle=True)
 valloader = DataLoader(valset, batch_size=64, shuffle=False)
 
 # Define model
-model = kan_conv_linears.KAN_Convolutional_Network()
+model = KanConv.KAN_Convolutional_Network()
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model.to(device)
 # Define optimizer
