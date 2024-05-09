@@ -1,7 +1,15 @@
+#Credits to: https://github.com/detkov/Convolution-From-Scratch/
 import torch
 
 import numpy as np
 from typing import List, Tuple, Union
+def calc_out_dims(matrix, kernel_side, stride, dilation, padding):
+    n, m = matrix.shape
+
+    h_out = np.floor((n + 2 * padding[0] - kernel_side - (kernel_side - 1) * (dilation[0] - 1)) / stride[0]).astype(int) + 1
+    w_out = np.floor((m + 2 * padding[1] - kernel_side - (kernel_side - 1) * (dilation[1] - 1)) / stride[1]).astype(int) + 1
+    b = [kernel_side // 2, kernel_side// 2]
+    return h_out,w_out,b
 def _check_params(matrix, kernel, stride, dilation, padding):
     params_are_correct = (isinstance(stride[0], int)   and isinstance(stride[1], int)   and
                           isinstance(dilation[0], int) and isinstance(dilation[1], int) and
@@ -31,13 +39,12 @@ def _check_params(matrix, kernel, stride, dilation, padding):
     assert out_dimensions_are_correct, 'Can\'t apply input parameters, one of resulting output dimension is non-positive.'
 
     return matrix, kernel, k, h_out, w_out
-def kan_conv2d(matrix: Union[List[List[float]], np.ndarray], #but as torch tensors 
+def kan_conv2d(matrix: Union[List[List[float]], np.ndarray], #but as torch tensors. Kernel side asume q el kernel es cuadrado
              kernel: Union[List[List[float]], np.ndarray], 
-             b_splines_func,
+             kernel_side,
              stride: Tuple[int, int] = (1, 1), 
              dilation: Tuple[int, int] = (1, 1), 
              padding: Tuple[int, int] = (0, 0),
-             base_func= torch.nn.SiLU
              ) -> np.ndarray:
     """Makes a 2D convolution with the kernel over matrix using defined stride, dilation and padding along axes.
 
@@ -51,10 +58,18 @@ def kan_conv2d(matrix: Union[List[List[float]], np.ndarray], #but as torch tenso
     Returns:
         np.ndarray: 2D Feature map, i.e. matrix after convolution.
     """
-    matrix, kernel, k, h_out, w_out = _check_params(matrix, kernel, stride, dilation, padding)
+    if padding == True:
+        padding = (kernel_side//2,  kernel_side//2)
+    else:
+        padding = (0,0)
+    print("imagen",matrix.shape)
+    matrix=  matrix[0,0,:,:]
+    print("imagen",matrix.shape)
+
+    h_out, w_out,b = calc_out_dims(matrix, kernel_side, stride, dilation, padding)
     matrix_out = np.zeros((h_out, w_out))
-    
-    b = k[0] // 2, k[1] // 2
+    print("b",b)
+
     center_x_0 = b[0] * dilation[0]
     center_y_0 = b[1] * dilation[1]
     for i in range(h_out):
@@ -65,22 +80,16 @@ def kan_conv2d(matrix: Union[List[List[float]], np.ndarray], #but as torch tenso
             indices_y = [center_y + l * dilation[1] for l in range(-b[1], b[1] + 1)]
 
             submatrix = matrix[indices_x, :][:, indices_y]
-            print("sub",submatrix)
 
-            splines = b_splines_func(submatrix.flatten())
-            splines= splines.view(len(kernel),len(kernel[0]))
-            submatrix = kernel[:,:,1]* (kernel[:,:,0]*splines + base_func(submatrix)) 
-            print("sub",submatrix)
-            # for k0 in range(len(kernel)):
-            #     for k1 in range(len(kernel[0])):
-
-            #         submatrix[k0][k1] = kernel[k0][k1][1]* (kernel[k0][k1][0](submatrix[k0][k1]) + base_func(submatrix[k0][k1])) # w * (phi(x) + b(x))
-            matrix_out[i][j] = torch.sum(submatrix).item()#np.sum(np.multiply(submatrix, kernel))
+            for k0 in range(kernel_side):
+                 for k1 in range(kernel_side):
+                     submatrix[k0][k1] = kernel[k0*kernel_side+ k1](torch.tensor([submatrix[k0][k1]]))#kernel[k0][k1][1]* (kernel[k0][k1][0](submatrix[k0][k1]) + base_func(submatrix[k0][k1])) # w * (phi(x) + b(x))
+            matrix_out[i][j] = torch.sum(submatrix).item()
     return matrix_out
 
 
 def apply_filter_to_image(image: np.ndarray, 
-                          kernel: List[List[float]],splines_b_func,base_func,rgb = False) -> np.ndarray:
+                          kernel: List[List[float]],kernel_side,padding = True,rgb = False) -> np.ndarray:
     """Applies filter to the given image.
 
     Args:
@@ -91,12 +100,11 @@ def apply_filter_to_image(image: np.ndarray,
         np.ndarray: image after applying kernel.
     """
     kernel = np.asarray(kernel)
-    b = kernel.shape
     
     if rgb:
-        return torch.dstack([kan_conv2d(image[:, :, z], kernel, padding=(b[0]//2,  b[1]//2)) 
+        return torch.dstack([kan_conv2d(image[:, :, z], kernel, padding=padding) 
                       for z in range(3)]).astype('uint8')
-    return kan_conv2d(image, kernel,splines_b_func, padding=(b[0]//2,  b[1]//2),base_func = base_func) 
+    return kan_conv2d(image, kernel,kernel_side, padding=padding) 
 def add_padding(matrix: np.ndarray, 
                 padding: Tuple[int, int]) -> np.ndarray:
     """Adds padding to the matrix. 
