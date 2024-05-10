@@ -12,20 +12,19 @@ def calc_out_dims(matrix, kernel_side, stride, dilation, padding):
     b = [kernel_side // 2, kernel_side// 2]
     return h_out,w_out,b,batch_size
 
-
-
 def kan_conv2d(matrix: Union[List[List[float]], np.ndarray], #but as torch tensors. Kernel side asume q el kernel es cuadrado
              kernel, 
              kernel_side,
-             stride: Tuple[int, int] = (1, 1), 
-             dilation: Tuple[int, int] = (1, 1), 
-             padding: Tuple[int, int] = (0, 0),
-             ) -> np.ndarray:
+             stride= (1, 1), 
+             dilation= (1, 1), 
+             padding= (0, 0),
+             device= "cuda"
+             ) -> torch.Tensor:
     """Makes a 2D convolution with the kernel over matrix using defined stride, dilation and padding along axes.
 
     Args:
-        matrix (Union[List[List[float]], np.ndarray]): 2D matrix to be convolved.
-        kernel (Union[List[List[float]], np.ndarray]): 2D odd-shaped matrix (e.g. 3x3, 5x5, 13x9, etc.).
+        matrix (batch_size, colors, n, m]): 2D matrix to be convolved.
+        kernel  (function]): 2D odd-shaped matrix (e.g. 3x3, 5x5, 13x9, etc.).
         stride (Tuple[int, int], optional): Tuple of the stride along axes. With the `(r, c)` stride we move on `r` pixels along rows and on `c` pixels along columns on each iteration. Defaults to (1, 1).
         dilation (Tuple[int, int], optional): Tuple of the dilation along axes. With the `(r, c)` dilation we distancing adjacent pixels in kernel by `r` along rows and `c` along columns. Defaults to (1, 1).
         padding (Tuple[int, int], optional): Tuple with number of rows and columns to be padded. Defaults to (0, 0).
@@ -33,24 +32,17 @@ def kan_conv2d(matrix: Union[List[List[float]], np.ndarray], #but as torch tenso
     Returns:
         np.ndarray: 2D Feature map, i.e. matrix after convolution.
     """
-    if padding == True:
-        padding = (kernel_side//2,  kernel_side//2)
-    else:
-        padding = (0,0)
 
     h_out, w_out,b,batch_size = calc_out_dims(matrix, kernel_side, stride, dilation, padding)
-    matrix_out = torch.zeros((batch_size,h_out,w_out)).to("cuda")#estamos asumiendo que no existe la dimension de rgb
-    unfold = torch.nn.Unfold((kernel_side,kernel_side), dilation=1, padding=0, stride=1)
+    matrix_out = torch.zeros((batch_size,h_out,w_out)).to(device)#estamos asumiendo que no existe la dimension de rgb
+    unfold = torch.nn.Unfold((kernel_side,kernel_side), dilation=dilation, padding=padding, stride=stride)
     conv_groups = unfold(matrix).transpose(1, 2)
-
     for k in range(batch_size):
         matrix_out[k] = kernel.forward(conv_groups[k,:,:]).reshape((h_out,w_out))
-
     return matrix_out
 
-
-def apply_filter_to_image(image: np.ndarray, 
-                          kernel: List[List[float]],kernel_side,padding = False,rgb = False) -> np.ndarray:
+def apply_filter_to_image(image: torch.Tensor, 
+                          kernel: List[List[float]],kernel_side,padding = (0,0),stride=(1,1),dilation=(1,1),rgb = False,device=  "cuda") -> np.ndarray:
     """Applies filter to the given image.
 
     Args:
@@ -60,11 +52,11 @@ def apply_filter_to_image(image: np.ndarray,
     Returns:
         np.ndarray: image after applying kernel.
     """
-    
     if rgb:
-        return torch.dstack([kan_conv2d(image[:, :, z], kernel, padding=padding) 
+        return torch.dstack([kan_conv2d(image[:,z, :, :], kernel_side, stride,dilation,padding,device) 
                       for z in range(3)]).astype('uint8')
-    return kan_conv2d(image, kernel,kernel_side, padding=padding) 
+    return kan_conv2d(image, kernel,kernel_side, stride,dilation,padding,device) 
+
 def add_padding(matrix: np.ndarray, 
                 padding: Tuple[int, int]) -> np.ndarray:
     """Adds padding to the matrix. 

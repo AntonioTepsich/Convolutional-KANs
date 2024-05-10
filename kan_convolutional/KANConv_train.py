@@ -1,6 +1,6 @@
 from torch import nn
 import torch.nn.functional as F
-from KANConv import KAN_Convolutional_Network 
+from KAN_Network import KAN_Convolutional_Network 
 
 # Train on MNIST
 import torch
@@ -25,9 +25,11 @@ trainloader = DataLoader(trainset, batch_size=64, shuffle=True)
 valloader = DataLoader(valset, batch_size=64, shuffle=False)
 
 # Define model
-model = KAN_Convolutional_Network()
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+model = KAN_Convolutional_Network(device = device)
+
 model.to(device)
+
 # Define optimizer
 optimizer = optim.AdamW(model.parameters(), lr=1e-3, weight_decay=1e-4)
 # Define learning rate scheduler
