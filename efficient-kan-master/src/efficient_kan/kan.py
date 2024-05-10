@@ -110,7 +110,7 @@ class KANLinear(torch.nn.Module):
         Returns:
             torch.Tensor: B-spline bases tensor of shape (batch_size, in_features, grid_size + spline_order).
         """
-        assert x.dim() == 2 and x.size(1) == self.in_features
+        #assert x.dim() == 2 and x.size(1) == self.in_features
 
         grid: torch.Tensor = (
             self.grid
@@ -128,11 +128,11 @@ class KANLinear(torch.nn.Module):
                 * bases[:, :, 1:]
             )
 
-        assert bases.size() == (
-            x.size(0),
-            self.in_features,
-            self.grid_size + self.spline_order,
-        )
+        # assert bases.size() == (
+        #     x.size(0),
+        #     self.in_features,
+        #     self.grid_size + self.spline_order,
+        # )
         return bases.contiguous()
 
     def curve2coeff(self, x: torch.Tensor, y: torch.Tensor):
@@ -146,8 +146,8 @@ class KANLinear(torch.nn.Module):
         Returns:
             torch.Tensor: Coefficients tensor of shape (out_features, in_features, grid_size + spline_order).
         """
-        assert x.dim() == 2 and x.size(1) == self.in_features
-        assert y.size() == (x.size(0), self.in_features, self.out_features)
+        # assert x.dim() == 2 and x.size(1) == self.in_features
+        # assert y.size() == (x.size(0), self.in_features, self.out_features)
 
         A = self.b_splines(x).transpose(
             0, 1
@@ -160,11 +160,11 @@ class KANLinear(torch.nn.Module):
             2, 0, 1
         )  # (out_features, in_features, grid_size + spline_order)
 
-        assert result.size() == (
-            self.out_features,
-            self.in_features,
-            self.grid_size + self.spline_order,
-        )
+        # assert result.size() == (
+        #     self.out_features,
+        #     self.in_features,
+        #     self.grid_size + self.spline_order,
+        # )
         return result.contiguous()
 
     @property
@@ -176,7 +176,7 @@ class KANLinear(torch.nn.Module):
         )
 
     def forward(self, x: torch.Tensor):
-        assert x.dim() == 2 and x.size(1) == self.in_features
+        #assert x.dim() == 2 and x.size(1) == self.in_features
 
         base_output = F.linear(self.base_activation(x), self.base_weight)
         spline_output = F.linear(

@@ -60,7 +60,7 @@ class KAN_Convolution_Linears(torch.nn.Module):
         """
 
     def forward(self, x: torch.Tensor, update_grid=False):
-        return convolution.apply_filter_to_image(x, self.convs,self.kernel_size[0], rgb = False)
+        return convolution.apply_filter_to_image(torch.tensor(x,dtype=torch.float32).to("cuda"), self.convs,self.kernel_size[0], rgb = False)
         #for layer in self.layers:
          #   if update_grid:
          #       layer.update_grid(x)
@@ -93,9 +93,8 @@ class KAN_Convolutional_Network(nn.Module):
             grid_range=[-1, 1],)
         self.pool2 = nn.MaxPool2d(kernel_size=(2, 2))
         self.flat = nn.Flatten() 
-        print("shape",self.flat)
         self.kan1 = KANLinear(
-                    512,
+                    169,
                     10,
                     grid_size=10,
                     spline_order=3,
@@ -109,7 +108,7 @@ class KAN_Convolutional_Network(nn.Module):
 
     def forward(self, x):
         # input 3x32x32, output 32x32x32
-        x = self.conv1(self.conv1(x))
+        x = self.conv1(x)
         # input 32x32x32, output 32x32x32
         # input 32x32x32, output 32x16x16
         x = self.pool2(x)
