@@ -38,7 +38,6 @@ class KAN_Convolutional_Network(nn.Module):
         x = self.conv1(x)
         # input 32x32x32, output 32x32x32
         # input 32x32x32, output 32x16x16
-        #print(x.shape)
         x = self.pool2(x)
         # input 32x16x16, output 8192
         x = self.flat(x)

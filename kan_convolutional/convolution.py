@@ -40,7 +40,6 @@ def kan_conv2d(matrix: Union[List[List[float]], np.ndarray], #but as torch tenso
     for k in range(batch_size):
         matrix_out[k] = kernel.forward(conv_groups[k,:,:]).reshape((h_out,w_out))
     return matrix_out
-
 def apply_filter_to_image(image: torch.Tensor, 
                           kernel: List[List[float]],kernel_side,padding = (0,0),stride=(1,1),dilation=(1,1),rgb = False,device=  "cuda") -> np.ndarray:
     """Applies filter to the given image.

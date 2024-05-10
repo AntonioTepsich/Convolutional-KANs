@@ -49,8 +49,7 @@ class KAN_Convolutional_Layer(torch.nn.Module):
         
 
     def forward(self, x: torch.Tensor, update_grid=False):
-
-        return torch.stack([i.forward(x) for i in self.convs]).to(self.device).transpose(0,1)
+        return torch.stack([i.forward(x) for i in self.convs]).to(self.device).transpose(0,1) #OJO CON ESTO, CUANDO SEA RGB LA COSA CAMBIA Y HAY QUE VERLO BIEN.
 
 class KAN_Convolution(torch.nn.Module):
     def __init__(
