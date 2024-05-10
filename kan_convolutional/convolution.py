@@ -4,12 +4,15 @@ import torch
 import numpy as np
 from typing import List, Tuple, Union
 def calc_out_dims(matrix, kernel_side, stride, dilation, padding):
-    n, m = matrix.shape
+    print("matrix",matrix.shape)
+    _, n, m = matrix.shape
 
     h_out = np.floor((n + 2 * padding[0] - kernel_side - (kernel_side - 1) * (dilation[0] - 1)) / stride[0]).astype(int) + 1
     w_out = np.floor((m + 2 * padding[1] - kernel_side - (kernel_side - 1) * (dilation[1] - 1)) / stride[1]).astype(int) + 1
     b = [kernel_side // 2, kernel_side// 2]
     return h_out,w_out,b
+
+
 def _check_params(matrix, kernel, stride, dilation, padding):
     params_are_correct = (isinstance(stride[0], int)   and isinstance(stride[1], int)   and
                           isinstance(dilation[0], int) and isinstance(dilation[1], int) and
@@ -62,29 +65,44 @@ def kan_conv2d(matrix: Union[List[List[float]], np.ndarray], #but as torch tenso
         padding = (kernel_side//2,  kernel_side//2)
     else:
         padding = (0,0)
+    # dilation = (0,0)
     print("imagen",matrix.shape)
-    matrix=  matrix[0,0,:,:] #el primer 0 es del batch size, entonces ahora solo se haria la primera imagen del batch
+    matrix=  matrix[:,0,:,:] #el primer 0 es del batch size, entonces ahora solo se haria la primera imagen del batch
 
     h_out, w_out,b = calc_out_dims(matrix, kernel_side, stride, dilation, padding)
     matrix_out = np.zeros((h_out, w_out))
 
     center_x_0 = b[0] * dilation[0]
     center_y_0 = b[1] * dilation[1]
-    for i in range(h_out):
-        center_x = center_x_0 + i * stride[0]
-        indices_x = [center_x + l * dilation[0] for l in range(-b[0], b[0] + 1)]
-        for j in range(w_out):
-            center_y = center_y_0 + j * stride[1]
-            indices_y = [center_y + l * dilation[1] for l in range(-b[1], b[1] + 1)]
+    for k in range(matrix.shape[0]):
+        for i in range(h_out):
+            center_x = center_x_0 + i * stride[0]
+            indices_x = [center_x + l * dilation[0] for l in range(-b[0], b[0])]
+            for j in range(w_out):
+                center_y = center_y_0 + j * stride[1]
+                indices_y = [center_y + l * dilation[1] for l in range(-b[1], b[1])]
 
-            submatrix = matrix[indices_x, :][:, indices_y]
-            print("sub",submatrix.flatten())
-            matrix_out[i][j] = kernel.forward(submatrix.flatten()).item()
-            print("matrix out",matrix_out[i][j])
-            #for k0 in range(kernel_side):
-            #     for k1 in range(kernel_side):
-             #        submatrix[k0][k1] = kernel()torch.tensor([submatrix[k0][k1]])#kernel[k0][k1][1]* (kernel[k0][k1][0](submatrix[k0][k1]) + base_func(submatrix[k0][k1])) # w * (phi(x) + b(x))
-            #matrix_out[i][j] = torch.sum(submatrix).item()
+                submatrix = matrix[k][indices_x, :][:, indices_y]
+                submatrix = submatrix.flatten()
+                submatrix = submatrix.view(1, -1)
+                # print("sub",submatrix)
+                print("sub",submatrix.flatten())
+                matrix_out[i][j] = kernel.forward(submatrix).item()
+                # matrix_out[i][j] = kernel.forward(submatrix.flatten())
+                print("matrix out",matrix_out[i][j])
+
+
+                #-------------------------------No se esta entrenando el kernel, revisar el for k que agregamos por el batch-------------------------------------
+                for name, param in kernel.named_parameters():
+                    if param.grad is not None:
+                        print(f"Gradient of {name} is {param.grad.norm().item()}")
+                    else:
+                        print(f"No gradient for {name}")
+                
+                #for k0 in range(kernel_side):
+                #     for k1 in range(kernel_side):
+                #        submatrix[k0][k1] = kernel()torch.tensor([submatrix[k0][k1]])#kernel[k0][k1][1]* (kernel[k0][k1][0](submatrix[k0][k1]) + base_func(submatrix[k0][k1])) # w * (phi(x) + b(x))
+                #matrix_out[i][j] = torch.sum(submatrix).item()
     return matrix_out
 
 

@@ -176,7 +176,7 @@ class KANLinear(torch.nn.Module):
         )
 
     def forward(self, x: torch.Tensor):
-        #assert x.dim() == 2 and x.size(1) == self.in_features
+        assert x.dim() == 2 and x.size(1) == self.in_features
         print(x,self.base_activation(x),self.base_weight)
         
         base_output =F.linear(self.base_activation(x), self.base_weight)
