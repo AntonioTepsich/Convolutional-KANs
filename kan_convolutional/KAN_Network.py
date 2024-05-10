@@ -18,10 +18,10 @@ class KAN_Convolutional_Network(nn.Module):
             grid_eps=0.02,
             grid_range=[-1, 1],
             device = device)
-        self.pool2 = nn.MaxPool2d(kernel_size=(2, 2))
+        self.pool1 = nn.MaxPool2d(kernel_size=(2, 2))
         self.flat = nn.Flatten() 
         self.kan1 = KANLinear(
-                    2*169,
+                    144,
                     10,
                     grid_size=10,
                     spline_order=3,
@@ -38,9 +38,19 @@ class KAN_Convolutional_Network(nn.Module):
         x = self.conv1(x)
         # input 32x32x32, output 32x32x32
         # input 32x32x32, output 32x16x16
-        x = self.pool2(x)
+        #print("post primera conv",x.shape)
+
+        x = self.pool1(x)
+        #print("post pool",x.shape)
+
+        x = self.conv1(x)
+        x = self.pool1(x)
+        #print("post ",x.shape)
+
         # input 32x16x16, output 8192
         x = self.flat(x)
         # input 8192, output 512
+        # print("post,flatten",x.shape)
+
         x = self.kan1(x) 
         return x

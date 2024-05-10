@@ -28,8 +28,12 @@ class KAN_Convolutional_Layer(torch.nn.Module):
         self.spline_order = spline_order
         self.kernel_size = kernel_size
         self.device = device
+        self.dilation = dilation
+        self.padding = padding
+
         self.convs = torch.nn.ModuleList()
         self.n_convs = n_convs
+        self.stride = stride
         for i in range(n_convs):
             self.convs.append(
                 KAN_Convolution(
@@ -46,27 +50,33 @@ class KAN_Convolutional_Layer(torch.nn.Module):
                     grid_eps=grid_eps,
                     grid_range=grid_range,
                     device = device))
-        
-
     def forward(self, x: torch.Tensor, update_grid=False):
-        return torch.stack([i.forward(x) for i in self.convs]).to(self.device).transpose(0,1) #OJO CON ESTO, CUANDO SEA RGB LA COSA CAMBIA Y HAY QUE VERLO BIEN.
+        #disaplce
+        if self.n_convs>1:
+            return convolution.multiple_convs_kan_conv2d(x, self.convs,self.kernel_size[0],self.stride,self.dilation,self.padding,self.device)
+        
+        return self.convs[0].forward(x)
+        #print("este",torch.stack([i.forward(x) for i in self.convs]).shape)
+        #ret = torch.zeros((x.shape[0],x.shape[1]* self.n_convs, A,A))
+       #torch.stack([i.forward(x) for i in self.convs]).flatten(1, 2).to(self.device)#.transpose(0,1) #OJO CON ESTO, CUANDO SEA RGB LA COSA CAMBIA Y HAY QUE VERLO BIEN.
+        
 
 class KAN_Convolution(torch.nn.Module):
     def __init__(
-        self,
-        kernel_size= (2,2),
-        stride = (1,1),
-        padding=(0,0),
-        dilation = (1,1),
-        grid_size=5,
-        spline_order=3,
-        scale_noise=0.1,
-        scale_base=1.0,
-        scale_spline=1.0,
-        base_activation=torch.nn.SiLU,
-        grid_eps=0.02,
-        grid_range=[-1, 1],
-        device = "cuda"):
+            self,
+            kernel_size= (2,2),
+            stride = (1,1),
+            padding=(0,0),
+            dilation = (1,1),
+            grid_size=5,
+            spline_order=3,
+            scale_noise=0.1,
+            scale_base=1.0,
+            scale_spline=1.0,
+            base_activation=torch.nn.SiLU,
+            grid_eps=0.02,
+            grid_range=[-1, 1],
+            device = "cuda"):
         super(KAN_Convolution, self).__init__()
         self.grid_size = grid_size
         self.spline_order = spline_order
@@ -75,7 +85,7 @@ class KAN_Convolution(torch.nn.Module):
         self.padding = padding
         self.dilation = dilation
         self.device = device
-        self.convs = KANLinear(
+        self.conv = KANLinear(
                     in_features = math.prod(kernel_size),
                     out_features = 1,
                     grid_size=grid_size,
@@ -88,8 +98,8 @@ class KAN_Convolution(torch.nn.Module):
                     grid_range=grid_range)
 
     def forward(self, x: torch.Tensor, update_grid=False):
-        return convolution.apply_filter_to_image(x, self.convs,self.kernel_size[0],self.padding,self.stride,self.dilation, rgb = False)
-
+        return convolution.kan_conv2d(x, self.conv,self.kernel_size[0],self.stride,self.dilation,self.padding,self.device)
+    
     def regularization_loss(self, regularize_activation=1.0, regularize_entropy=1.0):
         return sum(
             layer.regularization_loss(regularize_activation, regularize_entropy)
