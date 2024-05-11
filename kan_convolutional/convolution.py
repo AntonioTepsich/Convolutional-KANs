@@ -73,10 +73,10 @@ def multiple_convs_kan_conv2d(matrix, #but as torch tensors. Kernel side asume q
     unfold = torch.nn.Unfold((kernel_side,kernel_side), dilation=dilation, padding=padding, stride=stride)
     conv_groups = unfold(matrix[:,:,:,:]).view(batch_size, n_channels,  kernel_side*kernel_side, h_out*w_out).transpose(2, 3)#reshape((batch_size,n_channels,h_out,w_out))
     for channel in range(n_channels):
-        for k in range(batch_size):
-            for kern in range(n_convs):
-                #print(conv_groups[k,channel,kern,:].shape)
-                matrix_out[k,kern  + channel*n_convs,:,:] = kernels[kern].conv.forward(conv_groups[k,channel,:,:]).reshape((h_out,w_out))
+        #for k in range(batch_size):
+        for kern in range(n_convs):
+            #print(conv_groups[:,channel,:,:].shape)
+            matrix_out[:,kern  + channel*n_convs,:,:] = kernels[kern].conv.forward(conv_groups[:,channel,:,:].flatten(0,1)).reshape((batch_size,h_out,w_out))
     return matrix_out
 def add_padding(matrix: np.ndarray, 
                 padding: Tuple[int, int]) -> np.ndarray:
