@@ -1,0 +1,4 @@
+torch>=2.3.0
+torchvision>=0.18.0
+tqdm>=4.66.2
+pytest>=6.2.4
