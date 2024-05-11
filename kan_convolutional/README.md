@@ -1,5 +1,5 @@
-# Convolutional Kolmogorov-Arnold Network (CKAN) - Initial experiment
-### --------------------------------ACA ESCRIBIR EN UNA ORACION LO QUE HICIMOS--------------------------------
+# Convolutional Kolmogorov-Arnold Network (CKAN) 
+### Introducing Convolutional KAN Networks!
 This project extends the idea of the innovative architecture of Kolmogorov-Arnold Networks (KAN) to the Convolutional Layers, changing the classic linear transform of the convolution to non linear activations in each pixel. AGREGAR ALGUNA LICENCIA? 
 ### Authors
 This repository was made by Alexander Bodner, Antonio Tepsich, Jack Spolski and Santiago Pourteau.
@@ -9,8 +9,12 @@ This repository uses an efficient implementation of KAN [here](https://github.co
 The original implementation of KAN is available [here](https://github.com/KindXiaoming/pykan).
 The original paper of the KAN is available [here](https://arxiv.org/pdf/2404.19756).
 
-### --------------------------------ACA ESCRIBIR LO DE LAS EFFICIENT KAN DENTRO DE LA CONV--------------------------------
+### What is a KAN? ESCRIBIR BIEN, PONER ALGUNA ECUACION BASICA
 KANs are promising alternatives of Multi-Layer Perceptrons (MLPs). KANs have strong mathematical foundations just like MLPs: MLPs are based on the universal approximation theorem, while KANs are based on Kolmogorov-Arnold representation theorem. KANs and MLPs are dual: KANs have activation functions on edges, while MLPs have activation functions on nodes. KAN seems to be more parameter efficient than MLPs, but each KAN Layer has more parameters than a MLP layer. 
+### What is a KAN Convolution?
+KAN Convoluions are very similar to convolutions, but instead of applying the dot product between the kernel and the corresponding pixels in the image, we apply a Non Linear function to each element, and then add them up. The kernel of the KAN Convolution is equivalent to a KAN Linear Layer of 4 inputs and 1 output neuron. For each input i, we apply a ϕ_i learnable function, and the resulting pixel of that convolution step is the sum of ϕ_i(x_i). This can be visualized in the following figure.
+![image](https://github.com/AntonioTepsich/ckan/assets/61150961/df79e546-a343-4396-8d1d-f04a8d4d62d3)
+
 
 ### --------------------------------ACA IMG LO DE LAS KAN--------------------------------
 <img width="1163" alt="mlp_kan_compare" src="https://github.com/KindXiaoming/pykan/assets/23551623/695adc2d-0d0b-4e4b-bcff-db2c8070f841">
@@ -19,9 +23,10 @@ For more information about this novel architecture please visit:
 - The official Pytorch implementation of the architecture: https://github.com/KindXiaoming/pykan
 - The research paper: https://arxiv.org/abs/2404.19756
 
-## Experimentation
+## Preliminary Evaluations
 
 ### --------------------------------ACA EXPLICAR EXPERIMENTOS--------------------------------
+DECIR QUE LO HICIMOS RAPIDO BASICAMENTE Y QUE SEGUIMOS EVALUANDO ARQUITECTURAS Y ETC, POR ESO ES PRELIMINAR. TAMBIEN PONDRIA RESULTADOS LLAMATIVOS ARRIBA DE TODO
 The implementation of Kolmogorov-Arnold Q-Network (KAQN) offers a promising avenue in reinforcement learning. In this project, we replace the Multi-Layer Perceptron (MLP) component of Deep Q-Networks (DQN) with the Kolmogorov-Arnold Network. Furthermore, we employ the Double Deep Q-Network (DDQN) update rule to enhance stability and learning efficiency.
 
 The following plot compare DDQN implementation with KAN (width=8) and the classical MLP (width=32) on the `CartPole-v1` environment for 500 episodes on 32 seeds (with 50 warm-ups episodes).
