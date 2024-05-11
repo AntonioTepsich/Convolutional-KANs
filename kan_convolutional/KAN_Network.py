@@ -27,7 +27,7 @@ class KAN_Convolutional_Network(nn.Module):
             kernel_size= (2,2),
             stride =  (1,1),
             padding=(0,0),
-            grid_size=5,
+            grid_size=7,
             spline_order=3,
             scale_noise=0.1,
             scale_base=1.0,
@@ -44,7 +44,7 @@ class KAN_Convolutional_Network(nn.Module):
         
         self.kan1 = KANLinear(
             144,
-            10,
+            20,
             grid_size=10,
             spline_order=3,
             scale_noise=0.01,
@@ -54,6 +54,7 @@ class KAN_Convolutional_Network(nn.Module):
             grid_eps=0.02,
             grid_range=[0,1],
         )
+
 
     def forward(self, x):
         x = self.conv1(x)
