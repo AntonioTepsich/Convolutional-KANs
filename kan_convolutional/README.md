@@ -1,12 +1,16 @@
 # Convolutional Kolmogorov-Arnold Network (CKAN) - Initial experiment
 ### --------------------------------ACA ESCRIBIR EN UNA ORACION LO QUE HICIMOS--------------------------------
-This project implement the innovative architecture of Kolmogorov-Arnold Networks (KAN) in the Convolutional Network of Pytorch. 
-
-This repository use an efficient implementation of KAN [here](https://github.com/Blealtan/efficient-kan). 
+This project extends the idea of the innovative architecture of Kolmogorov-Arnold Networks (KAN) to the Convolutional Layers, changing the classic linear transform of the convolution to non linear activations in each pixel. AGREGAR ALGUNA LICENCIA? 
+### Authors
+This repository was made by Alexander Bodner, Antonio Tepsich, Jack Spolski and Santiago Pourteau.
+AGREGAR ALGUN CONTACTO? MAIL? REDES? GITHUB DE TODOS?
+### Credits
+This repository uses an efficient implementation of KAN [here](https://github.com/Blealtan/efficient-kan). 
 The original implementation of KAN is available [here](https://github.com/KindXiaoming/pykan).
+The original paper of the KAN is available [here](https://arxiv.org/pdf/2404.19756).
 
 ### --------------------------------ACA ESCRIBIR LO DE LAS EFFICIENT KAN DENTRO DE LA CONV--------------------------------
-KANs are promising alternatives of Multi-Layer Perceptrons (MLPs). KANs have strong mathematical foundations just like MLPs: MLPs are based on the universal approximation theorem, while KANs are based on Kolmogorov-Arnold representation theorem. KANs and MLPs are dual: KANs have activation functions on edges, while MLPs have activation functions on nodes. This simple change makes KANs better (sometimes much better!) than MLPs in terms of both model accuracy and interpretability.
+KANs are promising alternatives of Multi-Layer Perceptrons (MLPs). KANs have strong mathematical foundations just like MLPs: MLPs are based on the universal approximation theorem, while KANs are based on Kolmogorov-Arnold representation theorem. KANs and MLPs are dual: KANs have activation functions on edges, while MLPs have activation functions on nodes. KAN seems to be more parameter efficient than MLPs, but each KAN Layer has more parameters than a MLP layer. 
 
 ### --------------------------------ACA IMG LO DE LAS KAN--------------------------------
 <img width="1163" alt="mlp_kan_compare" src="https://github.com/KindXiaoming/pykan/assets/23551623/695adc2d-0d0b-4e4b-bcff-db2c8070f841">
