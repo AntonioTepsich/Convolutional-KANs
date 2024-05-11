@@ -1,8 +1,9 @@
 #Credits to: https://github.com/detkov/Convolution-From-Scratch/
 import torch
-
 import numpy as np
 from typing import List, Tuple, Union
+
+
 def calc_out_dims(matrix, kernel_side, stride, dilation, padding):
     batch_size,n_channels,n, m = matrix.shape
     h_out = np.floor((n + 2 * padding[0] - kernel_side - (kernel_side - 1) * (dilation[0] - 1)) / stride[0]).astype(int) + 1
@@ -73,6 +74,8 @@ def multiple_convs_kan_conv2d(matrix, #but as torch tensors. Kernel side asume q
         for kern in range(n_convs):
             matrix_out[:,kern  + channel*n_convs,:,:] = kernels[kern].conv.forward(conv_groups[:,channel,:,:].flatten(0,1)).reshape((batch_size,h_out,w_out))
     return matrix_out
+
+
 def add_padding(matrix: np.ndarray, 
                 padding: Tuple[int, int]) -> np.ndarray:
     """Adds padding to the matrix. 
