@@ -56,11 +56,7 @@ class KAN_Convolutional_Layer(torch.nn.Module):
             return convolution.multiple_convs_kan_conv2d(x, self.convs,self.kernel_size[0],self.stride,self.dilation,self.padding,self.device)
         
         return self.convs[0].forward(x)
-        #print("este",torch.stack([i.forward(x) for i in self.convs]).shape)
-        #ret = torch.zeros((x.shape[0],x.shape[1]* self.n_convs, A,A))
-       #torch.stack([i.forward(x) for i in self.convs]).flatten(1, 2).to(self.device)#.transpose(0,1) #OJO CON ESTO, CUANDO SEA RGB LA COSA CAMBIA Y HAY QUE VERLO BIEN.
         
-
 class KAN_Convolution(torch.nn.Module):
     def __init__(
             self,
