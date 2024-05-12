@@ -4,7 +4,7 @@ import sys
 sys.path.append('../kan_convolutional   ')
 from KANConv import KAN_Convolutional_Layer
 
-class CKAN(nn.Module):
+class SuperCKAN(nn.Module):
     def __init__(self,device: str = 'cpu'):
         super().__init__()
         self.conv1 = KAN_Convolutional_Layer(
@@ -30,7 +30,7 @@ class CKAN(nn.Module):
         )
         
         self.flat = nn.Flatten() 
-        self.linear1 = nn.Linear(625, 256)
+        self.linear1 = nn.Linear(2304, 256)
         self.dropout1 = nn.Dropout(0.25)
 
         self.linear2 = nn.Linear(256, 10)
@@ -45,5 +45,7 @@ class CKAN(nn.Module):
         x = self.pool1(x)
         x = self.flat(x)
         x = self.linear1(x)
+        x = self.dropout1(x)
+
         x = self.linear2(x)
         return x
