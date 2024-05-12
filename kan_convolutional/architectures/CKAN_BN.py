@@ -4,7 +4,7 @@ import sys
 # directory reach
 sys.path.append('../kan_convolutional')
 
-from kan_convolutional.KANConv import KAN_Convolutional_Layer
+from KANConv import KAN_Convolutional_Layer
 class CKAN_BN(nn.Module):
     def __init__(self,device: str = 'cpu'):
         super().__init__()

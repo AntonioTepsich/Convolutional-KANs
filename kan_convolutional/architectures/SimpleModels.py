@@ -5,7 +5,6 @@ import torch.nn.functional as F
 # directory reach
 sys.path.append('../kan_convolutional')
 
-from kan_convolutional.KANConv import KAN_Convolutional_Layer
 class SimpleCNN(nn.Module):
     def __init__(self):
         super(SimpleCNN, self).__init__()

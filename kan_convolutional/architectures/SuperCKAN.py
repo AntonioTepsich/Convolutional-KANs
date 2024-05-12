@@ -1,8 +1,8 @@
 from torch import nn
 import sys
  
-sys.path.append('../kan_convolutional')
-from kan_convolutional.KANConv import KAN_Convolutional_Layer
+sys.path.append('../kan_convolutional   ')
+from KANConv import KAN_Convolutional_Layer
 
 class CKAN(nn.Module):
     def __init__(self,device: str = 'cpu'):
@@ -30,8 +30,9 @@ class CKAN(nn.Module):
         )
         
         self.flat = nn.Flatten() 
-        
         self.linear1 = nn.Linear(625, 256)
+        self.dropout1 = nn.Dropout(0.25)
+
         self.linear2 = nn.Linear(256, 10)
 
 
