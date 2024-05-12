@@ -5,7 +5,7 @@ import torch.nn.functional as F
 sys.path.append('../kan_convolutional')
 from KANConv import KAN_Convolutional_Layer
 
-class CKAN(nn.Module):
+class KANC_MLP(nn.Module):
     def __init__(self,device: str = 'cpu'):
         super().__init__()
         self.conv1 = KAN_Convolutional_Layer(
