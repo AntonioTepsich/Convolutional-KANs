@@ -1,6 +1,7 @@
 from torch import nn
 import sys
- 
+import torch.nn.functional as F
+
 sys.path.append('../kan_convolutional')
 
 from kan_convolutional.KANConv import KAN_Convolutional_Layer
@@ -31,18 +32,6 @@ class KKAN_Convolutional_Network(nn.Module):
         # self.linear2 = nn.Linear(256, 10)
         self.kan1 = KANLinear(
             625,
-            256,
-            grid_size=10,
-            spline_order=3,
-            scale_noise=0.01,
-            scale_base=1,
-            scale_spline=1,
-            base_activation=nn.SiLU,
-            grid_eps=0.02,
-            grid_range=[0,1],
-        )
-        self.kan2 = KANLinear(
-            256,
             10,
             grid_size=10,
             spline_order=3,
@@ -54,6 +43,7 @@ class KKAN_Convolutional_Network(nn.Module):
             grid_range=[0,1],
         )
 
+
     def forward(self, x):
         x = self.conv1(x)
 
@@ -62,8 +52,8 @@ class KKAN_Convolutional_Network(nn.Module):
         x = self.conv2(x)
         x = self.pool1(x)
         x = self.flat(x)
-        # x = self.linear1(x)
-        # x = self.linear2(x)
+
         x = self.kan1(x) 
-        x = self.kan2(x)
+        x = F.log_softmax(x, dim=1)
+
         return x

@@ -30,6 +30,8 @@ class SimpleCNN(nn.Module):
         x = self.flatten(x)
         # Capa lineal con 10 salidas
         x = self.fc(x)
+        x = F.log_softmax(x, dim=1)
+
         return x
 
 class SimpleLinear(nn.Module):
@@ -44,4 +46,6 @@ class SimpleLinear(nn.Module):
         # Pasar los datos a través de la capa lineal
         x = self.flatten(x)
         x = self.linear(x)
+        x = F.log_softmax(x, dim=1)
+
         return x
