@@ -1,38 +1,38 @@
 from torch import nn
 import sys
- 
-sys.path.append('../kan_convolutional   ')
+import torch.nn.functional as F
+
+sys.path.append('../kan_convolutional')
 from KANConv import KAN_Convolutional_Layer
 
-class SuperCKAN(nn.Module):
+class CKAN(nn.Module):
     def __init__(self,device: str = 'cpu'):
         super().__init__()
         self.conv1 = KAN_Convolutional_Layer(
-            n_convs = 12,
+            n_convs = 4,
             kernel_size= (5,5),
             device = device
         )
 
         self.conv2 = KAN_Convolutional_Layer(
-            n_convs = 12,
+            n_convs = 4,
             kernel_size = (4,4),
-            device = device,
-            grid_size=10
+            device = device
         )
+
         self.conv3 = KAN_Convolutional_Layer(
-            n_convs = 24,
+            n_convs = 4,
             kernel_size = (3,3),
-            device = device,
-            grid_size=10
+            device = device
         )
+
         self.pool1 = nn.MaxPool2d(
             kernel_size=(2, 2)
         )
         
         self.flat = nn.Flatten() 
-        self.linear1 = nn.Linear(2304, 256)
-        self.dropout1 = nn.Dropout(0.25)
-
+        
+        self.linear1 = nn.Linear(192, 256)
         self.linear2 = nn.Linear(256, 10)
 
 
@@ -47,7 +47,6 @@ class SuperCKAN(nn.Module):
         x = self.pool1(x)
         x = self.flat(x)
         x = self.linear1(x)
-        x = self.dropout1(x)
-
         x = self.linear2(x)
+        x = F.log_softmax(x, dim=1)
         return x

@@ -8,20 +8,20 @@ class SuperCKAN(nn.Module):
     def __init__(self,device: str = 'cpu'):
         super().__init__()
         self.conv1 = KAN_Convolutional_Layer(
-            n_convs = 12,
+            n_convs = 10,
             kernel_size= (5,5),
             device = device
         )
 
         self.conv2 = KAN_Convolutional_Layer(
-            n_convs = 12,
-            kernel_size = (4,4),
+            n_convs = 10,
+            kernel_size = (5,5),
             device = device,
             grid_size=10
         )
         self.conv3 = KAN_Convolutional_Layer(
-            n_convs = 24,
-            kernel_size = (3,3),
+            n_convs = 13,
+            kernel_size = (4,4),
             device = device,
             grid_size=10
         )
@@ -30,7 +30,7 @@ class SuperCKAN(nn.Module):
         )
         
         self.flat = nn.Flatten() 
-        self.linear1 = nn.Linear(2304, 256)
+        self.linear1 = nn.Linear(3900, 256)
         self.dropout1 = nn.Dropout(0.25)
 
         self.linear2 = nn.Linear(256, 10)
