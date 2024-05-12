@@ -31,10 +31,21 @@ KAN Convoluions are very similar to convolutions, but instead of applying the do
 
 ### Experiments
 
+The implementation of KAN Convolutions is a promosing idea, although it is still in its early stages. We have conducted some preliminary experiments to evaluate the performance of KAN Convolutions. The reason we say preliminary is because we wanted to publish this idea as soon as possible, so that the community can start working on it. We are aware that there are many hyperparameters to tune, and many experiments to conduct. In the coming days and weeks we will be tuning the hyperparameters of our model and the models we use to compare. We also recognize that we have not used large or complicated datasets. We will be conducting experiments on more complex datasets in the future, this implies that the amount parameters of the KANS will increase since we will need to implement more Kan Convolutional layers. At the moment we aren't seeing a significant improvement in the performance of the KAN Convolutional Networks compared to the traditional Convolutional Networks. We believe that this is due to the fact that we are using simple datasets and simple models. We are confident that as we increase the complexity of the models and the datasets we will see a significant improvement in the performance of the KAN Convolutional Networks.
 
+The different architectures we have tested are:
+- KAN Convolutional Layers connected to Kan Linear Layers (KKAN)
+- Kan Convolutional Layers connected to a MLP (CKAN)
+- CKAN with Batch Normalization between convolutions (CKAN_BN)
+- Large ConvNet (Classic Convolutinos connected to a MLP) (ConvNet)
+- Small ConvNet (SimpleCNN)
+- One Layer MLP (SimpleLinear)
+
+# GRAFICOS, TABLAS Y CONCLUSIONES
 
 ---
 
+# CORREGIR ChebyKan y fijarse imagenes y corregir 
 **Fixed version:**
 
 **Function Interpolation:** converge faster than MLPs when the function is (mostly) smooth.
