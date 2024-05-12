@@ -9,15 +9,16 @@ This repository was made by:
  - Santiago Pourteau: 
 
 ### Credits
-This repository uses an efficient implementation of KAN [here](https://github.com/Blealtan/efficient-kan). 
+This repository uses an efficient implementation of KAN which is available [here](https://github.com/Blealtan/efficient-kan). 
 The original implementation of KAN is available [here](https://github.com/KindXiaoming/pykan).
 The original paper of the KAN is available [here](https://arxiv.org/pdf/2404.19756).
 
 ### What is a KAN? ESCRIBIR BIEN, PONER ALGUNA ECUACION BASICA
 KANs are promising alternatives of Multi-Layer Perceptrons (MLPs). KANs have strong mathematical foundations just like MLPs: MLPs are based on the universal approximation theorem, while KANs are based on Kolmogorov-Arnold representation theorem. KANs and MLPs are dual: KANs have activation functions on edges, while MLPs have activation functions on nodes. KAN seems to be more parameter efficient than MLPs, but each KAN Layer has more parameters than a MLP layer. 
+<img width="1163" alt="mlp_kan_compare" src="https://github.com/KindXiaoming/pykan/assets/23551623/695adc2d-0d0b-4e4b-bcff-db2c8070f841">
+
 ### What is a KAN Convolution?
 KAN Convoluions are very similar to convolutions, but instead of applying the dot product between the kernel and the corresponding pixels in the image, we apply a Non Linear function to each element, and then add them up. The kernel of the KAN Convolution is equivalent to a KAN Linear Layer of 4 inputs and 1 output neuron. For each input i, we apply a ϕ_i learnable function, and the resulting pixel of that convolution step is the sum of ϕ_i(x_i). This can be visualized in the following two figures.
-<img width="1163" alt="mlp_kan_compare" src="https://github.com/KindXiaoming/pykan/assets/23551623/695adc2d-0d0b-4e4b-bcff-db2c8070f841">
 
 ![image](./images/Convs.png)
 
@@ -44,49 +45,7 @@ The following plot displays the interpretable policy learned by KAQN during a su
 - **Observation**: KAQN exhibits unstable learning and struggles to solve `CartPole-v1` across multiple seeds with the current hyperparameters (refer to `config.yaml`).
 - **Next Steps**: Further investigation is warranted to select more suitable hyperparameters. It's possible that KAQN encounters challenges with the non-stationary nature of value function approximation. Consider exploring alternative configurations or adapting KAQN for policy learning.
 - **Performance Comparison**: It's noteworthy that KAQN operates notably slower than DQN, with over a 10x difference in speed, despite having fewer parameters. This applies to both inference and training phases.
-- **Interpretable Policy**: The learned policy with KANs is more interpretable than MLP, I'm currently working on extraction on interpretable policy...
 
-
-**MNIST:** ~97% accuracy after about 20 epochs. 
-```
-Epoch 1, Train Loss: 1.1218, Test Loss: 0.4689, Test Acc: 0.91
-Epoch 2, Train Loss: 0.3302, Test Loss: 0.2599, Test Acc: 0.93
-Epoch 3, Train Loss: 0.2170, Test Loss: 0.2359, Test Acc: 0.94
-Epoch 4, Train Loss: 0.1696, Test Loss: 0.1857, Test Acc: 0.95
-Epoch 5, Train Loss: 0.1422, Test Loss: 0.1574, Test Acc: 0.96
-Epoch 6, Train Loss: 0.1241, Test Loss: 0.1597, Test Acc: 0.95
-Epoch 7, Train Loss: 0.1052, Test Loss: 0.1475, Test Acc: 0.96
-Epoch 8, Train Loss: 0.0932, Test Loss: 0.1321, Test Acc: 0.96
-Epoch 9, Train Loss: 0.0879, Test Loss: 0.1553, Test Acc: 0.95
-Epoch 10, Train Loss: 0.0780, Test Loss: 0.1239, Test Acc: 0.96
-Epoch 11, Train Loss: 0.0722, Test Loss: 0.1283, Test Acc: 0.96
-Epoch 12, Train Loss: 0.0629, Test Loss: 0.1236, Test Acc: 0.96
-Epoch 13, Train Loss: 0.0612, Test Loss: 0.1271, Test Acc: 0.96
-Epoch 14, Train Loss: 0.0521, Test Loss: 0.1390, Test Acc: 0.96
-Epoch 15, Train Loss: 0.0488, Test Loss: 0.1374, Test Acc: 0.96
-Epoch 16, Train Loss: 0.0487, Test Loss: 0.1309, Test Acc: 0.96
-Epoch 17, Train Loss: 0.0416, Test Loss: 0.1253, Test Acc: 0.96
-Epoch 18, Train Loss: 0.0402, Test Loss: 0.1346, Test Acc: 0.96
-Epoch 19, Train Loss: 0.0373, Test Loss: 0.1199, Test Acc: 0.97
-Epoch 20, Train Loss: 0.0346, Test Loss: 0.1434, Test Acc: 0.96
-Epoch 21, Train Loss: 0.0314, Test Loss: 0.1142, Test Acc: 0.97
-Epoch 22, Train Loss: 0.0285, Test Loss: 0.1258, Test Acc: 0.97
-Epoch 23, Train Loss: 0.0289, Test Loss: 0.1192, Test Acc: 0.97
-```
-![MNIST](img/MNIST.png)
-The network parameters are [28*28, 32, 16, 10] with 4 degree Chebyshev polynomials.
-
-It needs a low learning rate (2e-4) to train. The network is very sensitive to the learning rate.
-
-Note that it's still not as good as MLPs. Detailed comparison is on the way.
-
----
-
-~~**Function Interpolation:** much better than MLPs when the function is (mostly) smooth, very effective in discovering mathematical laws.~~
-
-![alt text](img/Interpolation.png)
-~~ChebyKAN: [1, 8, 1] with 8 degree.~~
-~~MLP: [1, 1024, 512, 1] with ReLU~~
 
 **Edit: The comparison above is not fair.**
 **Thanks @usamec for pointing out the mistake that the MLP was too big and not trained properly.**
@@ -95,7 +54,11 @@ Note that it's still not as good as MLPs. Detailed comparison is on the way.
 **Fixed version:**
 
 **Function Interpolation:** converge faster than MLPs when the function is (mostly) smooth.
+### Parameters in a KAN Convolution
+Suppose that we have a KxK kernel. In this case, for each element of this matrix we have a ϕ, which its parameter count is: gridsize + 1. For implementation issues, eficcient kan defines:  
+![equation](https://github.com/AntonioTepsich/ckan/assets/61150961/074990fb-88c8-4498-93ac-7055f7755535)
 
+This gives more expresability to the activation function b. So the parameter count for a linear layer is gridsize + 2. So in total we have K²(gridsize + 2) parameters for KAN Convolution, vs only K² for a common convolution.
 
 ![alt text](img/Interpolation_fix.png)
 
@@ -117,7 +80,7 @@ MLP: Adam, lr=0.03.
 
 
 
-# Instalation
+# Installation
 ```bash
 git clone git@github.com/AntonioTepsich/ckan.git
 cd ckan
