@@ -3,52 +3,36 @@
 This project extends the idea of the innovative architecture of Kolmogorov-Arnold Networks (KAN) to the Convolutional Layers, changing the classic linear transformation of the convolution to non linear activations in each pixel. AGREGAR ALGUNA LICENCIA? 
 ### Authors
 This repository was made by:
- - Alexander Bodner: @AlexBodner 
- - Antonio Tepsich: 
- - Jack Spolski: 
- - Santiago Pourteau: 
+ - Alexander Bodner | abodner@udesa.edu.ar | [Twitter](https://twitter.com/AlexBodner_) | [LinkedIn](https://www.linkedin.com/in/alexanderbodner/)
+ - Antonio Tepsich | atepsich@udesa.edu.ar | [Twitter](https://twitter.com/antotepsich) | [LinkedIn](https://www.linkedin.com/in/antonio-tepsich/)
+ - Jack Spolski | jspolski@udesa.edu.ar | [LinkedIn](https://www.linkedin.com/in/jack-spolski-9882a3196/)
+ - Santiago Pourteau | spourteau@udesa.edu.ar | [Twitter](https://twitter.com/SantiPourteau) | [LinkedIn](https://www.linkedin.com/in/santiago-pourteau-1bba8619a/)
 
 ### Credits
 This repository uses an efficient implementation of KAN which is available [here](https://github.com/Blealtan/efficient-kan). 
 The original implementation of KAN is available [here](https://github.com/KindXiaoming/pykan).
 The original paper of the KAN is available [here](https://arxiv.org/pdf/2404.19756).
 
-### What is a KAN? ESCRIBIR BIEN, PONER ALGUNA ECUACION BASICA
+### What is a KAN?
 KANs are promising alternatives of Multi-Layer Perceptrons (MLPs). KANs have strong mathematical foundations just like MLPs: MLPs are based on the universal approximation theorem, while KANs are based on Kolmogorov-Arnold representation theorem. KANs and MLPs are dual: KANs have activation functions on edges, while MLPs have activation functions on nodes. KAN seems to be more parameter efficient than MLPs, but each KAN Layer has more parameters than a MLP layer. 
+
 <img width="1163" alt="mlp_kan_compare" src="https://github.com/KindXiaoming/pykan/assets/23551623/695adc2d-0d0b-4e4b-bcff-db2c8070f841">
+
+For more information about this novel architecture please visit:
+- The official Pytorch implementation of the architecture: https://github.com/KindXiaoming/pykan
+- The research paper: https://arxiv.org/abs/2404.19756
 
 ### What is a KAN Convolution?
 KAN Convoluions are very similar to convolutions, but instead of applying the dot product between the kernel and the corresponding pixels in the image, we apply a Non Linear function to each element, and then add them up. The kernel of the KAN Convolution is equivalent to a KAN Linear Layer of 4 inputs and 1 output neuron. For each input i, we apply a ϕ_i learnable function, and the resulting pixel of that convolution step is the sum of ϕ_i(x_i). This can be visualized in the following two figures.
 
 ![image](./images/Convs.png)
 
-
-
-For more information about this novel architecture please visit:
-- The official Pytorch implementation of the architecture: https://github.com/KindXiaoming/pykan
-- The research paper: https://arxiv.org/abs/2404.19756
-
 ## Preliminary Evaluations
 
-### --------------------------------ACA EXPLICAR EXPERIMENTOS--------------------------------
-DECIR QUE LO HICIMOS RAPIDO BASICAMENTE Y QUE SEGUIMOS EVALUANDO ARQUITECTURAS Y ETC, POR ESO ES PRELIMINAR. TAMBIEN PONDRIA RESULTADOS LLAMATIVOS ARRIBA DE TODO
-The implementation of Kolmogorov-Arnold Q-Network (KAQN) offers a promising avenue in reinforcement learning. In this project, we replace the Multi-Layer Perceptron (MLP) component of Deep Q-Networks (DQN) with the Kolmogorov-Arnold Network. Furthermore, we employ the Double Deep Q-Network (DDQN) update rule to enhance stability and learning efficiency.
-
-The following plot compare DDQN implementation with KAN (width=8) and the classical MLP (width=32) on the `CartPole-v1` environment for 500 episodes on 32 seeds (with 50 warm-ups episodes).
-
-<img alt="Epsisode length evolution during training on CartPole-v1" src="https://raw.githubusercontent.com/riiswa/kanrl/main/cartpole_results.png">
-
-The following plot displays the interpretable policy learned by KAQN during a successful training session.
-
-<img alt="Interpretable policy for CartPole" src="https://raw.githubusercontent.com/riiswa/kanrl/main/policy.png">
-
-- **Observation**: KAQN exhibits unstable learning and struggles to solve `CartPole-v1` across multiple seeds with the current hyperparameters (refer to `config.yaml`).
-- **Next Steps**: Further investigation is warranted to select more suitable hyperparameters. It's possible that KAQN encounters challenges with the non-stationary nature of value function approximation. Consider exploring alternative configurations or adapting KAQN for policy learning.
-- **Performance Comparison**: It's noteworthy that KAQN operates notably slower than DQN, with over a 10x difference in speed, despite having fewer parameters. This applies to both inference and training phases.
+### Experiments
 
 
-**Edit: The comparison above is not fair.**
-**Thanks @usamec for pointing out the mistake that the MLP was too big and not trained properly.**
+
 ---
 
 **Fixed version:**
