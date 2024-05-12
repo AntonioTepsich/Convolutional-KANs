@@ -9,8 +9,8 @@ This repository was made by:
  - Santiago Pourteau | spourteau@udesa.edu.ar | [Twitter](https://twitter.com/SantiPourteau) | [LinkedIn](https://www.linkedin.com/in/santiago-pourteau-1bba8619a/)
 
 ### Credits
-This repository uses an efficient implementation of KAN which is available [here](https://github.com/Blealtan/efficient-kan). 
-The original implementation of KAN is available [here](https://github.com/KindXiaoming/pykan).
+This repository uses an efficient implementation of KAN which is available [here](https://github.com/Blealtan/efficient-kan).
+The original implementation of KAN is available [here](https://github.com/KindXiaoming/pykan). 
 The original paper of the KAN is available [here](https://arxiv.org/pdf/2404.19756).
 
 ### What is a KAN?
@@ -42,6 +42,9 @@ The different architectures we have tested are:
 - One Layer MLP (SimpleLinear)
 
 # GRAFICOS, TABLAS Y CONCLUSIONES
+![image](./images/loss_vs_epochs.png)
+
+![image](./images/loss_vs_epochs.png)
 
 ---
 

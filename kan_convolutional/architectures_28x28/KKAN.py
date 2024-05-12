@@ -27,9 +27,7 @@ class KKAN_Convolutional_Network(nn.Module):
         )
         
         self.flat = nn.Flatten() 
-        
-        # self.linear1 = nn.Linear(625, 256)
-        # self.linear2 = nn.Linear(256, 10)
+
         self.kan1 = KANLinear(
             625,
             10,
