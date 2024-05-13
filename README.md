@@ -77,7 +77,7 @@ However ChebyKAN converges much faster than MLP.
 ChebyKAN: Adam, lr=0.01.
 MLP: Adam, lr=0.03.
 
-@5000 epoch, ChebyKAN has already converged, while MLP is still far from convergence.
+@5000 epoch, ChebyKAN has already converged, while MLP is still far from convergence. 
 
 ![alt text](img/Early_Stopping.png)
 
