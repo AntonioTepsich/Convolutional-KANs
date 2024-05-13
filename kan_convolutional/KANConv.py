@@ -4,7 +4,6 @@ from KANLinear import KANLinear
 import convolution
 
 
-
 #Script que contiene la implementación del kernel con funciones de activación.
 class KAN_Convolutional_Layer(torch.nn.Module):
     def __init__(
