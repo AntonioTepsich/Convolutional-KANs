@@ -45,7 +45,7 @@ The different architectures we have tested are:
 
 ![image](./images/experiment_28x28.png)
 
-Have a look at `experiment_28x28.ipynb` and `evaluations_cifar_32x32.ipynb` for more detailed graphs, information and to experiment with different architectures or datasets of your own.
+Have a look at `experiment_28x28.ipynb` for more detailed graphs, information and to experiment with different architectures or datasets of your own.
 
 ### Discussion
 
