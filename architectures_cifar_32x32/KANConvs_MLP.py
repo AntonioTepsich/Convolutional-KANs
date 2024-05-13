@@ -2,7 +2,7 @@ from torch import nn
 import sys
 import torch.nn.functional as F
 
-sys.path.append('../kan_convolutional')
+sys.path.append('./kan_convolutional')
 from KANConv import KAN_Convolutional_Layer
 
 class CKAN(nn.Module):

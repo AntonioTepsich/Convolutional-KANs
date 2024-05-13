@@ -3,7 +3,7 @@ import sys
 import torch.nn.functional as F
 
 # directory reach
-sys.path.append('../kan_convolutional')
+sys.path.append('./kan_convolutional')
 
 class SimpleCNN(nn.Module):
     def __init__(self):
