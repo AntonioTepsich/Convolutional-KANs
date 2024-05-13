@@ -23,7 +23,7 @@ For more information about this novel architecture please visit:
 - The research paper: https://arxiv.org/abs/2404.19756
 
 ### What is a KAN Convolution?
-KAN Convoluions are very similar to convolutions, but instead of applying the dot product between the kernel and the corresponding pixels in the image, we apply a **Learnable Non Linear activation function** to each element, and then add them up. The kernel of the KAN Convolution is equivalent to a KAN Linear Layer of 4 inputs and 1 output neuron. For each input i, we apply a ϕ_i learnable function, and the resulting pixel of that convolution step is the sum of ϕ_i(x_i). This can be visualized in the following two figures.
+KAN Convoluions are very similar to convolutions, but instead of applying the dot product between the kernel and the corresponding pixels in the image, we apply a **Learnable Non Linear activation function** to each element, and then add them up. The kernel of the KAN Convolution is equivalent to a KAN Linear Layer of 4 inputs and 1 output neuron. For each input i, we apply a ϕ_i learnable function, and the resulting pixel of that convolution step is the sum of ϕ_i(x_i). This can be visualized in the following figure.
 
 ![image](./images/Convs.png)
 
@@ -32,20 +32,18 @@ KAN Convoluions are very similar to convolutions, but instead of applying the do
 Suppose that we have a KxK kernel. In this case, for each element of this matrix we have a ϕ, which its parameter count is: gridsize + 1. For implementation issues, eficcient kan defines:  
 ![equation](https://github.com/AntonioTepsich/ckan/assets/61150961/074990fb-88c8-4498-93ac-7055f7755535)
 
-This gives more expresability to the activation function b. So the parameter count for a linear layer is gridsize + 2. So in total we have K²(gridsize + 2) parameters for KAN Convolution, vs only K² for a common convolution.
-
+This gives more expresability to the activation function b. So the parameter count for a linear layer is gridsize + 2. So in total we have K²(gridsize + 2) parameters for KAN Convolution, vs only K² for a common convolution. Consider that gridsize is tipically (in our experiments) between k and k², but k tends to be a small value, between 2 and 16. 
 ## Preliminary Evaluations
 The different architectures we have tested are:
 - KAN Convolutional Layers connected to Kan Linear Layers (KKAN)
 - Kan Convolutional Layers connected to a MLP (CKAN)
 - CKAN with Batch Normalization between convolutions (CKAN_BN)
-- Large ConvNet (Classic Convolutinos connected to a MLP) (ConvNet)
-- Small ConvNet (SimpleCNN)
-- One Layer MLP (SimpleLinear)
+- ConvNet (Classic Convolutions connected to a MLP) (ConvNet)
+- Simple MLPs 
 
 ![image](./images/experiment_28x28.png)
 
-Have a look at `experiment_28x28.ipynb` for more detailed graphs, information and to experiment with different architectures or datasets of your own.
+Have a look at `experiment_28x28.ipynb`.
 
 ### Discussion
 
@@ -66,13 +64,17 @@ The implementation of KAN Convolutions is a promising idea, although it is still
   *Based on a 28x28 MNIST dataset, we can observe that the KANConv & MLP model achieves acceptable accuracy compared to the ConvNet (Big). However, the difference is that the number of parameters required by the KANConv & MLP is seven times less than those needed by the standard ConvNet.*
 
 
-
-We are aware that there are many hyperparameters to tune, and many experiments to conduct. In the coming days and weeks we will be tuning the hyperparameters of our model and the models we use to compare. We also recognize that we have not used large or complicated datasets. 
-
+We are aware that there are many hyperparameters to tune, and many experiments to conduct. In the coming days and weeks we will be thoroughly tuning the hyperparameters of our model and the models we use to compare. We have tried some variations in the hyperparameters and architectures, but it was heuristically and not done with any precise method. 
+We also recognize that we have not used large or more complex datasets because of computational power and time reasons and we are working on that.  
 We will be conducting experiments on more complex datasets in the future, this implies that the amount parameters of the KANS will increase since we will need to implement more Kan Convolutional layers.
 
 ### Conclusion
 At the moment we aren't seeing a significant improvement in the performance of the KAN Convolutional Networks compared to the traditional Convolutional Networks. We believe that this is due to the fact that we are using simple datasets and small models since the strength of our architecture lies in its requirement for significantly fewer parameters compared to the best architecture we have tried (ConvNet). We are confident that as we increase the complexity of the models and the datasets we will see a significant improvement in the performance of the KAN Convolutional Networks.
+
+### Work in progress
+- Experiments on more complex datasets.
+- Hiperparameter Tuning with Random Search.
+- Experiments with more architectures.
 
 # Installation
 ```bash
