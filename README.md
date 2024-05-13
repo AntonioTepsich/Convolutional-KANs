@@ -1,6 +1,6 @@
 # Convolutional Kolmogorov-Arnold Network (CKAN) 
 ### Introducing Convolutional KAN Networks!
-This project extends the idea of the innovative architecture of Kolmogorov-Arnold Networks (KAN) to the Convolutional Layers, changing the classic linear transformation of the convolution to non linear activations in each pixel. 
+This project extends the idea of the innovative architecture of Kolmogorov-Arnold Networks (KAN) to the Convolutional Layers, changing the classic linear transformation of the convolution to learnable non linear activations in each pixel. 
 ### Authors
 This repository was made by:
  - Alexander Bodner | abodner@udesa.edu.ar | [Twitter](https://twitter.com/AlexBodner_) | [LinkedIn](https://www.linkedin.com/in/alexanderbodner/)
@@ -23,7 +23,7 @@ For more information about this novel architecture please visit:
 - The research paper: https://arxiv.org/abs/2404.19756
 
 ### What is a KAN Convolution?
-KAN Convoluions are very similar to convolutions, but instead of applying the dot product between the kernel and the corresponding pixels in the image, we apply a Non Linear function to each element, and then add them up. The kernel of the KAN Convolution is equivalent to a KAN Linear Layer of 4 inputs and 1 output neuron. For each input i, we apply a ϕ_i learnable function, and the resulting pixel of that convolution step is the sum of ϕ_i(x_i). This can be visualized in the following two figures.
+KAN Convoluions are very similar to convolutions, but instead of applying the dot product between the kernel and the corresponding pixels in the image, we apply a **Learnable Non Linear activation function** to each element, and then add them up. The kernel of the KAN Convolution is equivalent to a KAN Linear Layer of 4 inputs and 1 output neuron. For each input i, we apply a ϕ_i learnable function, and the resulting pixel of that convolution step is the sum of ϕ_i(x_i). This can be visualized in the following two figures.
 
 ![image](./images/Convs.png)
 
@@ -33,6 +33,7 @@ Suppose that we have a KxK kernel. In this case, for each element of this matrix
 ![equation](https://github.com/AntonioTepsich/ckan/assets/61150961/074990fb-88c8-4498-93ac-7055f7755535)
 
 This gives more expresability to the activation function b. So the parameter count for a linear layer is gridsize + 2. So in total we have K²(gridsize + 2) parameters for KAN Convolution, vs only K² for a common convolution.
+
 ## Preliminary Evaluations
 The different architectures we have tested are:
 - KAN Convolutional Layers connected to Kan Linear Layers (KKAN)
@@ -42,11 +43,9 @@ The different architectures we have tested are:
 - Small ConvNet (SimpleCNN)
 - One Layer MLP (SimpleLinear)
 
-![image](./images/loss_vs_epochs.png)
+![image](./images/experiment_28x28.png)
 
-![image](./images/parameters_vs_accuracy.png)
-
-Have a look at `experiment_28x28.ipynb` and `evaluations_cifar_32x32.ipynb` for more detailed graphs, information and to experiment with different architectures or datasets of your own.
+Have a look at `experiment_28x28.ipynb` for more detailed graphs, information and to experiment with different architectures or datasets of your own.
 
 ### Discussion
 
