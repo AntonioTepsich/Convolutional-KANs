@@ -37,7 +37,7 @@ We are aware that there are many hyperparameters to tune, and many experiments t
 
 We will be conducting experiments on more complex datasets in the future, this implies that the amount parameters of the KANS will increase since we will need to implement more Kan Convolutional layers.
 
-At the moment we aren't seeing a significant improvement in the performance of the KAN Convolutional Networks compared to the traditional Convolutional Networks. We believe that this is due to the fact that we are using simple datasets and small models since the strength of our architecture is that it requires a significantly less number of parameters than the best architecture that we tried (ConvNet). We are confident that as we increase the complexity of the models and the datasets we will see a significant improvement in the performance of the KAN Convolutional Networks.
+At the moment we aren't seeing a significant improvement in the performance of the KAN Convolutional Networks compared to the traditional Convolutional Networks. We believe that this is due to the fact that we are using simple datasets and small models since the strength of our architecture lies in its requirement for significantly fewer parameters compared to the best architecture we have tried (ConvNet). We are confident that as we increase the complexity of the models and the datasets we will see a significant improvement in the performance of the KAN Convolutional Networks.
 
 The different architectures we have tested are:
 - KAN Convolutional Layers connected to Kan Linear Layers (KKAN)
