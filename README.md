@@ -33,6 +33,7 @@ Suppose that we have a KxK kernel. In this case, for each element of this matrix
 ![equation](https://github.com/AntonioTepsich/ckan/assets/61150961/074990fb-88c8-4498-93ac-7055f7755535)
 
 This gives more expresability to the activation function b. So the parameter count for a linear layer is gridsize + 2. So in total we have K²(gridsize + 2) parameters for KAN Convolution, vs only K² for a common convolution.
+
 ## Preliminary Evaluations
 The different architectures we have tested are:
 - KAN Convolutional Layers connected to Kan Linear Layers (KKAN)
@@ -42,9 +43,7 @@ The different architectures we have tested are:
 - Small ConvNet (SimpleCNN)
 - One Layer MLP (SimpleLinear)
 
-![image](./images/loss_vs_epochs.png)
-
-![image](./images/parameters_vs_accuracy.png)
+![image](./images/experiment_28x28.png)
 
 Have a look at `experiment_28x28.ipynb` and `evaluations_cifar_32x32.ipynb` for more detailed graphs, information and to experiment with different architectures or datasets of your own.
 
