@@ -1,6 +1,6 @@
 # Convolutional Kolmogorov-Arnold Network (CKAN) 
 ### Introducing Convolutional KAN Networks!
-This project extends the idea of the innovative architecture of Kolmogorov-Arnold Networks (KAN) to the Convolutional Layers, changing the classic linear transformation of the convolution to non linear activations in each pixel. AGREGAR ALGUNA LICENCIA? 
+This project extends the idea of the innovative architecture of Kolmogorov-Arnold Networks (KAN) to the Convolutional Layers, changing the classic linear transformation of the convolution to non linear activations in each pixel. 
 ### Authors
 This repository was made by:
  - Alexander Bodner | abodner@udesa.edu.ar | [Twitter](https://twitter.com/AlexBodner_) | [LinkedIn](https://www.linkedin.com/in/alexanderbodner/)
@@ -27,18 +27,13 @@ KAN Convoluions are very similar to convolutions, but instead of applying the do
 
 ![image](./images/Convs.png)
 
+
+### Parameters in a KAN Convolution
+Suppose that we have a KxK kernel. In this case, for each element of this matrix we have a ϕ, which its parameter count is: gridsize + 1. For implementation issues, eficcient kan defines:  
+![equation](https://github.com/AntonioTepsich/ckan/assets/61150961/074990fb-88c8-4498-93ac-7055f7755535)
+
+This gives more expresability to the activation function b. So the parameter count for a linear layer is gridsize + 2. So in total we have K²(gridsize + 2) parameters for KAN Convolution, vs only K² for a common convolution.
 ## Preliminary Evaluations
-
-### Experiments
-
-The implementation of KAN Convolutions is a promising idea, although it is still in its early stages. We have conducted some preliminary experiments to evaluate the performance of KAN Convolutions. The reason we say preliminary is because we wanted to publish this idea as soon as possible, so that the community can start working on it. 
-
-We are aware that there are many hyperparameters to tune, and many experiments to conduct. In the coming days and weeks we will be tuning the hyperparameters of our model and the models we use to compare. We also recognize that we have not used large or complicated datasets. 
-
-We will be conducting experiments on more complex datasets in the future, this implies that the amount parameters of the KANS will increase since we will need to implement more Kan Convolutional layers.
-
-At the moment we aren't seeing a significant improvement in the performance of the KAN Convolutional Networks compared to the traditional Convolutional Networks. We believe that this is due to the fact that we are using simple datasets and small models since the strength of our architecture lies in its requirement for significantly fewer parameters compared to the best architecture we have tried (ConvNet). We are confident that as we increase the complexity of the models and the datasets we will see a significant improvement in the performance of the KAN Convolutional Networks.
-
 The different architectures we have tested are:
 - KAN Convolutional Layers connected to Kan Linear Layers (KKAN)
 - Kan Convolutional Layers connected to a MLP (CKAN)
@@ -47,41 +42,37 @@ The different architectures we have tested are:
 - Small ConvNet (SimpleCNN)
 - One Layer MLP (SimpleLinear)
 
-# GRAFICOS, TABLAS Y CONCLUSIONES
 ![image](./images/loss_vs_epochs.png)
 
-![image](./images/loss_vs_epochs.png)
+![image](./images/parameters_vs_accuracy.png)
 
-Have a look at `train_model.ipynb` for more detailed graphs, information and to experiment with different architectures or datasets of your own.
----
+Have a look at `experiment_28x28.ipynb` and `evaluations_cifar_32x32.ipynb` for more detailed graphs, information and to experiment with different architectures or datasets of your own.
 
-# CORREGIR ChebyKan y fijarse imagenes y corregir 
+### Discussion
 
-### Parameters in a KAN Convolution
-Suppose that we have a KxK kernel. In this case, for each element of this matrix we have a ϕ, which its parameter count is: gridsize + 1. For implementation issues, eficcient kan defines:  
-![equation](https://github.com/AntonioTepsich/ckan/assets/61150961/074990fb-88c8-4498-93ac-7055f7755535)
+The implementation of KAN Convolutions is a promising idea, although it is still in its early stages. We have conducted some preliminary experiments to evaluate the performance of KAN Convolutions. The reason we say preliminary is because we wanted to publish this idea as soon as possible, so that the community can start working on it. 
 
-This gives more expresability to the activation function b. So the parameter count for a linear layer is gridsize + 2. So in total we have K²(gridsize + 2) parameters for KAN Convolution, vs only K² for a common convolution.
-
-![alt text](img/Interpolation_fix.png)
-
-ChebyKAN: [1, 8, 1] with 8 degree.
-MLP: [1, 128, 1] with Tanh.
-
-With decent training, the MLP can achieve similar performance as ChebyKAN. Note that ChebyKAN shows some overfitting.
-
-However ChebyKAN converges much faster than MLP.
-
-![alt text](img/Convergence_Speed.png)
-
-ChebyKAN: Adam, lr=0.01.
-MLP: Adam, lr=0.03.
-
-@5000 epoch, ChebyKAN has already converged, while MLP is still far from convergence. 
-
-![alt text](img/Early_Stopping.png)
+**Here we have some results:**
+|                   | Test Accuracy | Test Precision | Test Recall | Test F1 Score | Number of Parameters |
+|-------------------|---------------|----------------|-------------|---------------|----------------------|
+| 1 Layer MLP       | 0.922         | 0.921          | 0.921       | 0.921         | **7850**             |
+| ConvNet (Small)   | 0.977         | 0.977          | 0.977       | 0.977         | **2740**             |
+| ConvNet (Big)     | 0.995         | 0.995          | 0.995       | 0.995         | **887530**           |
+| KANConv & MLP     | 0.986         | 0.986          | 0.986       | 0.986         | **163726**           |
+| KANConv & KAN     | 0.979         | 0.979          | 0.979       | 0.979         | **37030**            |
+| KKAN              | 0.988         | 0.988          | 0.988       | 0.988         | **94650**            |
 
 
+  *Based on a 28x28 MNIST dataset, we can observe that the KANConv & MLP model achieves acceptable accuracy compared to the ConvNet (Big). However, the difference is that the number of parameters required by the KANConv & MLP is seven times less than those needed by the standard ConvNet.*
+
+
+
+We are aware that there are many hyperparameters to tune, and many experiments to conduct. In the coming days and weeks we will be tuning the hyperparameters of our model and the models we use to compare. We also recognize that we have not used large or complicated datasets. 
+
+We will be conducting experiments on more complex datasets in the future, this implies that the amount parameters of the KANS will increase since we will need to implement more Kan Convolutional layers.
+
+### Conclusion
+At the moment we aren't seeing a significant improvement in the performance of the KAN Convolutional Networks compared to the traditional Convolutional Networks. We believe that this is due to the fact that we are using simple datasets and small models since the strength of our architecture lies in its requirement for significantly fewer parameters compared to the best architecture we have tried (ConvNet). We are confident that as we increase the complexity of the models and the datasets we will see a significant improvement in the performance of the KAN Convolutional Networks.
 
 # Installation
 ```bash
@@ -90,14 +81,20 @@ cd ckan
 pip install -r requirements.txt
 ```
 # Usage
-Just copy `train_model.py` to your project and import it.
+Just copy the file `kan_convolutional` to your project and import it.
 ```python
-from ChebyKANLayer import ChebyKANLayer
+from kan_convolutional.KANConv import KAN_Convolutional_Layer
 ```
 # Example
-Construct a ChebyKAN for MNIST
+Construct a KANConv for MNIST
 ```python
-class KKAN_Convolutional_Network(nn.Module):
+import torch
+from torch import nn
+import torch.nn.functional as F
+
+from kan_convolutional.KANConv import KAN_Convolutional_Layer
+
+class KANC_MLP(nn.Module):
     def __init__(self,device: str = 'cpu'):
         super().__init__()
         self.conv1 = KAN_Convolutional_Layer(
@@ -118,49 +115,23 @@ class KKAN_Convolutional_Network(nn.Module):
         
         self.flat = nn.Flatten() 
         
-        # self.linear1 = nn.Linear(625, 256)
-        # self.linear2 = nn.Linear(256, 10)
-        self.kan1 = KANLinear(
-            625,
-            256,
-            grid_size=10,
-            spline_order=3,
-            scale_noise=0.01,
-            scale_base=1,
-            scale_spline=1,
-            base_activation=nn.SiLU,
-            grid_eps=0.02,
-            grid_range=[0,1],
-        )
-        self.kan2 = KANLinear(
-            256,
-            10,
-            grid_size=10,
-            spline_order=3,
-            scale_noise=0.01,
-            scale_base=1,
-            scale_spline=1,
-            base_activation=nn.SiLU,
-            grid_eps=0.02,
-            grid_range=[0,1],
-        )
+        self.linear1 = nn.Linear(625, 256)
+        self.linear2 = nn.Linear(256, 10)
+
 
     def forward(self, x):
         x = self.conv1(x)
+
         x = self.pool1(x)
 
         x = self.conv2(x)
         x = self.pool1(x)
-
         x = self.flat(x)
-        x = self.kan1(x) 
-        x = self.kan2(x)
+        x = self.linear1(x)
+        x = self.linear2(x)
+        x = F.log_softmax(x, dim=1)
         return x
 ```
-**Note:** Since Chebyshev polynomials are defined on the interval [-1, 1], we need to use tanh to keep the input in that range. We also use LayerNorm to avoid gradient vanishing caused by tanh. Removing LayerNorm will cause the network really hard to train.
-
-Have a look at `Cheby-KAN_MNIST.ipynb`, `Function_Interpolation_Test.ipynb`, and `Multivar_Interpolation_Test.ipynb` for more examples.
-
 
 ## Contributing
 We invite the community to join us in advancing this project. There are numerous ways to contribute. You are welcome to contribute by submitting pull requests or opening issues to share ideas and suggest enhancements. Together, we can unlock the full possibilities of KAN and push the boundaries of Computer Vision ❤️.

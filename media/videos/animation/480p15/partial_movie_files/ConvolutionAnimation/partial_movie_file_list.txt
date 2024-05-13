@@ -1,3 +1,0 @@
-# This file is used internally by FFMPEG.
-file 'file:C:/Users/alex_/Documents/Udesa/Research/ckan/media/videos/animation/480p15/partial_movie_files/ConvolutionAnimation/1185818338_3598404229_223132457.mp4'
-file 'file:C:/Users/alex_/Documents/Udesa/Research/ckan/media/videos/animation/480p15/partial_movie_files/ConvolutionAnimation/624642324_1704852926_1444615723.mp4'
