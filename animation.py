@@ -13,11 +13,16 @@ class Convolution(Scene):
         self.play(Write(kernel_text))
 
         # Convolution calculation
-        result = [sum(input_signal[i:i+len(kernel)] * kernel) for i in range(len(input_signal)-len(kernel)+1)]
-        result_text = MathTex("{[", result[0], ",", result[1], ",", result[2], ",", result[3], ",", result[4], "]}").scale(0.8).shift(DOWN*2.5)
+        result = []
+        for i in range(len(input_signal) - len(kernel) + 1):
+            convolution_sum = 0
+            for j in range(len(kernel)):
+                convolution_sum += input_signal[i + j] * kernel[j]
+            result.append(convolution_sum)
+        result_text = MathTex("{[", " ", ",", " ", ",", " ", ",", " ", ",", " ", "]}").scale(0.8).shift(DOWN*2.5)
         self.play(Write(result_text))
 
-        # Display convolution process
+        # Update values during convolution process
         for i in range(len(input_signal)-len(kernel)+1):
             input_slice = MathTex("{[", input_signal[i], ",", input_signal[i+1], "]}").scale(0.8).shift(LEFT*2 + DOWN*1)
             self.play(Transform(input_signal_text.copy(), input_slice))
@@ -27,7 +32,5 @@ class Convolution(Scene):
             kernel_slice = MathTex("{[", kernel[0], ",", kernel[1], "]}").scale(0.8).shift(RIGHT*1)
             self.play(Transform(kernel_text.copy(), kernel_slice))
             self.wait(0.5)
-            result_text[i+1].set_value(result[i+1])
+            result_text[i*2+1].set_value(result[i])
             self.wait(0.5)
-
-        self.wait(2)
