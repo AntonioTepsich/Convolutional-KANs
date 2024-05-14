@@ -51,14 +51,14 @@ The implementation of KAN Convolutions is a promising idea, although it is still
 
 **Here we have some results:**
 | Model               | Test Accuracy | Test Precision | Test Recall | Test F1 Score | Number of Parameters | Convolutional Layers |
-|---------------------|---------------|----------------|-------------|---------------|----------------------|
-| 1 Layer MLP         | 0.922         | 0.922          | 0.921       | 0.921         | 7850                 |
-| ConvNet (Small)     | 0.976         | 0.976          | 0.976       | 0.976         | 2740                 |
-| ConvNet (Medium)    | 0.991         | 0.991          | 0.991       | 0.991         | 157 030               |
-| ConvNet (Big)       | **0.995**     | 0.995          | 0.995       | 0.995         | 887 530               |
-| KANConv & MLP       | 0.985         | 0.985          | 0.984       | 0.984         | 163 726               |
-| Simple Conv & KAN   | 0.980         | 0.980          | 0.980       | 0.980         | 37 030                |
-| KKAN                | 0.987         | 0.987          | 0.987       | 0.987         | 94 650                | [KanConv(5,k=3),KanConv(5,k=3)   ]
+|---------------------|---------------|----------------|-------------|---------------|----------------------|                      |
+| 1 Layer MLP         | 0.922         | 0.922          | 0.921       | 0.921         | 7850                 |                      |
+| ConvNet (Small)     | 0.976         | 0.976          | 0.976       | 0.976         | 2740                 |                      |
+| ConvNet (Medium)    | 0.991         | 0.991          | 0.991       | 0.991         | 157 030               |                      |
+| ConvNet (Big)       | **0.995**     | 0.995          | 0.995       | 0.995         | 887 530               |                      |
+| KANConv & MLP       | 0.985         | 0.985          | 0.984       | 0.984         | 163 726               |                      |
+| Simple Conv & KAN   | 0.980         | 0.980          | 0.980       | 0.980         | 37 030                |                      |              
+| KKAN                | 0.987         | 0.987          | 0.987       | 0.987         | 94 650                | [KanConv(5,k=3),KanConv(5,k=3)   ] |
 
 
   *Based on a 28x28 MNIST dataset, we can observe that the KANConv & MLP model achieves acceptable accuracy compared to the ConvNet (Big). However, the difference is that the number of parameters required by the KANConv & MLP is seven times less than those needed by the standard ConvNet.*
