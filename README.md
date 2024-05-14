@@ -60,8 +60,8 @@ The implementation of KAN Convolutions is a promising idea, although it is still
 | Simple Conv & KAN   | 0.980         | 0.980          | 0.980       | 0.980         | 37 030                |    [5,1] k=[3,3]  |
 | KKAN                | 0.987         | 0.987          | 0.987       | 0.987         | 94 650                | KanConvs[5,5] k =[3,3]|
 
-
-  *Based on a 28x28 MNIST dataset, we can observe that the KANConv & MLP model achieves acceptable accuracy compared to the ConvNet (Big). However, the difference is that the number of parameters required by the KANConv & MLP is seven times less than those needed by the standard ConvNet.*
+*The lists in **Convolutional Layers** cotain en each element the number of convolutions and then the corresponding kernel size. *
+  *Based on a 28x28 MNIST dataset, we can observe that the KANConv & MLP model achieves acceptable accuracy compared to the ConvNet (Big). However, the difference is that the number of parameters required by the KANConv & MLP is seven times less than those needed by the standard ConvNet. Also the KKAN acieved 0.04 less accuracy than convnet Medium, with almst half the parameter count (94k vs 157k), which shows the potential of the architecture. Experiments on more datasets need to be conducted to take certain conclussions on this *
 
 
 We are aware that there are many hyperparameters to tune, and many experiments to conduct. In the coming days and weeks we will be thoroughly tuning the hyperparameters of our model and the models we use to compare. We have tried some variations in the hyperparameters and architectures, but it was heuristically and not done with any precise method. 
