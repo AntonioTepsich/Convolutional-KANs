@@ -51,7 +51,7 @@ The implementation of KAN Convolutions is a promising idea, although it is still
 
 **Here we have some results:**
 | Model               | Test Accuracy | Test Precision | Test Recall | Test F1 Score | Number of Parameters | Convolutional Layers |
-|---------------------|---------------|----------------|-------------|---------------|----------------------|                      |
+|---------------------|---------------|----------------|-------------|---------------|----------------------|----------------------|
 | 1 Layer MLP         | 0.922         | 0.922          | 0.921       | 0.921         | 7850                 |                      |
 | ConvNet (Small)     | 0.976         | 0.976          | 0.976       | 0.976         | 2740                 |                      |
 | ConvNet (Medium)    | 0.991         | 0.991          | 0.991       | 0.991         | 157 030               |                      |
