@@ -30,7 +30,7 @@ KAN Convoluions are very similar to convolutions, but instead of applying the do
 
 ### Parameters in a KAN Convolution
 Suppose that we have a KxK kernel. In this case, for each element of this matrix we have a ϕ, which its parameter count is: gridsize + 1. For implementation issues, eficcient kan defines:  
-![equation](https://github.com/AntonioTepsich/ckan/assets/61150961/074990fb-88c8-4498-93ac-7055f7755535)
+![equation](./images/splines.png)
 
 This gives more expresability to the activation function b. So the parameter count for a linear layer is gridsize + 2. So in total we have K²(gridsize + 2) parameters for KAN Convolution, vs only K² for a common convolution. Consider that gridsize is tipically (in our experiments) between k and k², but k tends to be a small value, between 2 and 16. 
 ## Preliminary Evaluations
