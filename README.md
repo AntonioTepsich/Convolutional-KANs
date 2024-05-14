@@ -29,10 +29,10 @@ KAN Convoluions are very similar to convolutions, but instead of applying the do
 
 
 ### Parameters in a KAN Convolution
-Suppose that we have a KxK kernel. In this case, for each element of this matrix we have a ϕ, which its parameter count is: gridsize + 1. For implementation issues, eficcient kan defines:  
+Suppose that we have a KxK kernel. In this case, for each element of this matrix we have a ϕ, which its parameter count is: gridsize + 1. For implementation issues, efficient kan defines:
 ![image](./images/splines.png)
 
-This gives more expresability to the activation function b. So the parameter count for a linear layer is gridsize + 2. So in total we have K²(gridsize + 2) parameters for KAN Convolution, vs only K² for a common convolution. Consider that gridsize is tipically (in our experiments) between k and k², but k tends to be a small value, between 2 and 16. 
+This gives more expressability to the activation function b. So the parameter count for a linear layer is gridsize + 2. So in total we have K²(gridsize + 2) parameters for KAN Convolution, vs only K² for a common convolution. Consider that gridsize is typically (in our experiments) between k and k², but k tends to be a small value, between 2 and 16. 
 ## Preliminary Evaluations
 The different architectures we have tested are:
 - KAN Convolutional Layers connected to Kan Linear Layers (KKAN)
@@ -60,7 +60,7 @@ The implementation of KAN Convolutions is a promising idea, although it is still
 | Simple Conv & KAN   | 0.980         | 0.980          | 0.980       | 0.980         | 37 030                |    [5,1] k=[3,3]  |
 | KKAN                | 0.987         | 0.987          | 0.987       | 0.987         | 94 650                | KanConvs[5,5] k =[3,3]|
 
-*The lists in Convolutional Layers cotain en each element the number of convolutions and then the corresponding kernel size.*
+*The lists in Convolutional Layers contain in each element the number of convolutions and then the corresponding kernel size.*
  
  Based on a 28x28 MNIST dataset, we can observe that the KANConv & MLP model achieves acceptable accuracy compared to the ConvNet (Big). However, the difference is that the number of parameters required by the KANConv & MLP is seven times less than those needed by the standard ConvNet. Also the KKAN achieved 0.04 less Accuracy than ConvNet Medium, with almst half the parameter count (94k vs 157k), which shows the potential of the architecture. Experiments on more datasets need to be conducted to take certain conclussions on this 
 
@@ -74,7 +74,7 @@ At the moment we aren't seeing a significant improvement in the performance of t
 
 ### Work in progress
 - Experiments on more complex datasets.
-- Hiperparameter Tuning with Random Search.
+- Hyperparameter tuning with Random Search.
 - Experiments with more architectures.
 
 # Installation
