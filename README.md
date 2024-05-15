@@ -76,6 +76,7 @@ At the moment we aren't seeing a significant improvement in the performance of t
 - Experiments on more complex datasets.
 - Hyperparameter tuning with Random Search.
 - Experiments with more architectures.
+- Dinamically updating grid ranges.
 
 # Installation
 ```bash
