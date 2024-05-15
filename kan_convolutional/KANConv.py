@@ -1,7 +1,13 @@
 import torch
 import math
+import sys
+sys.path.append('./kan_convolutional')
+
+
 from KANLinear import KANLinear
 import convolution
+import sys
+sys.path.append('./kan_convolutional')
 
 
 #Script que contiene la implementación del kernel con funciones de activación.
