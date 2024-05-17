@@ -43,12 +43,6 @@ The different architectures we have tested are:
 
 ![image](./images/experiment_28x28.png)
 
-Have a look at `experiment_28x28.ipynb`.
-
-### Discussion
-
-The implementation of KAN Convolutions is a promising idea, although it is still in its early stages. We have conducted some preliminary experiments to evaluate the performance of KAN Convolutions. The reason we say preliminary is because we wanted to publish this idea as soon as possible, so that the community can start working on it. 
-
 **Here we have some results:**
 | Model               | Test Accuracy | Test Precision | Test Recall | Test F1 Score | Number of Parameters | Convolutional Layers |
 |---------------------|---------------|----------------|-------------|---------------|----------------------|----------------------|
@@ -62,8 +56,11 @@ The implementation of KAN Convolutions is a promising idea, although it is still
 
 *The lists in Convolutional Layers contain in each element the number of convolutions and then the corresponding kernel size.*
  
- Based on a 28x28 MNIST dataset, we can observe that the KANConv & MLP model achieves acceptable accuracy compared to the ConvNet (Big). However, the difference is that the number of parameters required by the KANConv & MLP is seven times less than those needed by the standard ConvNet. Also the KKAN achieved 0.04 less Accuracy than ConvNet Medium, with almst half the parameter count (94k vs 157k), which shows the potential of the architecture. Experiments on more datasets need to be conducted to take certain conclussions on this 
+ Based on a 28x28 MNIST dataset, we can observe that the KANConv & MLP model achieves acceptable accuracy compared to the ConvNet (Big). However, the difference is that the number of parameters required by the KANConv & MLP is seven times less than those needed by the standard ConvNet. Also the KKAN achieved 0.04 less Accuracy than ConvNet Medium, with almost half the parameter count (94k vs 157k), which shows the potential of the architecture. Experiments on more datasets need to be conducted to take certain conclussions on this.
 
+### Discussion
+
+The implementation of KAN Convolutions is a promising idea, although it is still in its early stages. We have conducted some preliminary experiments to evaluate the performance of KAN Convolutions. The reason we say preliminary is because we wanted to publish this idea as soon as possible, so that the community can start working on it. 
 
 We are aware that there are many hyperparameters to tune, and many experiments to conduct. In the coming days and weeks we will be thoroughly tuning the hyperparameters of our model and the models we use to compare. We have tried some variations in the hyperparameters and architectures, but it was heuristically and not done with any precise method. 
 We also recognize that we have not used large or more complex datasets because of computational power and time reasons and we are working on that.  
