@@ -3,7 +3,7 @@ import math
 import sys
 sys.path.append('./kan_convolutional')
 
-
+import numpy as np
 from KANLinear import KANLinear
 import convolution
 import sys
@@ -27,7 +27,8 @@ class KAN_Convolutional_Layer(torch.nn.Module):
             base_activation=torch.nn.SiLU,
             grid_eps: float = 0.02,
             grid_range: tuple = [-1, 1],
-            device: str = "cpu"
+            device: str = "cpu",
+            dinamic_grid = False
         ):
         """
         Kan Convolutional Layer with multiple convolutions
@@ -60,7 +61,7 @@ class KAN_Convolutional_Layer(torch.nn.Module):
         self.convs = torch.nn.ModuleList()
         self.n_convs = n_convs
         self.stride = stride
-
+        self.dinamic_grid = dinamic_grid
 
         # Create n_convs KAN_Convolution objects
         for _ in range(n_convs):
@@ -78,18 +79,29 @@ class KAN_Convolutional_Layer(torch.nn.Module):
                     base_activation=base_activation,
                     grid_eps=grid_eps,
                     grid_range=grid_range,
-                    device = device
+                    device = device,
+                    dinamic_grid = dinamic_grid
+
                 )
             )
 
-    def forward(self, x: torch.Tensor, update_grid=False):
+    def forward(self, x: torch.Tensor):
         # If there are multiple convolutions, apply them all
-        if self.n_convs>1:
-            return convolution.multiple_convs_kan_conv2d(x, self.convs,self.kernel_size[0],self.stride,self.dilation,self.padding,self.device)
-        
-        # If there is only one convolution, apply it
-        return self.convs[0].forward(x)
-        
+        if self.dinamic_grid and self.training:
+            x_min = torch.min(x).item()
+            x_max = torch.max(x).item()
+            if  x_min < self.convs[0].conv.grid[0,0] or x_max > self.convs[0].conv.grid[0,-1]:
+                print("updateo")
+                batch_size,n_channels,n, m = x.shape
+                h_out = np.floor((n + 2 * self.padding[0] - self.kernel_size[0] - (self.kernel_size[1] - 1) * (self.dilation[0] - 1)) / self.stride[0]).astype(int) + 1
+                w_out = np.floor((m + 2 * self.padding[1] - self.kernel_size[0] - (self.kernel_size[1] - 1) * (self.dilation[1] - 1)) / self.stride[1]).astype(int) + 1
+                unfold = torch.nn.Unfold((self.kernel_size[0],self.kernel_size[1]), dilation=self.dilation, padding=self.padding, stride=self.stride)
+                conv_groups = unfold(x[:,:,:,:]).view(batch_size, n_channels,  self.kernel_size[0]*self.kernel_size[1], h_out*w_out).transpose(2, 3)#reshape((batch_size,n_channels,h_out,w_out))
+                conv_groups = conv_groups.flatten(start_dim=0,end_dim = 2)
+                #print("conv",conv_groups.shape)
+                for conv in self.convs:
+                    conv.conv.update_grid(conv_groups)
+        return convolution.multiple_convs_kan_conv2d(x, self.convs,self.kernel_size[0],self.stride,self.dilation,self.padding,self.device)
 
 class KAN_Convolution(torch.nn.Module):
     def __init__(
@@ -106,7 +118,8 @@ class KAN_Convolution(torch.nn.Module):
             base_activation=torch.nn.SiLU,
             grid_eps: float = 0.02,
             grid_range: tuple = [-1, 1],
-            device = "cpu"
+            device = "cpu",
+            dinamic_grid = False
         ):
         """
         Args
@@ -119,6 +132,8 @@ class KAN_Convolution(torch.nn.Module):
         self.padding = padding
         self.dilation = dilation
         self.device = device
+        self.dinamic_grid = dinamic_grid
+
         self.conv = KANLinear(
             in_features = math.prod(kernel_size),
             out_features = 1,
@@ -130,7 +145,9 @@ class KAN_Convolution(torch.nn.Module):
             base_activation=base_activation,
             grid_eps=grid_eps,
             grid_range=grid_range,
-            update_grid_bool=True
+            dinamic_grid = dinamic_grid
+
+            
         )
 
     def forward(self, x: torch.Tensor):
