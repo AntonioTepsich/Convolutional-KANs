@@ -209,8 +209,8 @@ class KANLinear(torch.nn.Module):
             dim=0,
         )
 
-        self.grid.copy_(grid.T)
-        self.spline_weight.data.copy_(self.curve2coeff(x, unreduced_spline_output))
+        self.grid=grid.T
+        self.spline_weight.data=(self.curve2coeff(x, unreduced_spline_output))
 
     def regularization_loss(self, regularize_activation=1.0, regularize_entropy=1.0):
         """
