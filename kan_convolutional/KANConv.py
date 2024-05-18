@@ -129,10 +129,11 @@ class KAN_Convolution(torch.nn.Module):
             scale_spline=scale_spline,
             base_activation=base_activation,
             grid_eps=grid_eps,
-            grid_range=grid_range
+            grid_range=grid_range,
+            update_grid_bool=True
         )
 
-    def forward(self, x: torch.Tensor, update_grid=False):
+    def forward(self, x: torch.Tensor):
         return convolution.kan_conv2d(x, self.conv,self.kernel_size[0],self.stride,self.dilation,self.padding,self.device)
     
     def regularization_loss(self, regularize_activation=1.0, regularize_entropy=1.0):

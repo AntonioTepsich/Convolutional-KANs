@@ -17,6 +17,7 @@ class KANLinear(torch.nn.Module):
         base_activation=torch.nn.SiLU,
         grid_eps=0.02,
         grid_range=[-1, 1],
+        update_grid_bool = False
     ):
         super(KANLinear, self).__init__()
         self.in_features = in_features
@@ -152,7 +153,10 @@ class KANLinear(torch.nn.Module):
 
     def forward(self, x: torch.Tensor):
         assert x.dim() == 2 and x.size(1) == self.in_features
-
+        if self.update_grid_bool and self.training:
+            x_min = torch.min(x,axis = 0).values
+            x_max = torch.max(x,axis = 0).values
+            self.update_grid(torch.concatenate((x_min,x_max),axis = 1).transpose(0,1))
         base_output = F.linear(self.base_activation(x), self.base_weight)
         spline_output = F.linear(
             self.b_splines(x).view(x.size(0), -1),
