@@ -2,7 +2,7 @@ from torch import nn
 import sys
  
 sys.path.append('./kan_convolutional')
-from KANConv import KAN_Convolutional_Layer
+from kan_convolutional.KANConv import KAN_Convolutional_Layer
 
 class SuperCKAN(nn.Module):
     def __init__(self,device: str = 'cpu'):
