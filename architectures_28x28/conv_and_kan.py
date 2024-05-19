@@ -34,6 +34,7 @@ class NormalConvsKAN(nn.Module):
             grid_range=[0,1],
             update_grid = True)
 
+        self.name = "Conv & KAN"
 
     def forward(self, x):
         x = F.relu(self.conv1(x))

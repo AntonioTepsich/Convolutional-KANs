@@ -22,6 +22,7 @@ class ConvNet(nn.Module):
 
         self.fc1 = nn.Linear(64 * 7 * 7, 256) 
         self.fc2 = nn.Linear(256, 10)
+        self.name = "CNN (Big)"
 
     def forward(self, x):
         x = F.relu(self.conv1(x))

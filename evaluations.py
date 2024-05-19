@@ -1,7 +1,8 @@
 from tqdm import tqdm
 import torch
 from sklearn.metrics import precision_score, recall_score, f1_score
-
+import os
+import matplotlib.pyplot as plt
 def train(model, device, train_loader, optimizer, epoch, criterion):
     """
     Train the model for one epoch
@@ -102,7 +103,7 @@ def test(model, device, test_loader, criterion):
     #     test_loss, correct, len(test_loader.dataset), accuracy, precision, recall, f1))
 
     return test_loss, accuracy, precision, recall, f1
-def train_and_test_models(model, device, train_loader, test_loader, optimizer, criterion, epochs, scheduler):
+def train_and_test_models(model, device, train_loader, test_loader, optimizer, criterion, epochs, scheduler, path = "drive/MyDrive/KANs/models"):
     """
     Train and test the model
 
@@ -131,7 +132,7 @@ def train_and_test_models(model, device, train_loader, test_loader, optimizer, c
     all_test_precision = []
     all_test_recall = []
     all_test_f1 = []
-
+    best_acc = 0
     for epoch in range(1, epochs + 1):
         # Train the model
         train_loss = train(model, device, train_loader, optimizer, epoch, criterion)
@@ -144,8 +145,10 @@ def train_and_test_models(model, device, train_loader, test_loader, optimizer, c
         all_test_precision.append(test_precision)
         all_test_recall.append(test_recall)
         all_test_f1.append(test_f1)
-
         print(f'End of Epoch {epoch}: Train Loss: {train_loss:.6f}, Test Loss: {test_loss:.4f}, Accuracy: {test_accuracy:.2%}')
+        if test_accuracy>best_acc:
+            best_acc = test_accuracy
+            torch.save(model,os.path.join(path,model.name+".pt"))
         scheduler.step()
     model.all_test_accuracy = all_test_accuracy
     model.all_test_precision = all_test_precision
@@ -156,3 +159,23 @@ def train_and_test_models(model, device, train_loader, test_loader, optimizer, c
 
 def count_parameters(model):
     return sum(p.numel() for p in model.parameters() if p.requires_grad)
+
+def final_plots(models,test_loader,criterion,device):
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(16, 5))  
+    for model in models:
+        test_loss, accuracy, precision, recall, f1 = test(model, device, test_loader, criterion)
+        ax1.plot(test_loss, label=model.name)
+        ax2.scatter(count_parameters(model),accuracy,  label=model.name)
+
+    ax1.set_title('Loss Test vs Epochs')    
+    ax1.set_xlabel('Epochs')
+    ax1.set_ylabel('Loss')
+    ax1.legend()
+    ax1.grid(True)
+    ax2.set_title('Number of Parameters vs Accuracy')
+    ax2.set_xlabel('Number of Parameters')
+    ax2.set_ylabel('Accuracy (%)')
+    ax2.legend() 
+    ax2.grid(True)
+    plt.tight_layout()
+    plt.show()

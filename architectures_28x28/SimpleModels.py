@@ -15,7 +15,7 @@ class SimpleCNN(nn.Module):
         
         self.flatten = nn.Flatten()
         self.fc = nn.Linear(245, 10)
-
+        self.name = "CNN (Small)"
     def forward(self, x):
         x = F.relu(self.conv1(x))
         x = self.maxpool(x)
@@ -37,7 +37,7 @@ class SimpleCNN_2(nn.Module):
         self.flatten = nn.Flatten()
         self.fc = nn.Linear(625, 245)
         self.fc2 = nn.Linear(245, 10)
-
+        self.name = "CNN (Medium)"
     def forward(self, x):
         x = F.relu(self.conv1(x))
         x = self.maxpool(x)
@@ -57,7 +57,7 @@ class SimpleLinear(nn.Module):
         # Definir una sola capa lineal con 'input_features' entradas y 10 salidas
         self.linear = nn.Linear(28*28, 10)
         self.flatten = nn.Flatten()
-
+        self.name = "1 Layer MLP"
 
     def forward(self, x):
         # Pasar los datos a través de la capa lineal
