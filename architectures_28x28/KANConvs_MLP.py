@@ -56,7 +56,8 @@ class KANC_MLP_sin_grid(nn.Module):
             n_convs = 5,
             kernel_size = (3,3),
             device = device,
-            dinamic_grid=False
+            dinamic_grid=False,
+            grid_range=[-0.1, 0.1],
         )
 
         self.pool1 = nn.MaxPool2d(
