@@ -5,7 +5,7 @@ import torch.nn.functional as F
 # sys.path.append('../kan_convolutional')
 from kan_convolutional.KANConv import KAN_Convolutional_Layer
 
-class KANC_MLP(nn.Module):
+class KANC_MLP_2(nn.Module):
     def __init__(self,device: str = 'cpu'):
         super().__init__()
         self.conv1 = KAN_Convolutional_Layer(
@@ -46,7 +46,7 @@ class KANC_MLP(nn.Module):
         x = F.log_softmax(x, dim=1)
         return x
 
-class KANC_MLP_sin_grid(nn.Module):
+class KANC_MLP_sin_grid_2(nn.Module):
     def __init__(self,device: str = 'cpu'):
         super().__init__()
         self.conv1 = KAN_Convolutional_Layer(
@@ -59,7 +59,7 @@ class KANC_MLP_sin_grid(nn.Module):
             n_convs = 5,
             kernel_size = (3,3),
             device = device,
-            dinamic_grid=False,
+            dinamic_grid=True,
             grid_size= 10   
 
         )

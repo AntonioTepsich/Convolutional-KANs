@@ -31,7 +31,8 @@ class NormalConvsKAN(nn.Module):
             scale_spline=1,
             base_activation=nn.SiLU,
             grid_eps=0.02,
-            grid_range=[0,1])
+            grid_range=[0,1],
+            update_grid = True)
 
 
     def forward(self, x):

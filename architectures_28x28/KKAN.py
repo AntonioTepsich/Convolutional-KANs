@@ -19,7 +19,10 @@ class KKAN_Convolutional_Network(nn.Module):
         self.conv2 = KAN_Convolutional_Layer(
             n_convs = 5,
             kernel_size = (3,3),
-            device = device
+            device = device,
+            dinamic_grid=True,
+            grid_size= 10   
+
         )
 
         self.pool1 = nn.MaxPool2d(
@@ -39,6 +42,7 @@ class KKAN_Convolutional_Network(nn.Module):
             base_activation=nn.SiLU,
             grid_eps=0.02,
             grid_range=[0,1],
+            dinamic_grid= True
         )
 
 
