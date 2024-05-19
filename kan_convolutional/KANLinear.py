@@ -178,7 +178,7 @@ class KANLinear(torch.nn.Module):
 
         # sort each channel individually to collect data distribution
         x_sorted = torch.sort(x, dim=0)[0]
-        self.grid_size+= int(np.sqrt(self.grid_size))
+        #self.grid_size+= int(np.sqrt(self.grid_size))
         grid_adaptive = x_sorted[
             torch.linspace(
                 0, batch - 1, self.grid_size + 1, dtype=torch.int64, device=x.device
