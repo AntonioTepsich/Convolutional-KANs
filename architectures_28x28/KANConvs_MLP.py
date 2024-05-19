@@ -19,6 +19,7 @@ class KANC_MLP(nn.Module):
             kernel_size = (3,3),
             device = device,
             dinamic_grid=True,
+            grid_size= 10
 
         )
 
@@ -58,6 +59,8 @@ class KANC_MLP_sin_grid(nn.Module):
             kernel_size = (3,3),
             device = device,
             dinamic_grid=False,
+            grid_size= 10   
+
         )
 
         self.pool1 = nn.MaxPool2d(
