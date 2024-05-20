@@ -60,7 +60,7 @@ class KANC_MLP_sin_grid_2(nn.Module):
             n_convs = 5,
             kernel_size = (3,3),
             device = device,
-            dinamic_grid=True,
+            dinamic_grid=False,
             grid_size= 10   
 
         )
