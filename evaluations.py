@@ -159,7 +159,11 @@ def train_and_test_models(model, device, train_loader, test_loader, optimizer, c
 
 def count_parameters(model):
     return sum(p.numel() for p in model.parameters() if p.requires_grad)
-
+def highlight_max(s):
+    is_max = s == s.max()
+    return ['font-weight: bold' if v else '' for v in is_max]
+import numpy as np
+import pandas as pd
 def final_plots(models,test_loader,criterion,device):
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(16, 5))  
     for model in models:
@@ -179,3 +183,32 @@ def final_plots(models,test_loader,criterion,device):
     ax2.grid(True)
     plt.tight_layout()
     plt.show()
+
+
+# Listas para acumular datos
+    accs = []
+    precision = []
+    recall = []
+    f1s = []
+    params_counts = []
+    for m in models:
+        index = np.argmax(m.all_test_accuracy)
+        params_counts.append(count_parameters(m))
+        accs.append(m.all_test_accuracy[index])
+        precision.append(m.all_test_precision[index])
+        recall.append(m.all_test_recall[index])
+        f1s.append(m.all_test_f1[index])
+    # Creación del DataFrame
+    df = pd.DataFrame({
+        "Test Accuracy": accs,
+        "Test Precision": precision,
+        "Test Recall": recall,
+        "Test F1 Score": f1s,
+        "Number of Parameters": params_counts
+    }, index=[m.name for m in models])
+
+    df.to_csv('experiment_28x28.csv', index=False)
+
+    # Aplicando el estilo
+    df_styled = df.style.apply(highlight_max, subset=df.columns[:], axis=0).format('{:.3f}')
+    return df_styled
