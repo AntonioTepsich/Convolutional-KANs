@@ -31,7 +31,7 @@ class CKAN_BN(nn.Module):
         
         self.linear1 = nn.Linear(625, 256)
         self.linear2 = nn.Linear(256, 10)
-        self.name = "KAN Conv w/ BN & 2 Layer MLP"
+        self.name = "KAN Conv BN & 2 Layer MLP"
     def forward(self, x):
         x = self.conv1(x)
         x = self.bn1(x)
