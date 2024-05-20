@@ -154,7 +154,7 @@ def train_and_test_models(model, device, train_loader, test_loader, optimizer, c
     model.all_test_precision = all_test_precision
     model.all_test_f1 = all_test_f1
     model.all_test_recall = all_test_recall
-
+    print("Best test accuracy", best_acc)
     return all_train_loss, all_test_loss, all_test_accuracy, all_test_precision, all_test_recall, all_test_f1
 
 def count_parameters(model):
