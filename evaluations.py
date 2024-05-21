@@ -164,14 +164,14 @@ def highlight_max(s):
     return ['font-weight: bold' if v else '' for v in is_max]
 import numpy as np
 import pandas as pd
-def final_plots(models,test_loader,criterion,device):
+def final_plots(models,test_loader,criterion,device,use_time = False):
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(16, 5))
     accs = []
     precisions = []
     recalls = []
     f1s = []
     params_counts = []
-
+    times = []
     for model in models:
         test_loss, accuracy, precision, recall, f1 = test(model, device, test_loader, criterion)
         ax1.plot(test_loss, label=model.name)
@@ -181,6 +181,10 @@ def final_plots(models,test_loader,criterion,device):
         recalls.append(recall)
         f1s.append(f1)  
         params_counts.append(count_parameters(model))
+        if use_time :
+            times.append(model.training_time)
+        else:
+            times.append(np.nan)
     ax1.set_title('Loss Test vs Epochs')    
     ax1.set_xlabel('Epochs')
     ax1.set_ylabel('Loss')
