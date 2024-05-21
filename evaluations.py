@@ -180,6 +180,7 @@ def final_plots(models,test_loader,criterion,device):
         precisions.append(precision)
         recalls.append(recall)
         f1s.append(f1)  
+        params_counts.append(count_parameters(model))
     ax1.set_title('Loss Test vs Epochs')    
     ax1.set_xlabel('Epochs')
     ax1.set_ylabel('Loss')
