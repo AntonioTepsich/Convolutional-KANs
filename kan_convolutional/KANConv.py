@@ -146,8 +146,6 @@ class KAN_Convolution(torch.nn.Module):
             grid_eps=grid_eps,
             grid_range=grid_range,
             dinamic_grid = dinamic_grid
-
-            
         )
 
     def forward(self, x: torch.Tensor):
