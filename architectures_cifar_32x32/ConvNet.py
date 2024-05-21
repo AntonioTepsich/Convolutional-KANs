@@ -1,7 +1,9 @@
 from torch import nn
 import torch
 import torch.nn.functional as F
+import sys
 # directory reach
+sys.path.append('./kan_convolutional')
 
 class ConvNet(nn.Module):
     def __init__(self):
