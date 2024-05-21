@@ -199,8 +199,8 @@ def final_plots(models,test_loader,criterion,device):
     # Creación del DataFrame
     df = pd.DataFrame({
         "Test Accuracy": accs,
-        "Test Precision": precision,
-        "Test Recall": recall,
+        "Test Precision": precisions,
+        "Test Recall": recalls,
         "Test F1 Score": f1s,
         "Number of Parameters": params_counts
     }, index=[m.name for m in models])
