@@ -165,12 +165,21 @@ def highlight_max(s):
 import numpy as np
 import pandas as pd
 def final_plots(models,test_loader,criterion,device):
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(16, 5))  
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(16, 5))
+    accs = []
+    precisions = []
+    recalls = []
+    f1s = []
+    params_counts = []
+
     for model in models:
         test_loss, accuracy, precision, recall, f1 = test(model, device, test_loader, criterion)
         ax1.plot(test_loss, label=model.name)
         ax2.scatter(count_parameters(model),accuracy,  label=model.name)
-
+        accs.append(accuracy)
+        precisions.append(precision)
+        recalls.append(recall)
+        f1s.append(f1)  
     ax1.set_title('Loss Test vs Epochs')    
     ax1.set_xlabel('Epochs')
     ax1.set_ylabel('Loss')
@@ -186,18 +195,7 @@ def final_plots(models,test_loader,criterion,device):
 
 
 # Listas para acumular datos
-    accs = []
-    precision = []
-    recall = []
-    f1s = []
-    params_counts = []
-    for m in models:
-        index = np.argmax(m.all_test_accuracy)
-        params_counts.append(count_parameters(m))
-        accs.append(m.all_test_accuracy[index])
-        precision.append(m.all_test_precision[index])
-        recall.append(m.all_test_recall[index])
-        f1s.append(m.all_test_f1[index])
+
     # Creación del DataFrame
     df = pd.DataFrame({
         "Test Accuracy": accs,
