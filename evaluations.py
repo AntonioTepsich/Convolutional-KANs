@@ -207,7 +207,8 @@ def final_plots(models,test_loader,criterion,device,use_time = False):
         "Test Precision": precisions,
         "Test Recall": recalls,
         "Test F1 Score": f1s,
-        "Number of Parameters": params_counts
+        "Number of Parameters": params_counts,
+        "Time":times
     }, index=[m.name for m in models])
 
     df.to_csv('experiment_28x28.csv', index=False)
