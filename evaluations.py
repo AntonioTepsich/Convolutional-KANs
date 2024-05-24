@@ -222,6 +222,7 @@ def plot_roc_one_vs_rest_all_models(models, dataloader,n_classes,device):
     fig,axs = plt.subplots(n_classes, figsize=(22, 5))
 
 def plot_roc_one_vs_rest(model,dataloader,n_classes,device,ax):
+    print("aca0")
 
     with torch.no_grad():
         preds = []
