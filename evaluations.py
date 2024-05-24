@@ -218,8 +218,9 @@ def final_plots(models,test_loader,criterion,device,use_time = False):
     return df_styled
 from sklearn.metrics import RocCurveDisplay
 def plot_roc_one_vs_rest_all_models(models, dataloader,n_classes,device):
-    fig,axs = plt.subplots(n_classes, figsize=(22, 5))
-
+    fig,axs = plt.subplots(len(models), figsize=(22, 5))
+    for m in range(len(models)):
+        plot_roc_one_vs_rest(models[m],dataloader,n_classes,device,axs[m])
 def plot_roc_one_vs_rest(model,dataloader,n_classes,device,ax):
     with torch.no_grad():
         preds = []
@@ -230,7 +231,7 @@ def plot_roc_one_vs_rest(model,dataloader,n_classes,device,ax):
             targets.append(target.cpu().numpy())
             # Get the predicted classes for this batch
             output = model(data)
-            preds.append(output.cpu().data.cpu().numpy())
+            preds.append(output.cpu().data.numpy())
     predictions = np.concatenate(preds)
     targets = np.concatenate(targets)
     predictions = np.exp(predictions) #porque usamos log softmax
