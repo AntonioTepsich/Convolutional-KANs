@@ -232,14 +232,14 @@ def plot_roc_one_vs_rest(model,dataloader,n_classes,device,ax):
         for data, target in dataloader:
             data, target = data.to(device), target.to(device)
             print("aca")
-            targets.append(target.cpu())
+            targets.append(target.cpu().numpy())
             # Get the predicted classes for this batch
             output = model(data)
             print("post out")
-            preds.append(output.cpu().data)
-        predictions = torch.concatenate(preds)
+            preds.append(output.cpu().data.numpy())
+        predictions = np.concatenate(preds)
         print("Post preds")
-        targets = torch.concatenate(targets)
+        targets = np.concatenate(targets)
         print("Post targets")
         for class_id in range(n_classes):
             RocCurveDisplay.from_predictions(
