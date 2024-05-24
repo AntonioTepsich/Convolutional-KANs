@@ -218,7 +218,8 @@ def final_plots(models,test_loader,criterion,device,use_time = False):
     df_styled = df.style.apply(highlight_max, subset=df.columns[:], axis=0).format('{:.3f}')
     return df_styled
 from sklearn.metrics import RocCurveDisplay
-
+def plot_roc_one_vs_rest_all_models(models, dataloader,n_classes,device):
+    pass
 def plot_roc_one_vs_rest(model,dataloader,n_classes,device,ax):
 
     with torch.no_grad():
@@ -228,7 +229,7 @@ def plot_roc_one_vs_rest(model,dataloader,n_classes,device,ax):
         targets = []
         for data, target in dataloader:
             data, target = data.to(device), target.to(device)
-            targets.append(target)
+            targets.append(target.cpu())
             # Get the predicted classes for this batch
             output = model(data)
             preds.append(output.cpu().data)
