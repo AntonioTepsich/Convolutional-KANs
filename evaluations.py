@@ -219,9 +219,9 @@ def final_plots(models,test_loader,criterion,device,use_time = False):
     return df_styled
 from sklearn.metrics import RocCurveDisplay
 def plot_roc_one_vs_rest_all_models(models, dataloader,n_classes,device):
-    pass
-def plot_roc_one_vs_rest(model,dataloader,n_classes,device,ax):
     fig,axs = plt.subplots(n_classes, figsize=(22, 5))
+
+def plot_roc_one_vs_rest(model,dataloader,n_classes,device,ax):
 
     with torch.no_grad():
         preds = []
@@ -230,6 +230,7 @@ def plot_roc_one_vs_rest(model,dataloader,n_classes,device,ax):
         targets = []
         for data, target in dataloader:
             data, target = data.to(device), target.to(device)
+            print("aca")
             targets.append(target.cpu())
             # Get the predicted classes for this batch
             output = model(data)
