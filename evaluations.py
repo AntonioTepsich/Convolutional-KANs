@@ -230,7 +230,7 @@ def plot_roc_one_vs_rest(model,dataloader,n_classes,device,ax):
             targets.append(target.cpu().numpy())
             # Get the predicted classes for this batch
             output = model(data)
-            preds.append(output.cpu().data.numpy())
+            preds.append(output.cpu().data.cpu().numpy())
     predictions = np.concatenate(preds)
     targets = np.concatenate(targets)
     predictions = np.exp(predictions) #porque usamos log softmax
