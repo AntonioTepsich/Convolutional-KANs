@@ -13,6 +13,8 @@ def train_model_generic(model, train_loader, test_loader,device,epochs= 15,path 
     criterion = nn.CrossEntropyLoss()
     start = time.perf_counter()
     all_train_loss, all_test_loss, all_test_accuracy, all_test_precision, all_test_recall, all_test_f1 = train_and_test_models(model, device, train_loader, test_loader, optimizer, criterion, epochs=epochs, scheduler=scheduler,path= path)
+    model.train_losses = all_train_loss
+    model.test_losses = all_test_loss
     total_time = time.perf_counter() -start
     print("Params End",count_parameters(model))
     model.training_time = total_time/60

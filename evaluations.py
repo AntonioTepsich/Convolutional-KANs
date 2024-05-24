@@ -226,6 +226,7 @@ def plot_roc_one_vs_rest(model,dataloader,n_classes,device,ax):
     with torch.no_grad():
         preds = []
         model.eval()
+        print("aca1")
 
         targets = []
         for data, target in dataloader:
