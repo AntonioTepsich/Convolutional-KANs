@@ -218,7 +218,7 @@ def final_plots(models,test_loader,criterion,device,use_time = False):
     return df_styled
 from sklearn.metrics import RocCurveDisplay
 def plot_roc_one_vs_rest_all_models(models, dataloader,n_classes,device):
-    fig,axs = plt.subplots(len(models), figsize=(6, 50))
+    fig,axs = plt.subplots(len(models), figsize=(6, 6*n_classes))
     for m in range(len(models)):
         plot_roc_one_vs_rest(models[m],dataloader,n_classes,device,axs[m])
 def plot_roc_one_vs_rest(model,dataloader,n_classes,device,ax):
