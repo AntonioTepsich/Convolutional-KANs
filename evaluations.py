@@ -200,8 +200,7 @@ def final_plots(models,test_loader,criterion,device,use_time = False):
     plt.tight_layout()
     plt.show()
 
-
-# Listas para acumular datos
+    # Listas para acumular datos
 
     # Creación del DataFrame
     df = pd.DataFrame({
@@ -232,7 +231,7 @@ def plot_roc_one_vs_rest(model,dataloader,n_classes,device,ax):
             targets.append(target)
             # Get the predicted classes for this batch
             output = model(data)
-            preds.append(output.data)
+            preds.append(output.cpu().data)
         predictions = torch.concatenate(preds)
         targets = torch.concatenate(targets)
         for class_id in range(n_classes):
