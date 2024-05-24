@@ -242,6 +242,6 @@ def plot_roc_one_vs_rest(model,dataloader,n_classes,device,ax):
             name=f"ROC curve for {class_id}",
             ax=ax,
         )
-    ax.set_title('ROC OvR')    
+    ax.set_title(f'ROC OvR {model.name}')    
     ax.set_xlabel('FP Rate')
     ax.set_ylabel('TP Rate')
