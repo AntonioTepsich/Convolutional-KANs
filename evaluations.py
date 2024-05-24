@@ -165,7 +165,7 @@ def highlight_max(s):
 import numpy as np
 import pandas as pd
 def final_plots(models,test_loader,criterion,device,use_time = False):
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(16, 5))
+    fig, (ax1, ax2,ax3) = plt.subplots(1, 3, figsize=(22, 5))
     accs = []
     precisions = []
     recalls = []
@@ -195,6 +195,8 @@ def final_plots(models,test_loader,criterion,device,use_time = False):
     ax2.set_ylabel('Accuracy (%)')
     ax2.legend() 
     ax2.grid(True)
+    plot_roc_one_vs_rest(model,test_loader,10,device,ax3)
+
     plt.tight_layout()
     plt.show()
 
@@ -216,3 +218,31 @@ def final_plots(models,test_loader,criterion,device,use_time = False):
     # Aplicando el estilo
     df_styled = df.style.apply(highlight_max, subset=df.columns[:], axis=0).format('{:.3f}')
     return df_styled
+from sklearn.metrics import RocCurveDisplay
+
+def plot_roc_one_vs_rest(model,dataloader,n_classes,device,ax):
+
+    with torch.no_grad():
+        preds = []
+        model.eval()
+
+        targets = []
+        for data, target in dataloader:
+            data, target = data.to(device), target.to(device)
+            targets.append(target)
+            # Get the predicted classes for this batch
+            output = model(data)
+            preds.append(output.data)
+        predictions = torch.concatenate(preds)
+        targets = torch.concatenate(targets)
+        for class_id in range(n_classes):
+            RocCurveDisplay.from_predictions(
+                targets,
+                predictions[:,class_id],
+                name=f"ROC curve for {class_id}",
+                ax=ax,
+                plot_chance_level=(class_id == n_classes-1),
+            )
+    ax.set_title('ROC OvR')    
+    ax.set_xlabel('FP Rate')
+    ax.set_ylabel('TP Rate')
