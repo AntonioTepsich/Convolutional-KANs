@@ -11,18 +11,19 @@ class NormalConvsKAN(nn.Module):
         super(NormalConvsKAN, self).__init__()
         # Convolutional layer, assuming an input with 1 channel (grayscale image)
         # and producing 16 output channels, with a kernel size of 3x3
-        self.conv1 = nn.Conv2d(1, 5, kernel_size=3, padding=1)
-        self.conv2 = nn.Conv2d(5, 5, kernel_size=3, padding=1)
+        self.conv1 = nn.Conv2d(1, 5, kernel_size=3, padding='valid')
+        self.conv2 = nn.Conv2d(5, 25, kernel_size=3, padding='valid')
 
         # Max pooling layer
         self.maxpool = nn.MaxPool2d(kernel_size=2)
         
         # Flatten layer
         self.flatten = nn.Flatten()
+        #self.fc1 = nn.Linear(256, 10)
 
-        # KAN layer
+        #KAN layer
         self.kan1 = KANLinear(
-            245,
+            625,
             10,
             grid_size=10,
             spline_order=3,
@@ -32,7 +33,7 @@ class NormalConvsKAN(nn.Module):
             base_activation=nn.SiLU,
             grid_eps=0.02,
             grid_range=[0,1],
-            update_grid = True)
+            dinamic_grid = True)
 
         self.name = "Conv & KAN"
 
