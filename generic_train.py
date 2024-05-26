@@ -25,5 +25,7 @@ def train_model_generic(model, train_loader, test_loader,device,epochs= 15,path 
     model.training_time = total_time/60
     print("Total time (min)",total_time/60)
     torch.save(model,saving_path)
+    print("Train loss",all_train_loss)
+    print("Test loss",all_test_loss)
 
     #return all_train_loss, all_test_loss, all_test_accuracy, all_test_precision, all_test_recall, all_test_f1
