@@ -22,7 +22,7 @@ def train_model_generic(model, train_loader, test_loader,device,epochs= 15,path 
     model.test_losses = all_test_loss
     total_time = time.perf_counter() -start
     print("Params End",count_parameters(model))
-    model.training_time = total_time/60
+    model.training_time = total_time/60 /epochs
     print("Total time (min)",total_time/60)
     torch.save(model,saving_path)
     print("Train loss",all_train_loss)
