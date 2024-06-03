@@ -174,7 +174,7 @@ def final_plots(models,test_loader,criterion,device,use_time = False):
     times = []
     for model in models:
         test_loss, accuracy, precision, recall, f1 = test(model, device, test_loader, criterion)
-        ax1.plot(test_loss, label=model.name)
+        ax1.plot(model.test_lossses, label=model.name)
         ax2.scatter(count_parameters(model),accuracy,  label=model.name)
         accs.append(accuracy)
         precisions.append(precision)
