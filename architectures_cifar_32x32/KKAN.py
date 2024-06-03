@@ -50,7 +50,8 @@ class KKAN_Small(nn.Module):
             grid_range=[0,1],
             dinamic_grid= True
         )
-
+    def regularization_loss(self,):
+        self.conv1.regularization_loss() + self.conv2.regularization_loss() +self.kan1.regularization_loss() 
     def forward(self, x):
         x = self.conv1(x)
         x = self.pool1(x)

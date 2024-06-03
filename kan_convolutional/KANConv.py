@@ -103,6 +103,8 @@ class KAN_Convolutional_Layer(torch.nn.Module):
                     conv.conv.update_grid(conv_groups)
         return convolution.multiple_convs_kan_conv2d(x, self.convs,self.kernel_size[0],self.stride,self.dilation,self.padding,self.device)
 
+    def regularization_loss(self, regularize_activation=1.0, regularize_entropy=1.0):
+        return sum(k.regularization_loss(regularize_activation,regularize_entropy) for k in self.convs)
 class KAN_Convolution(torch.nn.Module):
     def __init__(
             self,
@@ -152,7 +154,7 @@ class KAN_Convolution(torch.nn.Module):
         return convolution.kan_conv2d(x, self.conv,self.kernel_size[0],self.stride,self.dilation,self.padding,self.device)
     
     def regularization_loss(self, regularize_activation=1.0, regularize_entropy=1.0):
-        return sum( layer.regularization_loss(regularize_activation, regularize_entropy) for layer in self.layers)
+        return self.conv.regularization_loss( regularize_activation=regularize_activation, regularize_entropy=regularize_entropy)
 
 
 

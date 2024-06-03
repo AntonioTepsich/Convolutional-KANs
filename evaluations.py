@@ -245,3 +245,102 @@ def plot_roc_one_vs_rest(model,dataloader,n_classes,device,ax):
     ax.set_title(f'ROC OvR {model.name}')    
     ax.set_xlabel('FP Rate')
     ax.set_ylabel('TP Rate')
+
+
+def train_and_test_regularized(model, device, train_loader, test_loader, optimizer, criterion, epochs, scheduler, path = "drive/MyDrive/KANs/models"):
+    """
+    Train and test the model
+
+    Args:
+        model: the neural network model
+        device: cuda or cpu
+        train_loader: DataLoader for training data
+        test_loader: DataLoader for test data
+        optimizer: the optimizer to use (e.g. SGD)
+        criterion: the loss function (e.g. CrossEntropy)
+        epochs: the number of epochs to train
+        scheduler: the learning rate scheduler
+
+    Returns:
+        all_train_loss: a list of the average training loss for each epoch
+        all_test_loss: a list of the average test loss for each epoch
+        all_test_accuracy: a list of the accuracy for each epoch
+        all_test_precision: a list of the precision for each epoch
+        all_test_recall: a list of the recall for each epoch
+        all_test_f1: a list of the f1 score for each epoch
+    """
+    # Track metrics
+    all_train_loss = []
+    all_test_loss = []
+    all_test_accuracy = []
+    all_test_precision = []
+    all_test_recall = []
+    all_test_f1 = []
+    best_acc = 0
+    for epoch in range(1, epochs + 1):
+        # Train the model
+        train_loss = train_kkan_regularized(model, device, train_loader, optimizer, epoch, criterion)
+        all_train_loss.append(train_loss)
+
+        # Test the model
+        test_loss, test_accuracy, test_precision, test_recall, test_f1 = test(model, device, test_loader, criterion)
+        all_test_loss.append(test_loss)
+        all_test_accuracy.append(test_accuracy)
+        all_test_precision.append(test_precision)
+        all_test_recall.append(test_recall)
+        all_test_f1.append(test_f1)
+        print(f'End of Epoch {epoch}: Train Loss: {train_loss:.6f}, Test Loss: {test_loss:.4f}, Accuracy: {test_accuracy:.2%}')
+        if test_accuracy>best_acc:
+            best_acc = test_accuracy
+            torch.save(model,os.path.join(path,model.name+".pt"))
+        scheduler.step()
+    model.all_test_accuracy = all_test_accuracy
+    model.all_test_precision = all_test_precision
+    model.all_test_f1 = all_test_f1
+    model.all_test_recall = all_test_recall
+    print("Best test accuracy", best_acc)
+    return all_train_loss, all_test_loss, all_test_accuracy, all_test_precision, all_test_recall, all_test_f1
+def train_kkan_regularized(model, device, train_loader, optimizer, epoch, criterion):
+    """
+    Train the model for one epoch
+
+    Args:
+        model: the neural network model
+        device: cuda or cpu
+        train_loader: DataLoader for training data
+        optimizer: the optimizer to use (e.g. SGD)
+        epoch: the current epoch
+        criterion: the loss function (e.g. CrossEntropy)
+
+    Returns:
+        avg_loss: the average loss over the training set
+    """
+
+    model.to(device)
+    model.train()
+    train_loss = 0
+    # Process the images in batches
+    for batch_idx, (data, target) in enumerate(tqdm(train_loader)):
+        # Recall that GPU is optimized for the operations we are dealing with
+        data, target = data.to(device), target.to(device)
+
+        # Reset the optimizer
+        optimizer.zero_grad()
+
+        # Push the data forward through the model layers
+        output = model(data)
+
+        # Get the loss
+        loss = criterion(output, target)+ model.regularization_loss()
+
+        # Keep a running total
+        train_loss += loss.item()
+
+        # Backpropagate
+        loss.backward()
+        optimizer.step()
+
+    # return average loss for the epoch
+    avg_loss = train_loss / (batch_idx+1)
+    # print('Training set: Average loss: {:.6f}'.format(avg_loss))
+    return avg_loss
