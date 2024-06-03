@@ -1,6 +1,6 @@
 def count_parameters(model):
     return sum(p.numel() for p in model.parameters() if p.requires_grad)
-from evaluations import train_and_test_models
+from evaluations import train_and_test_models,train_and_test_regularized
 import torch.nn as nn
 import torch.optim as optim
 import time
@@ -39,7 +39,7 @@ def train_kkan_regularized(model, train_loader, test_loader,device,epochs= 15,pa
     criterion = nn.CrossEntropyLoss()
     start = time.perf_counter()
     
-    all_train_loss, all_test_loss, all_test_accuracy, all_test_precision, all_test_recall, all_test_f1 = train_and_test_models(model, device, train_loader, test_loader, optimizer, criterion, epochs=epochs, scheduler=scheduler,path= path)
+    all_train_loss, all_test_loss, all_test_accuracy, all_test_precision, all_test_recall, all_test_f1 = train_and_test_regularized(model, device, train_loader, test_loader, optimizer, criterion, epochs=epochs, scheduler=scheduler,path= path)
     saving_path = os.path.join(path,model.name+".pt")
     model =  torch.load(saving_path, map_location=torch.device(device))
     model.train_losses = all_train_loss
