@@ -61,7 +61,7 @@ class KKAN_Convolutional_Network(nn.Module):
 
         return x
     def regularization_loss(self,):
-        self.conv1.regularization_loss() + self.conv2.regularization_loss() +self.kan1.regularization_loss() 
+        return self.conv1.regularization_loss() + self.conv2.regularization_loss() +self.kan1.regularization_loss() 
 class KKAN_Convolutional_Network_Big(nn.Module):
     def __init__(self,device: str = 'cpu'):
         super().__init__()
