@@ -30,7 +30,7 @@ def train_model_generic(model, train_loader, test_loader,device,epochs= 15,path 
 
     #return all_train_loss, all_test_loss, all_test_accuracy, all_test_precision, all_test_recall, all_test_f1
 
-def train_kkan_regularized(model, train_loader, test_loader,device,epochs= 15,path =  "drive/MyDrive/KANs/models",reg_weight = 1):
+def generic_train_kkan_regularized(model, train_loader, test_loader,device,epochs= 15,path =  "drive/MyDrive/KANs/models",reg_weight = 1):
     model.to(device)
     print("Params start",count_parameters(model))
 
