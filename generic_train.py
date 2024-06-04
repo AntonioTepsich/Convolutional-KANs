@@ -30,7 +30,7 @@ def train_model_generic(model, train_loader, test_loader,device,epochs= 15,path 
 
     #return all_train_loss, all_test_loss, all_test_accuracy, all_test_precision, all_test_recall, all_test_f1
 
-def train_kkan_regularized(model, train_loader, test_loader,device,epochs= 15,path =  "drive/MyDrive/KANs/models"):
+def train_kkan_regularized(model, train_loader, test_loader,device,epochs= 15,path =  "drive/MyDrive/KANs/models",reg_weight = 1):
     model.to(device)
     print("Params start",count_parameters(model))
 
@@ -39,7 +39,7 @@ def train_kkan_regularized(model, train_loader, test_loader,device,epochs= 15,pa
     criterion = nn.CrossEntropyLoss()
     start = time.perf_counter()
     
-    all_train_loss, all_test_loss, all_test_accuracy, all_test_precision, all_test_recall, all_test_f1 = train_and_test_regularized(model, device, train_loader, test_loader, optimizer, criterion, epochs=epochs, scheduler=scheduler,path= path)
+    all_train_loss, all_test_loss, all_test_accuracy, all_test_precision, all_test_recall, all_test_f1 = train_and_test_regularized(model, device, train_loader, test_loader, optimizer, criterion, epochs=epochs, scheduler=scheduler,path= path,reg_weight = reg_weight)
     saving_path = os.path.join(path,model.name+".pt")
     model =  torch.load(saving_path, map_location=torch.device(device))
     model.train_losses = all_train_loss

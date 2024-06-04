@@ -247,7 +247,7 @@ def plot_roc_one_vs_rest(model,dataloader,n_classes,device,ax):
     ax.set_ylabel('TP Rate')
 
 
-def train_and_test_regularized(model, device, train_loader, test_loader, optimizer, criterion, epochs, scheduler, path = "drive/MyDrive/KANs/models"):
+def train_and_test_regularized(model, device, train_loader, test_loader, optimizer, criterion, epochs, scheduler, path = "drive/MyDrive/KANs/models",reg_weight=1):
     """
     Train and test the model
 
@@ -279,7 +279,7 @@ def train_and_test_regularized(model, device, train_loader, test_loader, optimiz
     best_acc = 0
     for epoch in range(1, epochs + 1):
         # Train the model
-        train_loss = train_kkan_regularized(model, device, train_loader, optimizer, epoch, criterion)
+        train_loss = train_kkan_regularized(model, device, train_loader, optimizer, epoch, criterion,reg_weight)
         all_train_loss.append(train_loss)
 
         # Test the model
@@ -300,7 +300,7 @@ def train_and_test_regularized(model, device, train_loader, test_loader, optimiz
     model.all_test_recall = all_test_recall
     print("Best test accuracy", best_acc)
     return all_train_loss, all_test_loss, all_test_accuracy, all_test_precision, all_test_recall, all_test_f1
-def train_kkan_regularized(model, device, train_loader, optimizer, epoch, criterion):
+def train_kkan_regularized(model, device, train_loader, optimizer, epoch, criterion,reg_weight = 1):
     """
     Train the model for one epoch
 
@@ -331,7 +331,7 @@ def train_kkan_regularized(model, device, train_loader, optimizer, epoch, criter
         output = model(data)
 
         # Get the loss
-        loss = criterion(output, target)+ model.regularization_loss()
+        loss = criterion(output, target)+ reg_weight * model.regularization_loss()
 
         # Keep a running total
         train_loss += loss.item()
