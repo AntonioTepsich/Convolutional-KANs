@@ -1,7 +1,12 @@
 # Convolutional Kolmogorov-Arnold Network (CKAN) 
+
+## Paper
+All the mathematical explanation and experiments are explained in the 
+[Academic Paper](https://arxiv.org/abs/2406.13155)
+
 ### Introducing Convolutional KAN Networks!
 This project extends the idea of the innovative architecture of Kolmogorov-Arnold Networks (KAN) to the Convolutional Layers, changing the classic linear transformation of the convolution to learnable non linear activations in each pixel. 
-### Authors
+## Authors
 This repository was made by:
  - Alexander Bodner | abodner@udesa.edu.ar | [Twitter](https://twitter.com/AlexBodner_) | [LinkedIn](https://www.linkedin.com/in/alexanderbodner/)
  - Antonio Tepsich | atepsich@udesa.edu.ar | [Twitter](https://twitter.com/antotepsich) | [LinkedIn](https://www.linkedin.com/in/antonio-tepsich/)
