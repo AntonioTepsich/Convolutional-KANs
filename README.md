@@ -83,7 +83,7 @@ At the moment we aren't seeing a significant improvement in the performance of t
 # Installation
 ```bash
 git clone git@github.com/AntonioTepsich/ckan.git
-cd ckan
+cd Convolutional-KANs
 pip install -r requirements.txt
 ```
 # Usage
