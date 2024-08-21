@@ -64,5 +64,4 @@ class SimpleLinear(nn.Module):
         x = self.flatten(x)
         x = self.linear(x)
         x = F.log_softmax(x, dim=1)
-
         return x
