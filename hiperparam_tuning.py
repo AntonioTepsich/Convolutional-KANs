@@ -12,6 +12,8 @@ from evaluations import train_and_test_models
 def train_tune(config,model_class, is_kan,train_obj=None, val_loader=None,epochs = 20):
     device = "cuda" if torch.cuda.is_available() else "cpu"
     torch.manual_seed(42) #Lets set a seed for the weights initialization
+    import os, sys
+    sys.path.append(os.path.abspath("/content/Convolutional-KANs"))
     if is_kan:
         model = model_class(grid_size = config["grid_size"])
     else:
@@ -105,4 +107,5 @@ def search_hiperparams_and_get_final_model(model_class,is_kan, train_obj, valid_
     } ):
     best_trial = tune_lr_betas_eps_l2(model_class, is_kan, train_obj,valid_obj, n_combs = search_grid_combinations, grid = grid)
     epochs = best_trial.last_result['epochs']
+
     get_best_model(model_class,epochs,best_trial, train_obj,test_loader,path)
