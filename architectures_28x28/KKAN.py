@@ -8,12 +8,13 @@ from kan_convolutional.KANConv import KAN_Convolutional_Layer
 from kan_convolutional.KANLinear import KANLinear
 
 class KKAN_Convolutional_Network(nn.Module):
-    def __init__(self,device: str = 'cpu'):
+    def __init__(self, device: str = 'cpu', grid_size: int = 5):
         super().__init__()
         self.conv1 = KAN_Convolutional_Layer(
             n_convs = 5,
             kernel_size= (3,3),
-            device = device
+            device = device,
+            grid_size = grid_size
         )
 
         self.conv2 = KAN_Convolutional_Layer(
@@ -21,8 +22,7 @@ class KKAN_Convolutional_Network(nn.Module):
             kernel_size = (3,3),
             device = device,
             dinamic_grid=True,
-            grid_size= 10   
-
+            grid_size = grid_size
         )
 
         self.pool1 = nn.MaxPool2d(
@@ -34,7 +34,7 @@ class KKAN_Convolutional_Network(nn.Module):
         self.kan1 = KANLinear(
             625,
             10,
-            grid_size=10,
+            grid_size=grid_size,
             spline_order=3,
             scale_noise=0.01,
             scale_base=1,
@@ -62,12 +62,13 @@ class KKAN_Convolutional_Network(nn.Module):
         return x
     
 class KKAN_Convolutional_Network_Big(nn.Module):
-    def __init__(self,device: str = 'cpu'):
+    def __init__(self, device: str = 'cpu', grid_size: int = 5):
         super().__init__()
         self.conv1 = KAN_Convolutional_Layer(
             n_convs = 5,
             kernel_size= (3,3),
-            device = device
+            device = device,
+            grid_size = grid_size
         )
 
         self.conv2 = KAN_Convolutional_Layer(
@@ -75,8 +76,7 @@ class KKAN_Convolutional_Network_Big(nn.Module):
             kernel_size = (3,3),
             device = device,
             dinamic_grid=True,
-            grid_size= 10   
-
+            grid_size = grid_size
         )
 
         self.pool1 = nn.MaxPool2d(
@@ -88,7 +88,7 @@ class KKAN_Convolutional_Network_Big(nn.Module):
         self.kan1 = KANLinear(
             625,
             256,
-            grid_size=10,
+            grid_size=grid_size,
             spline_order=3,
             scale_noise=0.01,
             scale_base=1,
@@ -101,7 +101,7 @@ class KKAN_Convolutional_Network_Big(nn.Module):
         self.kan2 = KANLinear(
             256,
             10,
-            grid_size=10,
+            grid_size=grid_size,
             spline_order=3,
             scale_noise=0.01,
             scale_base=1,
@@ -124,6 +124,7 @@ class KKAN_Convolutional_Network_Big(nn.Module):
         x = self.flat(x)
 
         x = self.kan1(x) 
+        x = self.kan2(x)
         x = F.log_softmax(x, dim=1)
 
         return x

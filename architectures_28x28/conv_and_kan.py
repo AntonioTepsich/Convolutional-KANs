@@ -7,7 +7,7 @@ sys.path.append('./kan_convolutional')
 from kan_convolutional.KANLinear import KANLinear
 
 class NormalConvsKAN(nn.Module):
-    def __init__(self):
+    def __init__(self, grid_size=5):
         super(NormalConvsKAN, self).__init__()
         # Convolutional layer, assuming an input with 1 channel (grayscale image)
         # and producing 16 output channels, with a kernel size of 3x3
@@ -25,7 +25,7 @@ class NormalConvsKAN(nn.Module):
         self.kan1 = KANLinear(
             625,
             10,
-            grid_size=10,
+            grid_size=grid_size,
             spline_order=3,
             scale_noise=0.01,
             scale_base=1,
@@ -33,7 +33,7 @@ class NormalConvsKAN(nn.Module):
             base_activation=nn.SiLU,
             grid_eps=0.02,
             grid_range=[0,1],
-            dinamic_grid = True)
+            dinamic_grid=True)
 
         self.name = "Conv & KAN"
 
