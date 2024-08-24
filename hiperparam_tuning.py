@@ -97,8 +97,8 @@ def get_best_model(model_class,epochs,config, train_obj,test_loader,path,is_kan)
     best_loss = all_test_loss[best_epochs]
     return best_accuracy,best_loss
 
-def search_hiperparams_and_get_final_model(model_class, train_obj, valid_obj, test_loader,path,search_grid_combinations = 10 ):
-    best_trial = tune_lr_betas_eps_l2(train_obj,valid_obj, n_combs = search_grid_combinations, grid = {
+def search_hiperparams_and_get_final_model(model_class,is_kan, train_obj, valid_obj, test_loader,path,search_grid_combinations = 10 ):
+    best_trial = tune_lr_betas_eps_l2(model_class, is_kan, train_obj,valid_obj, n_combs = search_grid_combinations, grid = {
     "lr": tune.choice([1e-5, 1e-4,5e-4 ,1e-3]),
     "weight_decay": tune.choice([0, 1e-5, 1e-4]),
     "batch_size": tune.choice([32, 64, 128 ]),
