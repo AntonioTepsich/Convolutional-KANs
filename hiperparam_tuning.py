@@ -26,7 +26,7 @@ def tune_hipers(model_class, is_kan, train_obj,valid_obj, n_combs , grid ):
 def select_hipers_randomly(grid, n_combs,seed = 42):
     np.random.seed(seed) #Lets set a seed for the weights initialization
     combinations = []
-    for i in n_combs:
+    for i in range(n_combs):
         combination= {}
         for hiperparam in grid:
             combination[hiperparam] = (np.random.choice(grid[hiperparam]))
