@@ -41,7 +41,7 @@ def train_tune(config,model_class, is_kan,train_obj=None, val_loader=None,epochs
         model = model_class(grid_size = config["grid_size"])
     else:
         model = model_class()
-    
+    print("config",config)
     model.to(device)
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.AdamW(model.parameters(), lr=config["lr"],weight_decay = config["weight_decay"])
