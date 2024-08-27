@@ -51,7 +51,7 @@ def train_tune(config,model_class, is_kan,train_obj=None, val_loader=None,epochs
         batch_size=int(config["batch_size"]),
         shuffle=True)
     
-    all_train_loss, all_test_loss, all_test_accuracy, all_test_precision, all_test_recall, all_test_f1 = train_and_test_models(model, device, train_loader, val_loader, optimizer, criterion, epochs=epochs, scheduler=scheduler,path= None)
+    all_train_loss, all_test_loss, all_test_accuracy, all_test_precision, all_test_recall, all_test_f1 = train_and_test_models(model, device, train_loader, val_loader, optimizer, criterion, epochs=epochs, scheduler=None,path= None)
     best_epochs = np.argmin(all_test_accuracy)
     best_accuracy = all_test_accuracy[best_epochs]
     best_loss = all_test_loss[best_epochs]
