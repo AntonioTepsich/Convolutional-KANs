@@ -1,7 +1,4 @@
-from ray import tune
-from ray.tune import CLIReporter
-from ray.tune.schedulers import ASHAScheduler
-from ray.air import session
+
 import torch.nn.functional as F
 import torch.optim as optim
 import torch.nn as nn
@@ -9,11 +6,37 @@ import numpy as np
 import torch
 from evaluations import train_and_test_models
 
+def tune_hipers(model_class, is_kan, train_obj,valid_obj, n_combs , grid ):
+    combinations = select_hipers_randomly(grid, n_combs,seed = 42)
+    best_trial = {"accuracy": 0}
+    for comb in combinations:
+        loss,accuracy,epochs = train_tune(comb,model_class, is_kan,train_obj=train_obj, val_loader=valid_obj,epochs = 20)
+        if best_trial.accuracy<accuracy:
+            best_trial["accuracy"] = accuracy
+            best_trial["epochs"] = epochs
+            best_trial["loss"] = loss
+        print(f"Finished Trial with Hipers {comb} and got accuracy {accuracy} with epochs {epochs}")
+    # Get the best trial
+    #best_trial = result.get_best_trial("accuracy", "max", "last")
+    print(f"Best trial config: {best_trial}")
+    print(f"Best trial final validation loss: {best_trial['loss']}")
+    print(f"Best trial final validation accuracy: {best_trial['accuracy']}")
+    print(f"Best trial final number of epochs: {best_trial['epochs']}")
+    return best_trial#best_trial.last_result['epochs'], best_trial.last_result['accuracy']
+def select_hipers_randomly(grid, n_combs,seed = 42):
+    np.random.seed(seed) #Lets set a seed for the weights initialization
+    combinations = []
+    for i in n_combs:
+        combination= {}
+        for hiperparam in grid:
+            combination[hiperparam] = (np.random.choice(grid[hiperparam]))
+        combinations.append(combination)
+    return combinations
+
+
 def train_tune(config,model_class, is_kan,train_obj=None, val_loader=None,epochs = 20):
     device = "cuda" if torch.cuda.is_available() else "cpu"
     torch.manual_seed(42) #Lets set a seed for the weights initialization
-    import os, sys
-    sys.path.append(os.path.abspath("/content/Convolutional-KANs"))
     if is_kan:
         model = model_class(grid_size = config["grid_size"])
     else:
@@ -31,51 +54,10 @@ def train_tune(config,model_class, is_kan,train_obj=None, val_loader=None,epochs
     best_epochs = np.argmin(all_test_accuracy)
     best_accuracy = all_test_accuracy[best_epochs]
     best_loss = all_test_loss[best_epochs]
-    session.report({"loss": best_loss, "accuracy": best_accuracy,"epochs":best_epochs+1})
+    print(f"The training of hiperparams {config} has finalized, with loss: {best_loss}, accuracy: {best_accuracy},epochs:{best_epochs+1}")
+    return best_loss,best_accuracy,best_epochs+1
+    #session.report({"loss": best_loss, "accuracy": best_accuracy,"epochs":best_epochs+1})
 
-def tune_lr_betas_eps_l2(model_class, is_kan,train_obj,val_obj, n_combs = 20, max_epochs= 20, grid = {
-    "lr":  tune.choice([1e-5, 1e-4,5e-4 ,1e-3]),
-    "weight_decay":   tune.choice([0, 1e-5, 1e-4]),
-    "batch_size":   tune.choice([ 32, 64,128 ]),
-    "grid_size":[10,15,20]
-    }):
-
-    # Define the scheduler and reporter
-    scheduler = ASHAScheduler(
-        metric="accuracy",
-        mode="max",
-        max_t=30,
-        grace_period=1,
-        reduction_factor=2
-    )
-    val_loader = torch.utils.data.DataLoader(
-        val_obj,
-        batch_size=64,
-        shuffle=False)
-    
-    reporter = CLIReporter(
-        metric_columns=["loss", "accuracy", "training_iteration"]
-    )
-
-    # Run the hyperparameter tuning
-    result = tune.run(
-        tune.with_parameters(train_tune, model_class = model_class,is_kan=is_kan, train_obj=train_obj , val_loader=val_loader,epochs = max_epochs ),
-        resources_per_trial={"cpu": 2, "gpu": 1},
-        config=grid,
-        num_samples=n_combs,
-        scheduler=scheduler,
-        progress_reporter=reporter,
-
-        verbose = 2
-    )
-
-    # Get the best trial
-    best_trial = result.get_best_trial("accuracy", "max", "last")
-    print(f"Best trial config: {best_trial.config}")
-    print(f"Best trial final validation loss: {best_trial.last_result['loss']}")
-    print(f"Best trial final validation accuracy: {best_trial.last_result['accuracy']}")
-    print(f"Best trial final number of epochs: {best_trial.last_result['epochs']}")
-    return best_trial#best_trial.last_result['epochs'], best_trial.last_result['accuracy']
 
 def get_best_model(model_class,epochs,config, train_obj,test_loader,path,is_kan):
     device = "cuda" if torch.cuda.is_available() else "cpu"
@@ -100,12 +82,12 @@ def get_best_model(model_class,epochs,config, train_obj,test_loader,path,is_kan)
     return best_accuracy,best_loss
 
 def search_hiperparams_and_get_final_model(model_class,is_kan, train_obj, valid_obj, test_loader,path,search_grid_combinations = 10,grid= {
-    "lr": tune.choice([1e-5, 1e-4,5e-4 ,1e-3]),
-    "weight_decay": tune.choice([0, 1e-5, 1e-4]),
-    "batch_size": tune.choice([32, 64, 128 ]),
+    "lr":[1e-5, 1e-4,5e-4 ,1e-3],
+    "weight_decay": [0, 1e-5, 1e-4],
+    "batch_size":[32, 64, 128 ],
     "grid_size": [10,15,20]
     } ):
-    best_trial = tune_lr_betas_eps_l2(model_class, is_kan, train_obj,valid_obj, n_combs = search_grid_combinations, grid = grid)
-    epochs = best_trial.last_result['epochs']
+    best_trial = tune_hipers(model_class, is_kan, train_obj,valid_obj, n_combs = search_grid_combinations, grid = grid)
+    epochs = best_trial['epochs']
 
     get_best_model(model_class,epochs,best_trial, train_obj,test_loader,path)
