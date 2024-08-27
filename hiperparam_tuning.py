@@ -23,6 +23,7 @@ def tune_hipers(model_class, is_kan, train_obj,valid_obj, n_combs , grid ):
     print(f"Best trial final validation accuracy: {best_trial['accuracy']}")
     print(f"Best trial final number of epochs: {best_trial['epochs']}")
     return best_trial#best_trial.last_result['epochs'], best_trial.last_result['accuracy']
+
 def select_hipers_randomly(grid, n_combs,seed = 42):
     np.random.seed(seed) #Lets set a seed for the weights initialization
     combinations = []
@@ -47,7 +48,7 @@ def train_tune(config,model_class, is_kan,train_obj=None, val_loader=None,epochs
     optimizer = optim.AdamW(model.parameters(), lr=config["lr"],weight_decay = config["weight_decay"])
     train_loader = torch.utils.data.DataLoader(
         train_obj,
-        batch_size=config["batch_size"],
+        batch_size=int(config["batch_size"]),
         shuffle=True)
     
     all_train_loss, all_test_loss, all_test_accuracy, all_test_precision, all_test_recall, all_test_f1 = train_and_test_models(model, device, train_loader, val_loader, optimizer, criterion, epochs=epochs, scheduler=scheduler,path= None)
