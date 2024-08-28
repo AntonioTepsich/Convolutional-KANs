@@ -7,19 +7,16 @@ sys.path.append('./kan_convolutional')
 from kan_convolutional.KANConv import KAN_Convolutional_Layer
 
 class CKAN_BN(nn.Module):
-    def __init__(self,device: str = 'cpu'):
+    def __init__(self):
         super().__init__()
         self.conv1 = KAN_Convolutional_Layer(
             n_convs = 5,
-            kernel_size= (3,3),
-            device = device
-        )
+            kernel_size= (3,3)        )
         self.bn1 = nn.BatchNorm2d(5)
         
         self.conv2 = KAN_Convolutional_Layer(
             n_convs = 5,
             kernel_size = (3,3),
-            device = device
         )
         self.bn2 = nn.BatchNorm2d(25)
 

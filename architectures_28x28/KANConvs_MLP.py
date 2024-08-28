@@ -6,19 +6,17 @@ import torch.nn.functional as F
 from kan_convolutional.KANConv import KAN_Convolutional_Layer
 
 class KANC_MLP(nn.Module):
-    def __init__(self, device: str = 'cpu', grid_size: int = 5):
+    def __init__(self,grid_size: int = 5):
         super().__init__()
         self.conv1 = KAN_Convolutional_Layer(
             n_convs = 5,
             kernel_size= (3,3),
-            device = device,
             grid_size = grid_size
         )
 
         self.conv2 = KAN_Convolutional_Layer(
             n_convs = 5,
             kernel_size = (3,3),
-            device = device,
             dinamic_grid=True,
             grid_size = grid_size
         )
@@ -47,19 +45,17 @@ class KANC_MLP(nn.Module):
         return x
 
 class KANC_MLP_sin_grid(nn.Module):
-    def __init__(self, device: str = 'cpu', grid_size: int = 5):
+    def __init__(self,  grid_size: int = 5):
         super().__init__()
         self.conv1 = KAN_Convolutional_Layer(
             n_convs = 5,
             kernel_size= (3,3),
-            device = device,
             grid_size = grid_size
         )
 
         self.conv2 = KAN_Convolutional_Layer(
             n_convs = 5,
             kernel_size = (3,3),
-            device = device,
             dinamic_grid=False,
             grid_size = grid_size
         )
