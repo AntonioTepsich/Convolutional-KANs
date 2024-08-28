@@ -71,12 +71,14 @@ def get_best_model(model_class,epochs,config, train_obj,test_loader,path,is_kan)
     model.to(device)
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.AdamW(model.parameters(), lr=config["lr"], eps=config["eps"],weight_decay = config["weight_decay"])
+    
     train_loader = torch.utils.data.DataLoader(
         train_obj,
         batch_size=config["batch_size"],
         shuffle=True)
     
     all_train_loss, all_test_loss, all_test_accuracy, all_test_precision, all_test_recall, all_test_f1 = train_and_test_models(model, device, train_loader, test_loader, optimizer, criterion, epochs=epochs, scheduler=None,path= path)
+    
     best_epochs = np.argmin(all_test_accuracy)
     best_accuracy = all_test_accuracy[best_epochs]
     best_loss = all_test_loss[best_epochs]
@@ -90,5 +92,6 @@ def search_hiperparams_and_get_final_model(model_class,is_kan, train_obj, valid_
     } ):
     best_trial = tune_hipers(model_class, is_kan, train_obj,valid_obj, n_combs = search_grid_combinations, grid = grid)
     epochs = best_trial['epochs']
+    train_dev_sets = torch.utils.data.ConcatDataset([train_obj, train_obj])
 
-    get_best_model(model_class,epochs,best_trial, train_obj,test_loader,path)
+    get_best_model(model_class,epochs,best_trial, train_dev_sets,test_loader,path)
