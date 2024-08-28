@@ -149,7 +149,8 @@ def train_and_test_models(model, device, train_loader, test_loader, optimizer, c
         if test_accuracy>best_acc and not path is None:
             best_acc = test_accuracy
             torch.save(model,os.path.join(path,model.name+".pt"))
-        scheduler.step()
+        if not (scheduler is None):
+            scheduler.step()
     model.all_test_accuracy = all_test_accuracy
     model.all_test_precision = all_test_precision
     model.all_test_f1 = all_test_f1
