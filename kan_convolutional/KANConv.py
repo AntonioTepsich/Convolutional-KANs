@@ -27,7 +27,6 @@ class KAN_Convolutional_Layer(torch.nn.Module):
             base_activation=torch.nn.SiLU,
             grid_eps: float = 0.02,
             grid_range: tuple = [-1, 1],
-            device: str = "cpu",
             dinamic_grid = False
         ):
         """
@@ -55,7 +54,6 @@ class KAN_Convolutional_Layer(torch.nn.Module):
         self.grid_size = grid_size
         self.spline_order = spline_order
         self.kernel_size = kernel_size
-        self.device = device
         self.dilation = dilation
         self.padding = padding
         self.convs = torch.nn.ModuleList()
@@ -79,7 +77,6 @@ class KAN_Convolutional_Layer(torch.nn.Module):
                     base_activation=base_activation,
                     grid_eps=grid_eps,
                     grid_range=grid_range,
-                    device = device,
                     dinamic_grid = dinamic_grid
 
                 )
@@ -87,6 +84,7 @@ class KAN_Convolutional_Layer(torch.nn.Module):
 
     def forward(self, x: torch.Tensor):
         # If there are multiple convolutions, apply them all
+        self.device = x.device
         if self.dinamic_grid and self.training:
             x_min = torch.min(x).item()
             x_max = torch.max(x).item()
@@ -118,7 +116,6 @@ class KAN_Convolution(torch.nn.Module):
             base_activation=torch.nn.SiLU,
             grid_eps: float = 0.02,
             grid_range: tuple = [-1, 1],
-            device = "cpu",
             dinamic_grid = False
         ):
         """
@@ -131,7 +128,6 @@ class KAN_Convolution(torch.nn.Module):
         self.stride = stride
         self.padding = padding
         self.dilation = dilation
-        self.device = device
         self.dinamic_grid = dinamic_grid
 
         self.conv = KANLinear(
@@ -149,6 +145,7 @@ class KAN_Convolution(torch.nn.Module):
         )
 
     def forward(self, x: torch.Tensor):
+        self.device = x.device
         return convolution.kan_conv2d(x, self.conv,self.kernel_size[0],self.stride,self.dilation,self.padding,self.device)
     
     def regularization_loss(self, regularize_activation=1.0, regularize_entropy=1.0):
