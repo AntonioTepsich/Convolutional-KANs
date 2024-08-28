@@ -90,7 +90,12 @@ def search_hiperparams_and_get_final_model(model_class,is_kan, train_obj, valid_
     "batch_size":[32, 64, 128 ],
     "grid_size": [10,15,20]
     } ):
-    best_trial = tune_hipers(model_class, is_kan, train_obj,valid_obj, n_combs = search_grid_combinations, grid = grid)
+    val_loader = torch.utils.data.DataLoader(
+        valid_obj,
+        batch_size=128,
+        shuffle=True)
+    
+    best_trial = tune_hipers(model_class, is_kan, train_obj,val_loader, n_combs = search_grid_combinations, grid = grid)
     epochs = best_trial['epochs']
     train_dev_sets = torch.utils.data.ConcatDataset([train_obj, train_obj])
 
