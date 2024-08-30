@@ -12,7 +12,7 @@ def tune_hipers(model_class, is_kan, train_obj, max_epochs, n_combs , grid,folds
     best_trial = {"accuracy": 0}
     for comb in combinations:
         loss,accuracy,epochs = train_tune(comb,model_class, is_kan,train_obj=train_obj,epochs = max_epochs,folds =folds)
-        if best_trial.accuracy<accuracy:
+        if best_trial["accuracy"]<accuracy:
             best_trial["accuracy"] = accuracy
             best_trial["epochs"] = epochs
             best_trial["loss"] = loss
