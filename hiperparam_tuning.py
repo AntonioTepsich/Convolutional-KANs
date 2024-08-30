@@ -18,7 +18,6 @@ def tune_hipers(model_class, is_kan, train_obj, max_epochs, n_combs , grid,folds
             best_trial["loss"] = loss
         print(f"Finished Trial with Hipers {comb} and got accuracy {accuracy} with epochs {epochs}")
     # Get the best trial
-    #best_trial = result.get_best_trial("accuracy", "max", "last")
     print(f"Best trial config: {best_trial}")
     print(f"Best trial final validation loss: {best_trial['loss']}")
     print(f"Best trial final validation accuracy: {best_trial['accuracy']}")
@@ -109,7 +108,7 @@ def search_hiperparams_and_get_final_model(model_class,is_kan, train_obj, test_l
     best_trial = tune_hipers(model_class, is_kan, train_obj,max_epochs = max_epochs, n_combs = search_grid_combinations, grid = grid,folds = folds)
     epochs = best_trial['epochs']
 
-    get_best_model(model_class,epochs,best_trial, train_obj,test_loader,path)
+    get_best_model(model_class,epochs,best_trial, train_obj,test_loader,path,is_kan)
 
 
 def select_hipers_randomly(grid, n_combs,seed = 42):
