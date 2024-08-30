@@ -16,6 +16,7 @@ def tune_hipers(model_class, is_kan, train_obj, max_epochs, n_combs , grid,folds
             best_trial["accuracy"] = accuracy
             best_trial["epochs"] = epochs
             best_trial["loss"] = loss
+            best_trial.update(comb)
         print(f"Finished Trial with Hipers {comb} and got accuracy {accuracy} with epochs {epochs}")
     # Get the best trial
     print(f"Best trial config: {best_trial}")
