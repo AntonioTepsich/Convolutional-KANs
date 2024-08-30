@@ -44,10 +44,10 @@ def train_tune(config,model_class, is_kan,train_obj=None,epochs = 20,folds= 3):
         # Define data loaders for training and testing data in this fold
         train_loader = torch.utils.data.DataLoader(
                         train_obj, 
-                        batch_size=config["batch_size"], sampler=train_subsampler)
+                        batch_size=int(config["batch_size"]), sampler=train_subsampler)
         valid_loader = torch.utils.data.DataLoader(
                         train_obj,
-                        batch_size=config["batch_size"], sampler=valid_subsampler)
+                        batch_size=int(config["batch_size"]), sampler=valid_subsampler)
         
             # Init the neural network
         print("config",config)
@@ -87,7 +87,7 @@ def get_best_model(model_class,epochs,config, train_obj,test_loader,path,is_kan 
     
     train_loader = torch.utils.data.DataLoader(
         train_obj,
-        batch_size=config["batch_size"],
+        batch_size=int(config["batch_size"]),
         shuffle=True)
     
     all_train_loss, all_test_loss, all_test_accuracy, all_test_precision, all_test_recall, all_test_f1 = train_and_test_models(model, device, train_loader, test_loader, optimizer, criterion, epochs=epochs, scheduler=None,path= path)
