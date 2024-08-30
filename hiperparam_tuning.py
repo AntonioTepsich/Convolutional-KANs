@@ -84,7 +84,7 @@ def get_best_model(model_class,epochs,config, train_obj,test_loader,path,is_kan 
  
     model.to(device)
     criterion = nn.CrossEntropyLoss()
-    optimizer = optim.AdamW(model.parameters(), lr=config["lr"], eps=config["eps"],weight_decay = config["weight_decay"])
+    optimizer = optim.AdamW(model.parameters(), lr=config["lr"],weight_decay = config["weight_decay"])
     
     train_loader = torch.utils.data.DataLoader(
         train_obj,
