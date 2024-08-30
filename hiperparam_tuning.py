@@ -32,7 +32,7 @@ def train_tune(config,model_class, is_kan,train_obj=None,epochs = 20,folds= 3):
     kfold = KFold(n_splits=folds, shuffle=True)
     accuracys = []
     losses = []
-    for fold, (train_ids, test_ids) in enumerate(kfold.split(train_obj)):
+    for fold, (train_ids, test_ids) in enumerate(kfold.split(np.arange(len(train_obj)))):
         if is_kan:
             model = model_class(grid_size = config["grid_size"])
         else:
