@@ -38,11 +38,12 @@ def tune_hipers(model_class, is_kan, train_obj, max_epochs, n_combs , grid,folds
 
 def train_tune(config,model_class, is_kan,train_obj=None,epochs = 20,folds= 3):
     device = "cuda" if torch.cuda.is_available() else "cpu"
-    torch.manual_seed(42) #Lets set a seed for the weights initialization
+    torch.manual_seed(0) #Lets set a seed for the weights initialization
 
     kfold = KFold(n_splits=folds, shuffle=True)
     accuracys = []
     losses = []
+    print(config)
     for fold, (train_ids, valid_ids) in enumerate(kfold.split(np.arange(len(train_obj)))):
         print("starting fold", fold)
         if is_kan:

@@ -137,7 +137,6 @@ def train_and_test_models(model, device, train_loader, test_loader, optimizer, c
         # Train the model
         train_loss = train(model, device, train_loader, optimizer, epoch, criterion)
         all_train_loss.append(train_loss)
-
         # Test the model
         test_loss, test_accuracy, test_precision, test_recall, test_f1 = test(model, device, test_loader, criterion)
         all_test_loss.append(test_loss)
