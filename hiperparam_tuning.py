@@ -44,7 +44,7 @@ def train_tune(config,model_class, is_kan,train_obj=None,epochs = 20,folds= 3):
     accuracys = []
     losses = []
     print(config)
-    for fold, (train_ids, valid_ids) in enumerate(kfold.split(np.arange(len(train_obj)))):
+    for fold, (train_ids, valid_ids) in enumerate(kfold.split(np.arange(len(train_obj)),train_obj.targets)):
         print("starting fold", fold)
         if is_kan:
             model = model_class(grid_size = config["grid_size"])
@@ -53,12 +53,7 @@ def train_tune(config,model_class, is_kan,train_obj=None,epochs = 20,folds= 3):
         # Sample elements randomly from a given list of ids, no replacement.
         train_subsampler = torch.utils.data.SubsetRandomSampler(train_ids)
         valid_subsampler = torch.utils.data.SubsetRandomSampler(valid_ids)
-        print(len(train_obj))
-        print("train",len(train_ids))
-        print(train_ids)
 
-        print("valid",len(valid_ids))
-        print(valid_ids)
         # Define data loaders for training and testing data in this fold
         train_loader = torch.utils.data.DataLoader(
                         train_obj, 
