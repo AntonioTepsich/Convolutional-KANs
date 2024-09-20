@@ -43,14 +43,15 @@ def train_tune(config,model_class, is_kan,train_obj=None,epochs = 20,folds= 3):
     kfold = KFold(n_splits=folds, shuffle=True)
     accuracys = []
     losses = []
-    for fold, (train_ids, test_ids) in enumerate(kfold.split(np.arange(len(train_obj)))):
+    for fold, (train_ids, valid_ids) in enumerate(kfold.split(np.arange(len(train_obj)))):
+        print("starting fold", fold)
         if is_kan:
             model = model_class(grid_size = config["grid_size"])
         else:
             model = model_class()
         # Sample elements randomly from a given list of ids, no replacement.
         train_subsampler = torch.utils.data.SubsetRandomSampler(train_ids)
-        valid_subsampler = torch.utils.data.SubsetRandomSampler(test_ids)
+        valid_subsampler = torch.utils.data.SubsetRandomSampler(valid_ids)
         
         # Define data loaders for training and testing data in this fold
         train_loader = torch.utils.data.DataLoader(
@@ -60,17 +61,13 @@ def train_tune(config,model_class, is_kan,train_obj=None,epochs = 20,folds= 3):
                         train_obj,
                         batch_size=int(config["batch_size"]), sampler=valid_subsampler)
         
-            # Init the neural network
-        print("config",config)
+        # Init the neural network
         model.to(device)
         criterion = nn.CrossEntropyLoss()
         optimizer = optim.AdamW(model.parameters(), lr=config["lr"],weight_decay = config["weight_decay"])
 
-        all_train_loss, all_test_loss, all_test_accuracy, all_test_precision, all_test_recall, all_test_f1 = train_and_test_models(model, device, train_loader, valid_loader, optimizer, criterion, epochs=epochs, scheduler=None,path= None,verbose= False)
-        #best_epochs = np.argmin(all_test_accuracy)
-        #best_accuracy = all_test_accuracy[best_epochs]
-        #best_loss = all_test_loss[best_epochs]
-
+        all_train_loss, all_test_loss, all_test_accuracy, all_test_precision, all_test_recall, all_test_f1 = train_and_test_models(model, device, train_loader, valid_loader, optimizer, criterion, epochs=epochs, scheduler=None,path= None,verbose= True)
+        print(all_test_accuracy)
         accuracys.append(all_test_accuracy)
         losses.append(all_test_loss)
     accuracy_per_epoch = np.mean(accuracys,axis = 0)
@@ -81,7 +78,6 @@ def train_tune(config,model_class, is_kan,train_obj=None,epochs = 20,folds= 3):
     best_loss = loss_per_epoch[index]
     print(f"The training of hiperparams {config} has finalized, with loss: {best_loss}, out of fold accuracy: {best_accuracy}, epochs:{best_epochs}")
     return best_loss,best_accuracy,best_epochs
-    #session.report({"loss": best_loss, "accuracy": best_accuracy,"epochs":best_epochs+1})
 
 
 def get_best_model(model_class,epochs,config, train_obj,test_loader,path,is_kan ):
@@ -103,7 +99,7 @@ def get_best_model(model_class,epochs,config, train_obj,test_loader,path,is_kan 
     
     all_train_loss, all_test_loss, all_test_accuracy, all_test_precision, all_test_recall, all_test_f1 = train_and_test_models(model, device, train_loader, test_loader, optimizer, criterion, epochs=epochs, scheduler=None,path= path)
     
-    best_epochs = np.argmin(all_test_accuracy)
+    best_epochs = np.argmax(all_test_accuracy)
     best_accuracy = all_test_accuracy[best_epochs]
     best_loss = all_test_loss[best_epochs]
     return best_accuracy,best_loss
@@ -117,7 +113,7 @@ def search_hiperparams_and_get_final_model(model_class,is_kan, train_obj, test_l
 
     
     best_trial = tune_hipers(model_class, is_kan, train_obj,max_epochs = max_epochs, n_combs = search_grid_combinations,
-                              grid = grid,folds = folds, dataset_name="MNIST")
+                              grid = grid,folds = folds, dataset_name=dataset_name)
     epochs = best_trial['epochs']
 
     get_best_model(model_class,epochs,best_trial, train_obj,test_loader,path,is_kan)
