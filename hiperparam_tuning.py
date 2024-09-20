@@ -64,11 +64,12 @@ def train_tune(config,model_class, is_kan,train_obj=None,epochs = 20,folds= 3):
         # Init the neural network
         model.to(device)
         criterion = nn.CrossEntropyLoss()
-        #optimizer = optim.AdamW(model.parameters())
+        optimizer = optim.AdamW(model.parameters(), lr=1e-3, weight_decay=1e-4)
 
-        optimizer = optim.AdamW(model.parameters(), lr=config["lr"],weight_decay = config["weight_decay"])
+        #optimizer = optim.AdamW(model.parameters(), lr=config["lr"],weight_decay = config["weight_decay"])
+        scheduler = optim.lr_scheduler.ExponentialLR(optimizer, gamma=0.8)
 
-        all_train_loss, all_test_loss, all_test_accuracy, all_test_precision, all_test_recall, all_test_f1 = train_and_test_models(model, device, train_loader, valid_loader, optimizer, criterion, epochs=epochs, scheduler=None,path= None,verbose= True)
+        all_train_loss, all_test_loss, all_test_accuracy, all_test_precision, all_test_recall, all_test_f1 = train_and_test_models(model, device, train_loader, valid_loader, optimizer, criterion, epochs=epochs, scheduler=scheduler,path= None,verbose= True)
         accuracys.append(all_test_accuracy)
         losses.append(all_test_loss)
     accuracy_per_epoch = np.mean(accuracys,axis = 0)
