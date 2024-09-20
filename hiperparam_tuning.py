@@ -7,9 +7,10 @@ import torch
 from evaluations import train_and_test_models
 from sklearn.model_selection import KFold
 
-def tune_hipers(model_class, is_kan, train_obj, max_epochs, n_combs , grid,folds = 3 ):
+def tune_hipers(model_class, is_kan, train_obj, max_epochs, n_combs , grid,folds = 3,save_file = True,dataset_name="MNIST" ):
     combinations = select_hipers_randomly(grid, n_combs,seed = 42)
     best_trial = {"accuracy": 0}
+    nombre_modelo = model_class().name
     for comb in combinations:
         loss,accuracy,epochs = train_tune(comb,model_class, is_kan,train_obj=train_obj,epochs = max_epochs,folds =folds)
         if best_trial["accuracy"]<accuracy:
@@ -17,12 +18,21 @@ def tune_hipers(model_class, is_kan, train_obj, max_epochs, n_combs , grid,folds
             best_trial["epochs"] = epochs
             best_trial["loss"] = loss
             best_trial.update(comb)
+
+        if save_file:  
+            with open(f"results/{dataset_name}/{nombre_modelo} logs.txt", 'a+') as f:
+                f.write(f"Finished Trial with Hipers {comb} and got accuracy {accuracy} with epochs {epochs}")
+
         print(f"Finished Trial with Hipers {comb} and got accuracy {accuracy} with epochs {epochs}")
     # Get the best trial
     print(f"Best trial config: {best_trial}")
     print(f"Best trial final validation loss: {best_trial['loss']}")
     print(f"Best trial final validation accuracy: {best_trial['accuracy']}")
     print(f"Best trial final number of epochs: {best_trial['epochs']}")
+    if save_file:   
+        with open(f'results/{dataset_name}/{nombre_modelo} final result.txt', 'w') as f:
+            f.writelines([f"Best trial config: {best_trial}",f"Best trial final validation loss: {best_trial['loss']}",f"Best trial final validation accuracy: {best_trial['accuracy']}",f"Best trial final number of epochs: {best_trial['epochs']}"])
+    
     return best_trial#best_trial.last_result['epochs'], best_trial.last_result['accuracy']
 
 
@@ -103,10 +113,11 @@ def search_hiperparams_and_get_final_model(model_class,is_kan, train_obj, test_l
     "weight_decay": [0, 1e-5, 1e-4],
     "batch_size":[32, 64, 128 ],
     "grid_size": [10,15,20]
-    },folds = 3  ):
+    },folds = 3  ,dataset_name="MNIST"):
 
     
-    best_trial = tune_hipers(model_class, is_kan, train_obj,max_epochs = max_epochs, n_combs = search_grid_combinations, grid = grid,folds = folds)
+    best_trial = tune_hipers(model_class, is_kan, train_obj,max_epochs = max_epochs, n_combs = search_grid_combinations,
+                              grid = grid,folds = folds, dataset_name="MNIST")
     epochs = best_trial['epochs']
 
     get_best_model(model_class,epochs,best_trial, train_obj,test_loader,path,is_kan)
