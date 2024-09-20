@@ -45,7 +45,6 @@ def train_tune(config,model_class, is_kan,train_obj=None,epochs = 20,folds= 3):
     losses = []
     for fold, (train_ids, valid_ids) in enumerate(kfold.split(np.arange(len(train_obj)))):
         print("starting fold", fold)
-        print("train ids",len(train_ids))
         if is_kan:
             model = model_class(grid_size = config["grid_size"])
         else:
@@ -65,10 +64,11 @@ def train_tune(config,model_class, is_kan,train_obj=None,epochs = 20,folds= 3):
         # Init the neural network
         model.to(device)
         criterion = nn.CrossEntropyLoss()
-        optimizer = optim.AdamW(model.parameters(), lr=config["lr"],weight_decay = config["weight_decay"])
+        optimizer = optim.AdamW(model.parameters())
+
+        #optimizer = optim.AdamW(model.parameters(), lr=config["lr"],weight_decay = config["weight_decay"])
 
         all_train_loss, all_test_loss, all_test_accuracy, all_test_precision, all_test_recall, all_test_f1 = train_and_test_models(model, device, train_loader, valid_loader, optimizer, criterion, epochs=epochs, scheduler=None,path= None,verbose= True)
-        print(all_test_accuracy)
         accuracys.append(all_test_accuracy)
         losses.append(all_test_loss)
     accuracy_per_epoch = np.mean(accuracys,axis = 0)
