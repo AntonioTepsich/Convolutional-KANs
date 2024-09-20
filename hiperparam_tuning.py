@@ -53,14 +53,15 @@ def train_tune(config,model_class, is_kan,train_obj=None,epochs = 20,folds= 3):
         # Sample elements randomly from a given list of ids, no replacement.
         train_subsampler = torch.utils.data.SubsetRandomSampler(train_ids)
         valid_subsampler = torch.utils.data.SubsetRandomSampler(valid_ids)
-
+        trainset_1 = torch.utils.data.Subset(train_obj, train_ids)
+        trainset_2 = torch.utils.data.Subset(train_obj, valid_ids)
         # Define data loaders for training and testing data in this fold
         train_loader = torch.utils.data.DataLoader(
-                        train_obj, 
-                        batch_size=int(config["batch_size"]),)
+                        trainset_1, 
+                        batch_size=int(config["batch_size"]))
         valid_loader = torch.utils.data.DataLoader(
-                        train_obj,
-                        batch_size=int(config["batch_size"]), sampler=valid_subsampler)
+                        trainset_2,
+                        batch_size=int(config["batch_size"]))
         # Init the neural network
         model.to(device)
         criterion = nn.CrossEntropyLoss()
