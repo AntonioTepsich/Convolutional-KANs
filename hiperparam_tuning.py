@@ -57,7 +57,7 @@ def train_tune(config,model_class, is_kan,train_obj=None,epochs = 20,folds= 3):
         # Define data loaders for training and testing data in this fold
         train_loader = torch.utils.data.DataLoader(
                         train_obj, 
-                        batch_size=int(config["batch_size"]), sampler=train_subsampler)
+                        batch_size=int(config["batch_size"]),)
         valid_loader = torch.utils.data.DataLoader(
                         train_obj,
                         batch_size=int(config["batch_size"]), sampler=valid_subsampler)
