@@ -5,7 +5,7 @@ import torch.nn as nn
 import numpy as np
 import torch
 from evaluations import train_and_test_models
-from sklearn.model_selection import KFold
+from sklearn.model_selection import StratifiedKFold
 
 def tune_hipers(model_class, is_kan, train_obj, max_epochs, n_combs , grid,folds = 3,save_file = True,dataset_name="MNIST" ):
     combinations = select_hipers_randomly(grid, n_combs,seed = 42)
@@ -40,7 +40,7 @@ def train_tune(config,model_class, is_kan,train_obj=None,epochs = 20,folds= 3):
     device = "cuda" if torch.cuda.is_available() else "cpu"
     torch.manual_seed(0) #Lets set a seed for the weights initialization
 
-    kfold = KFold(n_splits=folds, shuffle=True)
+    kfold = StratifiedKFold(n_splits=folds, shuffle=True, random_state=1)
     accuracys = []
     losses = []
     print(config)
