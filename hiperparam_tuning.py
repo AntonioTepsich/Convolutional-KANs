@@ -45,6 +45,7 @@ def train_tune(config,model_class, is_kan,train_obj=None,epochs = 20,folds= 3):
     losses = []
     for fold, (train_ids, valid_ids) in enumerate(kfold.split(np.arange(len(train_obj)))):
         print("starting fold", fold)
+        print("train ids",len(train_ids))
         if is_kan:
             model = model_class(grid_size = config["grid_size"])
         else:
