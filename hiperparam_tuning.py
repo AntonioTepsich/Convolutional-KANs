@@ -65,9 +65,9 @@ def train_tune(config,model_class, is_kan,train_obj=None,epochs = 20,folds= 3):
         # Init the neural network
         model.to(device)
         criterion = nn.CrossEntropyLoss()
-        optimizer = optim.AdamW(model.parameters())
+        #optimizer = optim.AdamW(model.parameters())
 
-        #optimizer = optim.AdamW(model.parameters(), lr=config["lr"],weight_decay = config["weight_decay"])
+        optimizer = optim.AdamW(model.parameters(), lr=1e-3,weight_decay = config["weight_decay"])
 
         all_train_loss, all_test_loss, all_test_accuracy, all_test_precision, all_test_recall, all_test_f1 = train_and_test_models(model, device, train_loader, valid_loader, optimizer, criterion, epochs=epochs, scheduler=None,path= None,verbose= True)
         accuracys.append(all_test_accuracy)
@@ -84,7 +84,7 @@ def train_tune(config,model_class, is_kan,train_obj=None,epochs = 20,folds= 3):
 
 def get_best_model(model_class,epochs,config, train_obj,test_loader,path,is_kan ):
     device = "cuda" if torch.cuda.is_available() else "cpu"
-    torch.manual_seed(42) #Lets set a seed for the weights initialization
+    torch.manual_seed(0) #Lets set a seed for the weights initialization
     if is_kan:
         model = model_class(grid_size = config["grid_size"])
     else:
