@@ -9,7 +9,7 @@ from kan_convolutional.KANLinear import KANLinear
 from kan_convolutional.kan_conv import KANConv2DLayer
 
 class KKAN_Convolutional_Network(nn.Module):
-    def __init__(self,device: str = 'cpu'):
+    def __init__(self, grid_size: int = 5):
         super().__init__()
         self.name = "KKAN (Small)"
 
@@ -27,7 +27,7 @@ class KKAN_Convolutional_Network(nn.Module):
             padding=0,
             stride=1,
             dilation=1,
-            grid_size=5,
+            grid_size=grid_size,
             base_activation=nn.SiLU,
             grid_range=[0,1],
             dropout=0.0,
@@ -48,7 +48,7 @@ class KKAN_Convolutional_Network(nn.Module):
             padding=0,
             stride=1,
             dilation=1,
-            grid_size=5,
+            grid_size=grid_size,
             base_activation=nn.SiLU,
             grid_range=[0,1],
             dropout=0.0,
@@ -63,7 +63,7 @@ class KKAN_Convolutional_Network(nn.Module):
         self.kan1 = KANLinear(
             625,
             10,
-            grid_size=10,
+            grid_size=grid_size,
             spline_order=3,
             scale_noise=0.01,
             scale_base=1,
