@@ -9,6 +9,8 @@ from kan_convolutional.kan_conv import KANConv2DLayer
 
 class KANC_MLP(nn.Module):
     def __init__(self,device: str = 'cpu'):
+        self.name = "KAN Conv & 1 Layer MLP"
+
         super().__init__()
         # self.conv1 = KAN_Convolutional_Layer(
         #     n_convs = 5,
