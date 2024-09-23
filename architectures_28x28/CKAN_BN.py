@@ -11,7 +11,7 @@ from kan_convolutional.kan_conv import KANConv2DLayer
 
 
 class CKAN_BN(nn.Module):
-    def __init__(self,device: str = 'cpu'):
+    def __init__(self,grid_size: int = 5):
         super().__init__()
         self.name = "KAN Conv BN & 2 Layer MLP"
 
@@ -29,7 +29,7 @@ class CKAN_BN(nn.Module):
             padding=0,
             stride=1,
             dilation=1,
-            grid_size=5,
+            grid_size=grid_size,
             base_activation=nn.SiLU,
             grid_range=[0,1],
             dropout=0.0,
@@ -52,7 +52,7 @@ class CKAN_BN(nn.Module):
             padding=0,
             stride=1,
             dilation=1,
-            grid_size=5,
+            grid_size=grid_size,
             base_activation=nn.SiLU,
             grid_range=[0,1],
             dropout=0.0,
