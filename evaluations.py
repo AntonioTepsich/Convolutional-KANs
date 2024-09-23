@@ -146,9 +146,11 @@ def train_and_test_models(model, device, train_loader, test_loader, optimizer, c
         all_test_f1.append(test_f1)
         if verbose:
             print(f'End of Epoch {epoch}: Train Loss: {train_loss:.6f}, Test Loss: {test_loss:.4f}, Accuracy: {test_accuracy:.2%}')
-        if test_accuracy>best_acc and not path is None:
+        if test_accuracy>best_acc:
+            
             best_acc = test_accuracy
-            torch.save(model,os.path.join(path,model.name+".pt"))
+            if not path is None:
+                torch.save(model,os.path.join(path,model.name+".pt"))
         if not (scheduler is None):
             scheduler.step()
     model.all_test_accuracy = all_test_accuracy

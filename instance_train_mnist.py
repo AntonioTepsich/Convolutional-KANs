@@ -39,6 +39,11 @@ mnist_test = MNIST(root='./data', train=False, download=True, transform=transfor
 train_loader = DataLoader(mnist_train, batch_size=64, shuffle=True)
 test_loader = DataLoader(mnist_test, batch_size=64, shuffle=False)
 dataset_name = "MNIST"
+if not os.path.exists("models"):
+    os.mkdir("models")
+
+if not os.path.exists("results"):
+    os.mkdir("results")
 path = f"models/{dataset_name}"
 if not os.path.exists(path):
     os.mkdir("/".join(path.split("/")[:-1]))

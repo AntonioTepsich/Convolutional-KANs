@@ -28,6 +28,7 @@ class SimpleCNN_Small(nn.Module):
         x = F.log_softmax(x, dim=1)
 
         return x
+    
 class SimpleCNN_Medium(nn.Module):
     def __init__(self):
         super(SimpleCNN_Medium, self).__init__()
@@ -40,6 +41,7 @@ class SimpleCNN_Medium(nn.Module):
         self.fc = nn.Linear(625, 245)
         self.fc2 = nn.Linear(245, 10)
         self.name = "CNN (Medium)"
+        
 class SimpleLinear(nn.Module):
     def __init__(self):
         super(SimpleLinear, self).__init__()
