@@ -19,7 +19,7 @@ from torch.utils.data import DataLoader
 from architectures_28x28.KKAN import KKAN_Convolutional_Network
 from architectures_28x28.conv_and_kan import NormalConvsKAN
 from architectures_28x28.CKAN_BN import CKAN_BN
-from architectures_28x28.KANConvs_MLP import KANC_MLP,KANC_MLP_sin_grid
+from architectures_28x28.KANConvs_MLP import KANC_MLP
 from architectures_28x28.KANConvs_MLP_2 import KANC_MLP_2
 from architectures_28x28.SimpleModels import *
 from architectures_28x28.ConvNet import ConvNet
