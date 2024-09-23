@@ -13,6 +13,7 @@ class NormalConvsKAN(nn.Module):
         # and producing 16 output channels, with a kernel size of 3x3
         self.conv1 = nn.Conv2d(1, 5, kernel_size=3, padding=1)
         self.conv2 = nn.Conv2d(5, 5, kernel_size=3, padding=1)
+        self.name = "Conv & KAN"
 
         # Max pooling layer
         self.maxpool = nn.MaxPool2d(kernel_size=2)
