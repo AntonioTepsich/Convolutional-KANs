@@ -8,7 +8,7 @@ from kan_convolutional.kan_conv import KANConv2DLayer
 
 
 class KANC_MLP(nn.Module):
-    def __init__(self,device: str = 'cpu'):
+    def __init__(self,grid_size: int = 5):
         self.name = "KAN Conv & 1 Layer MLP"
 
         super().__init__()
@@ -26,7 +26,7 @@ class KANC_MLP(nn.Module):
             padding=0,
             stride=1,
             dilation=1,
-            grid_size=5,
+            grid_size=grid_size,
             base_activation=nn.SiLU,
             grid_range=[0,1],
             dropout=0.0,
@@ -48,7 +48,7 @@ class KANC_MLP(nn.Module):
             padding=0,
             stride=1,
             dilation=1,
-            grid_size=5,
+            grid_size=grid_size,
             base_activation=nn.SiLU,
             grid_range=[0,1],
             dropout=0.0,
