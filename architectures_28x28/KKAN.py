@@ -11,6 +11,8 @@ from kan_convolutional.kan_conv import KANConv2DLayer
 class KKAN_Convolutional_Network(nn.Module):
     def __init__(self,device: str = 'cpu'):
         super().__init__()
+        self.name = "KKAN (Small)"
+
         # self.conv1 = KAN_Convolutional_Layer(
         #     n_convs = 5,
         #     kernel_size= (3,3),
