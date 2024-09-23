@@ -13,6 +13,8 @@ from kan_convolutional.kan_conv import KANConv2DLayer
 class CKAN_BN(nn.Module):
     def __init__(self,device: str = 'cpu'):
         super().__init__()
+        self.name = "KAN Conv BN & 2 Layer MLP"
+
         # self.conv1 = KAN_Convolutional_Layer(
         #     n_convs = 5,
         #     kernel_size= (3,3),
