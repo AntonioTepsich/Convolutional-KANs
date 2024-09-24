@@ -17,10 +17,10 @@ import torchvision.transforms as transforms
 from torchvision.datasets import MNIST
 from torch.utils.data import DataLoader
 from architectures_28x28.KKAN import KKAN_Convolutional_Network
-from architectures_28x28.conv_and_kan import NormalConvsKAN
-from architectures_28x28.CKAN_BN import CKAN_BN
+#from architectures_28x28.conv_and_kan import NormalConvsKAN
+#from architectures_28x28.CKAN_BN import CKAN_BN
 from architectures_28x28.KANConvs_MLP import KANC_MLP
-from architectures_28x28.KANConvs_MLP_2 import KANC_MLP_2
+#from architectures_28x28.KANConvs_MLP_2 import KANC_MLP_2
 from architectures_28x28.SimpleModels import *
 from architectures_28x28.ConvNet import ConvNet
 from evaluations import *
@@ -63,20 +63,20 @@ search_hiperparams_and_get_final_model(KANC_MLP,True, mnist_train,  test_loader,
 #search_hiperparams_and_get_final_model(model_KANC_MLP_sin_grid,True, mnist_train,  test_loader,max_epochs= 20,path = path,search_grid_combinations = 10 ,folds = 3,dataset_name=dataset_name)
 
 #Bigger
-model_KANC_MLP_2= KANC_MLP_2(device = device)
-search_hiperparams_and_get_final_model(model_KANC_MLP_2,True, mnist_train,  test_loader,max_epochs= 20,path = path,search_grid_combinations = 10 ,folds = 3,dataset_name=dataset_name)
+# model_KANC_MLP_2= KANC_MLP_2(device = device)
+# search_hiperparams_and_get_final_model(model_KANC_MLP_2,True, mnist_train,  test_loader,max_epochs= 20,path = path,search_grid_combinations = 10 ,folds = 3,dataset_name=dataset_name)
 
-#model_KANC_MLP_sin_grid_2= KANC_MLP_sin_grid_2(device = device)
-#search_hiperparams_and_get_final_model(model_KANC_MLP_sin_grid_2,True, mnist_train,  test_loader,max_epochs= 20,path = path,search_grid_combinations = 10 ,folds = 3,dataset_name=dataset_name)
+# #model_KANC_MLP_sin_grid_2= KANC_MLP_sin_grid_2(device = device)
+# #search_hiperparams_and_get_final_model(model_KANC_MLP_sin_grid_2,True, mnist_train,  test_loader,max_epochs= 20,path = path,search_grid_combinations = 10 ,folds = 3,dataset_name=dataset_name)
 
-model_CKAN_BN= CKAN_BN(device)
-search_hiperparams_and_get_final_model(model_CKAN_BN,True, mnist_train,  test_loader,max_epochs= 20,path = path,search_grid_combinations = 10 ,folds = 3,dataset_name=dataset_name)
+# model_CKAN_BN= CKAN_BN(device)
+# search_hiperparams_and_get_final_model(model_CKAN_BN,True, mnist_train,  test_loader,max_epochs= 20,path = path,search_grid_combinations = 10 ,folds = 3,dataset_name=dataset_name)
 
-model_KKAN_Convolutional_Network = KKAN_Convolutional_Network(device = device)
-search_hiperparams_and_get_final_model(model_KKAN_Convolutional_Network,True, mnist_train,  test_loader,max_epochs= 20,path = path,search_grid_combinations = 10 ,folds = 3,dataset_name=dataset_name)
+# model_KKAN_Convolutional_Network = KKAN_Convolutional_Network(device = device)
+# search_hiperparams_and_get_final_model(model_KKAN_Convolutional_Network,True, mnist_train,  test_loader,max_epochs= 20,path = path,search_grid_combinations = 10 ,folds = 3,dataset_name=dataset_name)
 
-model_Convs_and_KAN= NormalConvsKAN()
-search_hiperparams_and_get_final_model(model_Convs_and_KAN,True, mnist_train,  test_loader,max_epochs= 20,path = path,search_grid_combinations = 10 ,folds = 3,dataset_name=dataset_name)
+# model_Convs_and_KAN= NormalConvsKAN()
+# search_hiperparams_and_get_final_model(model_Convs_and_KAN,True, mnist_train,  test_loader,max_epochs= 20,path = path,search_grid_combinations = 10 ,folds = 3,dataset_name=dataset_name)
 
 model_ConvNet = ConvNet()
 search_hiperparams_and_get_final_model(model_ConvNet,False, mnist_train,  test_loader,max_epochs= 20,path = path,search_grid_combinations = 10 ,folds = 3,dataset_name=dataset_name)

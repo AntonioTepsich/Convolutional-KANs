@@ -4,7 +4,6 @@ import torch.nn.functional as F
 
 sys.path.append('./kan_convolutional')
 #from kan_convolutional.KANConv import KAN_Convolutional_Layer
-from kan_convolutional.kan_conv import KANConv2DLayer
 
 from new.convkan.convkan_layer import ConvKAN
 
