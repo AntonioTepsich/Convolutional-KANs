@@ -105,6 +105,7 @@ class KANConvNDLayer(nn.Module):
         return x
 
     def forward(self, x):
+        
         split_x = torch.split(x, self.inputdim // self.groups, dim=1)
         output = []
         for group_ind, _x in enumerate(split_x):
@@ -112,6 +113,38 @@ class KANConvNDLayer(nn.Module):
             output.append(y.clone())
         y = torch.cat(output, dim=1)
         return y
+    
+    def grid_update(self, new_grid):
+        #primero hay que guardarnos el grid actual
+        old_grid = self.grid
+        #actualizamos el grid
+        self.grid = new_grid
+        # hay que mover los pesos de las convoluciones spline a la nueva grid haciendo minimo cuadrados
+        for group_ind, spline_conv in enumerate(self.spline_conv):
+            #primero hay que sacar los pesos de la convolucion spline
+            weights = spline_conv.weight
+            #ahora hay que hacer la interpolacion
+            new_weights = torch.zeros((weights.shape[0], weights.shape[1], new_grid.shape[0]))
+            for i in range(weights.shape[0]):
+                for j in range(weights.shape[1]):
+                    new_weights[i,j] = torch.nn.functional.interpolate(weights[i,j].unsqueeze(0).unsqueeze(0), size=new_grid.shape, mode='linear').squeeze(0).squeeze(0)
+            #ahora hay que actualizar los pesos de la convolucion spline
+            spline_conv.weight = torch.nn.Parameter(new_weights)
+        #ahora hay que mover los pesos de las convoluciones base a la nueva grid haciendo minimo cuadrados
+        for group_ind, base_conv in enumerate(self.base_conv):
+            #primero hay que sacar los pesos de la convolucion base
+            weights = base_conv.weight
+            #ahora hay que hacer la interpolacion
+            new_weights = torch.zeros((weights.shape[0], weights.shape[1], new_grid.shape[0]))
+            for i in range(weights.shape[0]):
+                for j in range(weights.shape[1]):
+                    new_weights[i,j] = torch.nn.functional.interpolate(weights[i,j].unsqueeze(0).unsqueeze(0), size=new_grid.shape, mode='linear').squeeze(0).squeeze(0)
+            #ahora hay que actualizar los pesos de la convolucion base
+            base_conv.weight = torch.nn.Parameter(new_weights)
+
+
+
+
 
 
 class KANConv3DLayer(KANConvNDLayer):

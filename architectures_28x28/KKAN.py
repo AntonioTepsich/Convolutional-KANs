@@ -27,7 +27,7 @@ class KKAN_Convolutional_Network(nn.Module):
             padding=0,
             stride=1,
             dilation=1,
-            grid_size=grid_size,
+            grid_size=10,
             base_activation=nn.SiLU,
             grid_range=[0,1],
             dropout=0.0,
