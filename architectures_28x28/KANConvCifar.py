@@ -7,7 +7,7 @@ sys.path.append('./kan_convolutional')
 from kan_convolutional.kan_conv import KANConv2DLayer
 
 class Cifar10KANConvModel(ImageClassificationBase):
-    def _init_(self):
+    def _init_(self,grid_size = 5):
         super()._init_()
         self.network = nn.Sequential(
             KANConv2DLayer(

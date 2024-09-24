@@ -1,9 +1,11 @@
 import torch
 import torch.nn.functional as F
 import warnings
+import sys
+sys.path.append('./kan_convolutional/new/convkan')
 
-from kaconv.convkan.kanlinear import KANLinear
-from kaconv.convkan.fastkan import FastKANLayer
+from kanlinear import KANLinear
+from fastkan import FastKANLayer
 
 
 class ConvKAN(torch.nn.Module):

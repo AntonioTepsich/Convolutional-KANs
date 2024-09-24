@@ -46,8 +46,11 @@ if not os.path.exists("models"):
 
 if not os.path.exists("results"):
     os.mkdir("results")
+
+#if not os.path.exists(os.mkdir("/".join(path.split("/")[:-1]))):
+ #   os.mkdir("/".join(path.split("/")[:-1]))
+
 if not os.path.exists(path):
-    os.mkdir("/".join(path.split("/")[:-1]))
     os.mkdir(path)
 model_KANC_MLP= KANC_MLP()
 results_path = os.path.join("results",dataset_name)

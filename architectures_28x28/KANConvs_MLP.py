@@ -6,6 +6,7 @@ sys.path.append('./kan_convolutional')
 #from kan_convolutional.KANConv import KAN_Convolutional_Layer
 from kan_convolutional.kan_conv import KANConv2DLayer
 
+from new.convkan.convkan_layer import ConvKAN
 
 class KANC_MLP(nn.Module):
     def __init__(self,grid_size: int = 5):
@@ -17,41 +18,55 @@ class KANC_MLP(nn.Module):
         #     kernel_size= (3,3),
         #     device = device
         # )
-        self.conv1 = KANConv2DLayer(
-            input_dim=1,
-            output_dim=5,
+
+        self.conv1 = ConvKAN(
+            in_channels=1,
+            out_channels=5,
             kernel_size=(3,3),
-            spline_order=3,
-            groups=1,
-            padding=0,
             stride=1,
+            padding=0,
             dilation=1,
+            groups=1,
+            padding_mode="zeros",
+            bias=True,
             grid_size=grid_size,
+            spline_order=3,
+            scale_noise=0.1,
+            scale_base=1.0,
+            scale_spline=1.0,
+            enable_standalone_scale_spline=True,
             base_activation=nn.SiLU,
-            grid_range=[0,1],
-            dropout=0.0,
+            grid_eps=0.02,
+            grid_range=(-1, 1),
+            kan_type="EfficientKAN",
         )
 
-        
 
         # self.conv2 = KAN_Convolutional_Layer(
         #     n_convs = 5,
         #     kernel_size = (3,3),
         #     device = device
         # )
-        self.conv2 = KANConv2DLayer(
-            input_dim=5,
-            output_dim=25,
+        self.conv2 = ConvKAN(
+            in_channels=5,
+            out_channels=25,
             kernel_size=(3,3),
-            spline_order=3,
-            groups=1,
-            padding=0,
             stride=1,
+            padding=0,
             dilation=1,
+            groups=1,
+            padding_mode="zeros",
+            bias=True,
             grid_size=grid_size,
+            spline_order=3,
+            scale_noise=0.1,
+            scale_base=1.0,
+            scale_spline=1.0,
+            enable_standalone_scale_spline=True,
             base_activation=nn.SiLU,
-            grid_range=[0,1],
-            dropout=0.0,
+            grid_eps=0.02,
+            grid_range=(-1, 1),
+            kan_type="EfficientKAN",
         )
 
         self.pool1 = nn.MaxPool2d(
