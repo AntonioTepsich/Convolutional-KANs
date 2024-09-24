@@ -64,7 +64,6 @@ class ConvKAN(torch.nn.Module):
         self.groups = groups
         self.padding_mode = padding_mode
         self.kan_type = kan_type
-
         self._in_dim = (
             (in_channels // groups) * self.kernel_size[0] * self.kernel_size[1]
         )
@@ -99,6 +98,7 @@ class ConvKAN(torch.nn.Module):
             self.kan_layer = FastKANLayer(self._in_dim, out_channels)
         else:
             raise ValueError(f"Unknown KAN type: {self.kan_type}")
+        print(self.kan_layer.grid.shape)
 
     def forward(self, x):
         if self.padding_mode != "zeros":
@@ -106,7 +106,11 @@ class ConvKAN(torch.nn.Module):
             padding = (0, 0)  # Reset padding because we already applied it
         else:
             padding = self.padding
-
+        
+        #if update_grid:
+        #    for layer in self.kan_layer:
+        #        layer.update_grid(x)
+        
         x_unf = F.unfold(
             x,
             kernel_size=self.kernel_size,
