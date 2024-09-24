@@ -2,8 +2,9 @@ from torch import nn
 import sys
 import torch.nn.functional as F
 
-# sys.path.append('../kan_convolutional')
-from kan_convolutional.KANConv import KAN_Convolutional_Layer
+sys.path.append('./kan_convolutional')
+#from kan_convolutional.KANConv import KAN_Convolutional_Layer
+from kan_convolutional.kan_conv import KANConv2DLayer
 
 class KANC_MLP_2(nn.Module):
     def __init__(self,grid_size= 5):
