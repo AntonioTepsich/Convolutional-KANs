@@ -4,6 +4,32 @@ import torch.nn.functional as F
 import math
 from typing import *
 
+class BSplineFunction(nn.Module):
+    def __init__(self, grid_min: float = -2.,
+        grid_max: float = 2., degree: int = 3, num_basis: int = 8):
+        super(BSplineFunction, self).__init__()
+        self.degree = degree
+        self.num_basis = num_basis
+        self.knots = torch.linspace(grid_min, grid_max, num_basis + degree + 1)  # Uniform knots
+
+    def basis_function(self, i, k, t):
+        if k == 0:
+            return ((self.knots[i] <= t) & (t < self.knots[i + 1])).float()
+        else:
+            left_num = (t - self.knots[i]) * self.basis_function(i, k - 1, t)
+            left_den = self.knots[i + k] - self.knots[i]
+            left = left_num / left_den if left_den != 0 else 0
+
+            right_num = (self.knots[i + k + 1] - t) * self.basis_function(i + 1, k - 1, t)
+            right_den = self.knots[i + k + 1] - self.knots[i + 1]
+            right = right_num / right_den if right_den != 0 else 0
+
+            return left + right 
+    
+    def forward(self, x):
+        x = x.squeeze()  # Assuming x is of shape (B, 1)
+        basis_functions = torch.stack([self.basis_function(i, self.degree, x) for i in range(self.num_basis)], dim=-1)
+        return basis_functions
 
 class SplineLinear(nn.Linear):
     def __init__(self, in_features: int, out_features: int, init_scale: float = 0.1, **kw) -> None:
@@ -43,7 +69,7 @@ class FastKANLayer(nn.Module):
     ) -> None:
         super().__init__()
         # self.layernorm = nn.LayerNorm(input_dim)
-        self.rbf = RadialBasisFunction(grid_min, grid_max, num_grids)
+        self.rbf = BSplineFunction(grid_min, grid_max, num_grids)
         self.spline_linear = SplineLinear(input_dim * num_grids, output_dim, spline_weight_init_scale)
         self.use_base_update = use_base_update
         if use_base_update:
