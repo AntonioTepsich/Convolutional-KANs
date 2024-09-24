@@ -127,7 +127,7 @@ class KAN_Convolution(torch.nn.Module):
             grid_range=grid_range
         )
 
-    def forward(self, x: torch.Tensor, update_grid=False):
+    def forward(self, x: torch.Tensor):
         self.device = x.device
         return convolution.kan_conv2d(x, self.conv,self.kernel_size[0],self.stride,self.dilation,self.padding,self.device)
     
