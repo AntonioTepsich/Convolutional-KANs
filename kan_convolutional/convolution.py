@@ -53,7 +53,7 @@ def multiple_convs_kan_conv2d(matrix, #but as torch tensors. Kernel side asume q
              padding= (0, 0),
              device= "cuda"
              ) -> torch.Tensor:
-    """Makes a 2D convolution with the kernel over matrix using defined stride, dilation and padding along axes.
+    """Makes a 2D KAN convolution with the  kernel over matrix using defined stride, dilation and padding along axes.
 
     Args:
         matrix (batch_size, colors, n, m]): 2D matrix to be convolved.
@@ -70,10 +70,11 @@ def multiple_convs_kan_conv2d(matrix, #but as torch tensors. Kernel side asume q
     matrix_out = torch.zeros((batch_size,n_channels*n_convs,h_out,w_out)).to(device)#estamos asumiendo que no existe la dimension de rgb
     unfold = torch.nn.Unfold((kernel_side,kernel_side), dilation=dilation, padding=padding, stride=stride)
     conv_groups = unfold(matrix).view(batch_size, n_channels,  kernel_side*kernel_side, h_out*w_out).transpose(2, 3)#reshape((batch_size,n_channels,h_out,w_out))
+    g = conv_groups.flatten(0,2)
     for kern in range(n_convs):
-        g = conv_groups.flatten(1,2)
+
         s = kern*n_channels 
-        matrix_out[:, s:s+n_channels,:,:] = kernels[kern].conv.forward(g.flatten(0,1)).view((batch_size,n_channels,h_out,w_out))
+        matrix_out[:, s:s+n_channels,:,:] = kernels[kern].conv.forward(g).view((batch_size,n_channels,h_out,w_out))
     return matrix_out
 
 
