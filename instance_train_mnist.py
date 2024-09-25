@@ -16,7 +16,7 @@ import torch.optim as optim
 import torchvision.transforms as transforms
 from torchvision.datasets import MNIST
 from torch.utils.data import DataLoader
-from architectures_28x28.KKAN import KKAN_Convolutional_Network
+#from architectures_28x28.KKAN import KKAN_Convolutional_Network
 #from architectures_28x28.conv_and_kan import NormalConvsKAN
 #from architectures_28x28.CKAN_BN import CKAN_BN
 from architectures_28x28.KANConvs_MLP import KANC_MLP

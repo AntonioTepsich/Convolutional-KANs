@@ -1,5 +1,7 @@
 import torch
 import math
+import sys
+sys.path.append('./kan_convolutional')
 from KANLinear import KANLinear
 import convolution
 
