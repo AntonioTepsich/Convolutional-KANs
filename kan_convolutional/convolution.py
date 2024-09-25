@@ -69,7 +69,7 @@ def multiple_convs_kan_conv2d(matrix, #but as torch tensors. Kernel side asume q
     n_convs = len(kernels)
     matrix_out = torch.zeros((batch_size,n_channels*n_convs,h_out,w_out)).to(device)#estamos asumiendo que no existe la dimension de rgb
     unfold = torch.nn.Unfold((kernel_side,kernel_side), dilation=dilation, padding=padding, stride=stride)
-    conv_groups = unfold(matrix[:,:,:,:]).view(batch_size, n_channels,  kernel_side*kernel_side, h_out*w_out).transpose(2, 3)#reshape((batch_size,n_channels,h_out,w_out))
+    conv_groups = unfold(matrix).view(batch_size, n_channels,  kernel_side*kernel_side, h_out*w_out).transpose(2, 3)#reshape((batch_size,n_channels,h_out,w_out))
     for kern in range(n_convs):
         g = conv_groups.flatten(1,2)
         s = kern*n_channels 

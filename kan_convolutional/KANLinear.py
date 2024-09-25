@@ -2,7 +2,7 @@ import torch
 import torch.nn.functional as F
 import math
 
-import numpy as np
+
 class KANLinear(torch.nn.Module):
     def __init__(
         self,
@@ -152,7 +152,7 @@ class KANLinear(torch.nn.Module):
 
     def forward(self, x: torch.Tensor):
         assert x.dim() == 2 and x.size(1) == self.in_features
-        #return torch.tensor([sum(i) for i in x],dtype=torch.float32)
+
         base_output = F.linear(self.base_activation(x), self.base_weight)
         spline_output = F.linear(
             self.b_splines(x).view(x.size(0), -1),
