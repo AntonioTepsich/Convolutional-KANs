@@ -74,7 +74,7 @@ def multiple_convs_kan_conv2d(matrix, #but as torch tensors. Kernel side asume q
     for kern in range(n_convs):
 
         s = kern*n_channels 
-        matrix_out[:, s:s+n_channels,:,:] = kernels[kern].conv.forward(g).view((batch_size,n_channels,h_out,w_out))
+        matrix_out[:, s:s+n_channels,:,:] = kernels[kern].conv.forward(g[None,:,:]).view((batch_size,n_channels,h_out,w_out))
     return matrix_out
 
 
