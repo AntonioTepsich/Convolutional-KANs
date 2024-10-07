@@ -71,10 +71,14 @@ def multiple_convs_kan_conv2d(matrix, #but as torch tensors. Kernel side asume q
     unfold = torch.nn.Unfold((kernel_side,kernel_side), dilation=dilation, padding=padding, stride=stride)
     conv_groups = unfold(matrix).view(batch_size, n_channels,  kernel_side*kernel_side, h_out*w_out).transpose(2, 3)#reshape((batch_size,n_channels,h_out,w_out))
     g = conv_groups.flatten(0,2)
+    out = []
     for kern in range(n_convs):
 
         s = kern*n_channels 
-        matrix_out[:, s:s+n_channels,:,:] = kernels[kern].conv.forward(g).view((batch_size,n_channels,h_out,w_out))
+        out.append(kernels[kern].conv.forward(g))
+        #matrix_out[:, s:s+n_channels,:,:] = kernels[kern].conv.forward(g).view((batch_size,n_channels,h_out,w_out))
+    matrix_out = torch.tensor(out,dtype = torch.float32)
+    matrix_out = matrix_out.view((batch_size,n_channels*n_convs,h_out,w_out))
     return matrix_out
 
 

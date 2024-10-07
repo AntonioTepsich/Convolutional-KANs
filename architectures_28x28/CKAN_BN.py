@@ -10,55 +10,19 @@ from kan_convolutional.kan_conv import KANConv2DLayer
 
 
 
+
 class CKAN_BN(nn.Module):
-    def __init__(self,grid_size: int = 5):
+    def __init__(self):
         super().__init__()
-        self.name = "KAN Conv BN & 2 Layer MLP"
-
-        # self.conv1 = KAN_Convolutional_Layer(
-        #     n_convs = 5,
-        #     kernel_size= (3,3),
-        #     device = device
-        # )
-        self.conv1 = KANConv2DLayer(
-            input_dim=1,
-            output_dim=5,
-            kernel_size=(3,3),
-            spline_order=3,
-            groups=1,
-            padding=0,
-            stride=1,
-            dilation=1,
-            grid_size=grid_size,
-            base_activation=nn.SiLU,
-            grid_range=[0,1],
-            dropout=0.0,
-        )
-
+        self.conv1 = KAN_Convolutional_Layer(
+            n_convs = 5,
+            kernel_size= (3,3)        )
         self.bn1 = nn.BatchNorm2d(5)
-
-        # self.conv2 = KAN_Convolutional_Layer(
-        #     n_convs = 5,
-        #     kernel_size = (3,3),
-        #     device = device
-        # )
-
-        self.conv2 = KANConv2DLayer(
-            input_dim=5,
-            output_dim=25,
-            kernel_size=(3,3),
-            spline_order=3,
-            groups=1,
-            padding=0,
-            stride=1,
-            dilation=1,
-            grid_size=grid_size,
-            base_activation=nn.SiLU,
-            grid_range=[0,1],
-            dropout=0.0,
-        )
         
-
+        self.conv2 = KAN_Convolutional_Layer(
+            n_convs = 5,
+            kernel_size = (3,3),
+        )
         self.bn2 = nn.BatchNorm2d(25)
 
         self.pool1 = nn.MaxPool2d(
@@ -69,7 +33,7 @@ class CKAN_BN(nn.Module):
         
         self.linear1 = nn.Linear(625, 256)
         self.linear2 = nn.Linear(256, 10)
-
+        self.name = "KAN Conv BN & 2 Layer MLP"
     def forward(self, x):
         x = self.conv1(x)
         x = self.bn1(x)
@@ -83,4 +47,3 @@ class CKAN_BN(nn.Module):
         x = self.linear1(x)
         x = self.linear2(x)
         return x
-    

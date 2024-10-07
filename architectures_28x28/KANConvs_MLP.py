@@ -27,7 +27,7 @@ class KANC_MLP(nn.Module):
         self.flat = nn.Flatten() 
         
         #self.linear1 = nn.Linear(625, 256)
-        self.linear2 = nn.Linear(625, 10)
+        self.linear1 = nn.Linear(625, 10)
         self.name = "KAN Conv Grid updated & 1 Layer MLP"
 
 
@@ -39,7 +39,7 @@ class KANC_MLP(nn.Module):
         x = self.conv2(x)
         x = self.pool1(x)
         x = self.flat(x)
-        x = self.linear2(x)
+        x = self.linear1(x)
         x = F.log_softmax(x, dim=1)
         return x
 

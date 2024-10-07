@@ -103,7 +103,7 @@ def test(model, device, test_loader, criterion):
     #     test_loss, correct, len(test_loader.dataset), accuracy, precision, recall, f1))
 
     return test_loss, accuracy, precision, recall, f1
-def train_and_test_models(model, device, train_loader, test_loader, optimizer, criterion, epochs, scheduler, path = "drive/MyDrive/KANs/models",verbose = True):
+def train_and_test_models(model, device, train_loader, test_loader, optimizer, criterion, epochs, scheduler, path = "drive/MyDrive/KANs/models",verbose = True,save_last=False):
     """
     Train and test the model
 
@@ -159,6 +159,9 @@ def train_and_test_models(model, device, train_loader, test_loader, optimizer, c
     model.all_test_recall = all_test_recall
     if verbose:
         print("Best test accuracy", best_acc)
+    if save_last:
+        torch.save(model,os.path.join(path,model.name+".pt"))
+
     return all_train_loss, all_test_loss, all_test_accuracy, all_test_precision, all_test_recall, all_test_f1
 
 def count_parameters(model):
