@@ -13,11 +13,11 @@ import torch.optim as optim
 import torchvision.transforms as transforms
 from torchvision.datasets import MNIST
 from torch.utils.data import DataLoader
-#from architectures_28x28.KKAN import KKAN_Convolutional_Network
-#from architectures_28x28.conv_and_kan import NormalConvsKAN
-#from architectures_28x28.CKAN_BN import CKAN_BN
+from architectures_28x28.KKAN import KKAN_Convolutional_Network
+from architectures_28x28.conv_and_kan import NormalConvsKAN
+from architectures_28x28.CKAN_BN import CKAN_BN
 from architectures_28x28.KANConvs_MLP import KANC_MLP
-#from architectures_28x28.KANConvs_MLP_2 import KANC_MLP_2
+from architectures_28x28.KANConvs_MLP_2 import KANC_MLP_2
 from architectures_28x28.SimpleModels import *
 from architectures_28x28.ConvNet import ConvNet
 from evaluations import *
@@ -34,9 +34,9 @@ mnist_train = MNIST(root='./data', train=True, download=True, transform=transfor
 
 mnist_test = MNIST(root='./data', train=False, download=True, transform=transform)
 
-# DataLoader
-train_loader = DataLoader(mnist_train, batch_size=64, shuffle=True)
-test_loader = DataLoader(mnist_test, batch_size=64, shuffle=False)
+print(len(mnist_train))    
+
+
 dataset_name = "MNIST"
 path = f"models/{dataset_name}"
 
@@ -51,4 +51,29 @@ def join_path(name,pa):
   return os.path.join(pa,name+".pt")
 
 model_KANC_MLP= KANC_MLP()
-train_model_generic(model_KANC_MLP, train_loader, test_loader,device,epochs = 15)
+train_model_generic(model_KANC_MLP, mnist_train, mnist_test,device,epochs = 20,path=path)
+
+model_KANC_MLP_2= KANC_MLP_2(device = device)
+
+train_model_generic(model_KANC_MLP_2, mnist_train, mnist_test,device,epochs = 20,path=path)#train_and_test_models(model_KANC_MLP_2, device, train_loader, test_loader, optimizer_KANC_MLP_2, criterion_KANC_MLP_2, epochs=12, scheduler=scheduler_KANC_MLP_2)
+
+model_CKAN_BN= CKAN_BN(device)
+train_model_generic(model_CKAN_BN, mnist_train, mnist_test,device,epochs = 20,path=path)
+
+model_KKAN_Convolutional_Network = KKAN_Convolutional_Network(device = device)
+train_model_generic(model_KKAN_Convolutional_Network, mnist_train, mnist_test,device,epochs = 20,path=path)
+
+model_Convs_and_KAN= NormalConvsKAN()
+train_model_generic(model_Convs_and_KAN, mnist_train, mnist_test,device,epochs = 20,path=path)
+
+model_ConvNet = ConvNet()
+train_model_generic(model_ConvNet, mnist_train, mnist_test,device,epochs = 20,path=path)
+
+model_SimpleCNN = SimpleCNN()
+train_model_generic(model_SimpleCNN, mnist_train, mnist_test,device,epochs = 20,path=path)
+
+model_SimpleCNN_2 = SimpleCNN_2()
+train_model_generic(model_SimpleCNN_2, mnist_train, mnist_test,device,epochs = 20,path=path)
+
+model_SimpleLinear = SimpleLinear()
+train_model_generic(model_SimpleLinear, mnist_train, mnist_test,device,epochs = 20,path=path)
