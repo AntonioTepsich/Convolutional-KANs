@@ -19,7 +19,8 @@ def train_model_generic(model, train_loader, test_loader,device,epochs= 15,path 
     start = time.perf_counter()
     gen = torch.Generator()
     gen.manual_seed(0)
-    mnist_train, mnist_val = torch.utils.data.random_split(train_loader, [51000,9000])
+    mnist_train, mnist_val = torch.utils.data.random_split(train_loader, [51000,9000],
+    generator=gen)
 
     all_train_loss, all_test_loss, all_test_accuracy, all_test_precision, all_test_recall, all_test_f1 = train_and_test_models(model, device, mnist_train, mnist_val, optimizer, criterion, epochs=epochs, scheduler=scheduler,path= None)
 
