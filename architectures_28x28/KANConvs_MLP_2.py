@@ -31,7 +31,7 @@ class KANC_MLP_2(nn.Module):
         
         self.linear1 = nn.Linear(625, 256)
         self.linear2 = nn.Linear(256, 10)
-        self.name = "KAN Conv Grid updated & 2 Layer MLP"
+        self.name = "KAN Conv & 2 Layer MLP"
 
 
     def forward(self, x):
