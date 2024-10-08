@@ -50,14 +50,15 @@ def join_path(name,pa):
   print(os.path.join(pa,name+".pt"))
   return os.path.join(pa,name+".pt")
 
-model_KANC_MLP= KANC_MLP()
-train_model_generic(model_KANC_MLP, mnist_train, mnist_test,device,epochs = 20,path=path)
-
 model_KANC_MLP_2= KANC_MLP_2()
 
 train_model_generic(model_KANC_MLP_2, mnist_train, mnist_test,device,epochs = 20,path=path)#train_and_test_models(model_KANC_MLP_2, device, train_loader, test_loader, optimizer_KANC_MLP_2, criterion_KANC_MLP_2, epochs=12, scheduler=scheduler_KANC_MLP_2)
 
-model_CKAN_BN= CKAN_BN(device)
+model_KANC_MLP= KANC_MLP()
+train_model_generic(model_KANC_MLP, mnist_train, mnist_test,device,epochs = 20,path=path)
+
+
+model_CKAN_BN= CKAN_BN()
 train_model_generic(model_CKAN_BN, mnist_train, mnist_test,device,epochs = 20,path=path)
 
 model_KKAN_Convolutional_Network = KKAN_Convolutional_Network()
