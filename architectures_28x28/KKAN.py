@@ -21,7 +21,6 @@ class KKAN_Convolutional_Network(nn.Module):
         self.conv2 = KAN_Convolutional_Layer(
             n_convs = 5,
             kernel_size = (3,3),
-            dinamic_grid=True,
             grid_size = grid_size
         )
 
@@ -42,7 +41,6 @@ class KKAN_Convolutional_Network(nn.Module):
             base_activation=nn.SiLU,
             grid_eps=0.02,
             grid_range=[0,1],
-            dinamic_grid= True
         )
         self.name = "KKAN (Small)"
 
@@ -73,7 +71,6 @@ class KKAN_Convolutional_Network_Big(nn.Module):
         self.conv2 = KAN_Convolutional_Layer(
             n_convs = 5,
             kernel_size = (3,3),
-            dinamic_grid=True,
             grid_size = grid_size
         )
 
@@ -94,7 +91,6 @@ class KKAN_Convolutional_Network_Big(nn.Module):
             base_activation=nn.SiLU,
             grid_eps=0.02,
             grid_range=[0,1],
-            dinamic_grid= True
         )
         self.kan2 = KANLinear(
             256,
@@ -107,7 +103,6 @@ class KKAN_Convolutional_Network_Big(nn.Module):
             base_activation=nn.SiLU,
             grid_eps=0.02,
             grid_range=[0,1],
-            dinamic_grid= True
         )
         self.name = "KKAN (Big)"
 

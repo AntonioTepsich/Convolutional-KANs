@@ -18,7 +18,6 @@ class KANC_MLP_2(nn.Module):
         self.conv2 = KAN_Convolutional_Layer(
             n_convs = 5,
             kernel_size = (3,3),
-            dinamic_grid=True,
             grid_size= grid_size
 
         )
@@ -60,7 +59,6 @@ class KANC_MLP_sin_grid_2(nn.Module):
         self.conv2 = KAN_Convolutional_Layer(
             n_convs = 5,
             kernel_size = (3,3),
-            dinamic_grid=False,
             grid_size= grid_size   
 
         )

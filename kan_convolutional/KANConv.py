@@ -78,7 +78,7 @@ class KAN_Convolutional_Layer(torch.nn.Module):
                 )
             )
 
-    def forward(self, x: torch.Tensor, update_grid=False):
+    def forward(self, x: torch.Tensor):
         # If there are multiple convolutions, apply them all
         self.device = x.device
         if self.n_convs>1:
