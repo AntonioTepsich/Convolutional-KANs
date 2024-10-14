@@ -41,11 +41,11 @@ class TrainValSplit:
         gen = torch.Generator()
         gen.manual_seed(0)
         train_samples = int(len(dataset_object)* train_pctg)
-        val_samples = len(dataset_object)-len(train_samples)
+        val_samples = len(dataset_object)-train_samples
         self.train, self.valid = torch.utils.data.random_split(dataset_object, [train_samples,val_samples],
         generator=gen)
     def split(self,_,_2):
-        return self.train,self.valid
+        return [(self.train,self.valid)]
 class kfoldsplit:
     def __init__(self, train_obj, n_splits=3, shuffle=True, random_state=1):
         self.train_obj  = train_obj
@@ -56,7 +56,7 @@ class kfoldsplit:
         trainset = torch.utils.data.Subset(self.train_obj, train_ids)
         validset = torch.utils.data.Subset(self.train_obj, valid_ids)
         # Define data loaders for training and testing data in this fold
-        return trainset,validset
+        return [(trainset,validset)]
 def train_tune(config,model_class, is_kan,train_obj=None,epochs = 20,folds= 3):
     device = "cuda" if torch.cuda.is_available() else "cpu"
     torch.manual_seed(0) #Lets set a seed for the weights initialization
@@ -67,8 +67,8 @@ def train_tune(config,model_class, is_kan,train_obj=None,epochs = 20,folds= 3):
     accuracys = []
     losses = []
     print(config)
-    for fold, (trainset, validset) in enumerate(splitter.split(np.arange(len(train_obj)),train_obj.targets)):
-        print("starting fold", fold)
+    for trainset, validset in splitter.split(np.arange(len(train_obj)),train_obj.targets):
+        #print("starting fold", fold)
         if is_kan:
             model = model_class(grid_size = config["grid_size"])
         else:
