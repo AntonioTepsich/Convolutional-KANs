@@ -92,7 +92,9 @@ def train_tune(config,model_class, is_kan,train_obj=None,epochs = 20,folds= 3):
         all_train_loss, all_test_loss, all_test_accuracy, all_test_precision, all_test_recall, all_test_f1 = train_and_test_models(model, device, train_loader, valid_loader, optimizer, criterion, epochs=epochs, scheduler=None,path= None,verbose= True)
         accuracys.append(all_test_accuracy)
         losses.append(all_test_loss)
+
     accuracy_per_epoch = np.mean(accuracys,axis = 0)
+
     loss_per_epoch = np.mean(losses,axis = 0)
     index = np.argmax(accuracy_per_epoch)
     best_accuracy = accuracy_per_epoch[index]
@@ -119,7 +121,7 @@ def get_best_model(model_class,epochs,config, train_obj,test_loader,path,is_kan 
         batch_size=int(config["batch_size"]),
         shuffle=True)
     
-    all_train_loss, all_test_loss, all_test_accuracy, all_test_precision, all_test_recall, all_test_f1 = train_and_test_models(model, device, train_loader, test_loader, optimizer, criterion, epochs=epochs, scheduler=None,path= path)
+    all_train_loss, all_test_loss, all_test_accuracy, all_test_precision, all_test_recall, all_test_f1 = train_and_test_models(model, device, train_loader, test_loader, optimizer, criterion, epochs=epochs, scheduler=None,path= path,patience= 6 )
     
     best_epochs = np.argmax(all_test_accuracy)
     best_accuracy = all_test_accuracy[best_epochs]

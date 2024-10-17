@@ -103,7 +103,7 @@ def test(model, device, test_loader, criterion):
     #     test_loss, correct, len(test_loader.dataset), accuracy, precision, recall, f1))
 
     return test_loss, accuracy, precision, recall, f1
-def train_and_test_models(model, device, train_loader, test_loader, optimizer, criterion, epochs, scheduler, path = "drive/MyDrive/KANs/models",verbose = True,save_last=False):
+def train_and_test_models(model, device, train_loader, test_loader, optimizer, criterion, epochs, scheduler, path = "drive/MyDrive/KANs/models",verbose = True,save_last=False,patience = np.inf):
     """
     Train and test the model
 
@@ -133,6 +133,7 @@ def train_and_test_models(model, device, train_loader, test_loader, optimizer, c
     all_test_recall = []
     all_test_f1 = []
     best_acc = 0
+    havent_improved = 0
     for epoch in range(1, epochs + 1):
         # Train the model
         train_loss = train(model, device, train_loader, optimizer, epoch, criterion)
@@ -147,12 +148,15 @@ def train_and_test_models(model, device, train_loader, test_loader, optimizer, c
         if verbose:
             print(f'End of Epoch {epoch}: Train Loss: {train_loss:.6f}, Test Loss: {test_loss:.4f}, Accuracy: {test_accuracy:.2%}')
         if test_accuracy>best_acc:
-            
+            havent_improved = 0
             best_acc = test_accuracy
             if not path is None:
                 torch.save(model,os.path.join(path,model.name+".pt"))
+        else: havent_improved+=1
         if not (scheduler is None):
             scheduler.step()
+        if havent_improved>patience:#early stopping
+            break
     model.all_test_accuracy = all_test_accuracy
     model.all_test_precision = all_test_precision
     model.all_test_f1 = all_test_f1
