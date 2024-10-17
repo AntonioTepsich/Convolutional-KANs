@@ -3,6 +3,7 @@ import torch
 from sklearn.metrics import precision_score, recall_score, f1_score
 import os
 import matplotlib.pyplot as plt
+import numpy as np
 def train(model, device, train_loader, optimizer, epoch, criterion):
     """
     Train the model for one epoch
