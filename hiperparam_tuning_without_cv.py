@@ -72,17 +72,17 @@ search_hiperparams_and_get_final_model(model_CKAN_BN,True, mnist_train,  test_lo
 model_KKAN_Convolutional_Network = KKAN_Convolutional_Network
 search_hiperparams_and_get_final_model(model_KKAN_Convolutional_Network,True, mnist_train,  test_loader,max_epochs= 20,path = path,search_grid_combinations = 10 ,folds = 1,dataset_name=dataset_name)
 
-model_Convs_and_KAN= NormalConvsKAN()
+model_Convs_and_KAN= NormalConvsKAN
 search_hiperparams_and_get_final_model(model_Convs_and_KAN,True, mnist_train,  test_loader,max_epochs= 20,path = path,search_grid_combinations = 10 ,folds = 1,dataset_name=dataset_name)
 
-model_ConvNet = ConvNet()
+model_ConvNet = ConvNet
 search_hiperparams_and_get_final_model(model_ConvNet,False, mnist_train,  test_loader,max_epochs= 20,path = path,search_grid_combinations = 10 ,folds = 1,dataset_name=dataset_name)
 
-model_SimpleCNN = SimpleCNN()
+model_SimpleCNN = SimpleCNN
 search_hiperparams_and_get_final_model(model_SimpleCNN,False, mnist_train,  test_loader,max_epochs= 20,path = path,search_grid_combinations = 10 ,folds = 1,dataset_name=dataset_name)
 
-model_SimpleCNN_2 = SimpleCNN_2()
+model_SimpleCNN_2 = SimpleCNN_2
 search_hiperparams_and_get_final_model(model_SimpleCNN_2,False, mnist_train,  test_loader,max_epochs= 20,path = path,search_grid_combinations = 10 ,folds = 1,dataset_name=dataset_name)
 
-model_SimpleLinear = SimpleLinear()
+model_SimpleLinear = SimpleLinear
 search_hiperparams_and_get_final_model(model_SimpleLinear,False, mnist_train,  test_loader,max_epochs= 20,path = path,search_grid_combinations = 10 ,folds = 1,dataset_name=dataset_name)
