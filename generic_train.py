@@ -9,7 +9,7 @@ import os
 from torch.utils.data import DataLoader
 
 import numpy as np
-def train_model_generic(model, train_ds, test_ds,device,epochs= 15,path =  "drive/MyDrive/KANs/models"):
+def train_model_generic(model, train_ds, test_ds,device,epochs= 15,path =  "drive/MyDrive/KANs/models",profile =False):
     model.to(device)
     print("Params start",count_parameters(model))
 
@@ -28,7 +28,7 @@ def train_model_generic(model, train_ds, test_ds,device,epochs= 15,path =  "driv
     val_loader = DataLoader(mnist_val, batch_size=64, shuffle=False)
     test_loader = DataLoader(test_ds, batch_size=64, shuffle=False)
 
-    all_train_loss, all_test_loss, all_test_accuracy, all_test_precision, all_test_recall, all_test_f1 = train_and_test_models(model, device, train_loader, val_loader, optimizer, criterion, epochs=epochs, scheduler=scheduler,path= None)
+    all_train_loss, all_test_loss, all_test_accuracy, all_test_precision, all_test_recall, all_test_f1 = train_and_test_models(model, device, train_loader, val_loader, optimizer, criterion, epochs=epochs, scheduler=scheduler,path= None, profile =profile)
 
     best_epochs = np.argmax(all_test_accuracy)+1
     

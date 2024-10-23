@@ -4,7 +4,32 @@ from sklearn.metrics import precision_score, recall_score, f1_score
 import os
 import matplotlib.pyplot as plt
 import numpy as np
-def train(model, device, train_loader, optimizer, epoch, criterion):
+def epoch(model, device, train_loader, optimizer,criterion):
+    train_loss = 0
+
+    for batch_idx, (data, target) in enumerate(tqdm(train_loader)):
+        # Recall that GPU is optimized for the operations we are dealing with
+        data, target = data.to(device), target.to(device)
+
+        # Reset the optimizer
+        optimizer.zero_grad()
+
+        # Push the data forward through the model layers
+        output = model(data)
+
+        # Get the loss
+        loss = criterion(output, target)
+
+        # Keep a running total
+        train_loss += loss.item()
+        # return average loss for the epoch
+        # Backpropagate
+        loss.backward()
+        optimizer.step()
+    avg_loss = train_loss / (batch_idx+1)
+
+    return avg_loss
+def train(model, device, train_loader, optimizer, epoch_num, criterion, measure_flops=False):
     """
     Train the model for one epoch
 
@@ -22,30 +47,18 @@ def train(model, device, train_loader, optimizer, epoch, criterion):
 
     model.to(device)
     model.train()
-    train_loss = 0
     # Process the images in batches
-    for batch_idx, (data, target) in enumerate(tqdm(train_loader)):
-        # Recall that GPU is optimized for the operations we are dealing with
-        data, target = data.to(device), target.to(device)
+    if measure_flops:
+        import pyprof
+        pyprof.init()
+        import torch.cuda.profiler as profiler
+        with torch.autograd.profiler.emit_nvtx():
+            profiler.start()
+            avg_loss = epoch(model, device, train_loader, optimizer,criterion)
+            profiler.stop()
+    else:
+        avg_loss = epoch(model, device, train_loader, optimizer,criterion)
 
-        # Reset the optimizer
-        optimizer.zero_grad()
-
-        # Push the data forward through the model layers
-        output = model(data)
-
-        # Get the loss
-        loss = criterion(output, target)
-
-        # Keep a running total
-        train_loss += loss.item()
-
-        # Backpropagate
-        loss.backward()
-        optimizer.step()
-
-    # return average loss for the epoch
-    avg_loss = train_loss / (batch_idx+1)
     # print('Training set: Average loss: {:.6f}'.format(avg_loss))
     return avg_loss
 
@@ -104,7 +117,7 @@ def test(model, device, test_loader, criterion):
     #     test_loss, correct, len(test_loader.dataset), accuracy, precision, recall, f1))
 
     return test_loss, accuracy, precision, recall, f1
-def train_and_test_models(model, device, train_loader, test_loader, optimizer, criterion, epochs, scheduler, path = "drive/MyDrive/KANs/models",verbose = True,save_last=False,patience = np.inf):
+def train_and_test_models(model, device, train_loader, test_loader, optimizer, criterion, epochs, scheduler, path = "drive/MyDrive/KANs/models",verbose = True,save_last=False,patience = np.inf,profile=False):
     """
     Train and test the model
 
@@ -137,7 +150,7 @@ def train_and_test_models(model, device, train_loader, test_loader, optimizer, c
     havent_improved = 0
     for epoch in range(1, epochs + 1):
         # Train the model
-        train_loss = train(model, device, train_loader, optimizer, epoch, criterion)
+        train_loss = train(model, device, train_loader, optimizer, epoch, criterion,measure_flops=profile)
         all_train_loss.append(train_loss)
         # Test the model
         test_loss, test_accuracy, test_precision, test_recall, test_f1 = test(model, device, test_loader, criterion)
