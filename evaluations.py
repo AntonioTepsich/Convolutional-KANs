@@ -58,11 +58,15 @@ def train(model, device, train_loader, optimizer, epoch_num, criterion, measure_
 
             for batch_idx, (data, target) in enumerate(tqdm(train_loader)):
                 # Recall that GPU is optimized for the operations we are dealing with
+
                 data, target = data.to(device), target.to(device)
 
                 # Reset the optimizer
                 optimizer.zero_grad()
+                from fvcore.nn import FlopCountAnalysis
 
+                flops = FlopCountAnalysis(model,(data))
+                print(flops.total())
                 # Push the data forward through the model layers
                 output = model(data)
 

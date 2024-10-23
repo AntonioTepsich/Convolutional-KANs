@@ -13,13 +13,13 @@ class KKAN_Ultra_Small(nn.Module):
         self.conv1 = KAN_Convolutional_Layer(
             n_convs = 5,
             kernel_size= (3,3),
-            grid_size = grid_size
+            grid_size = grid_size, padding=(1,1)
         )
 
         self.conv2 = KAN_Convolutional_Layer(
             n_convs = 1,
             kernel_size = (3,3),
-            grid_size = grid_size
+            grid_size = grid_size, padding=(1,1)
         )
 
         self.pool1 = nn.MaxPool2d(
@@ -29,7 +29,7 @@ class KKAN_Ultra_Small(nn.Module):
         self.flat = nn.Flatten() 
 
         self.kan1 = KANLinear(
-            625,
+            245,
             10,
             grid_size=grid_size,
             spline_order=3,
@@ -51,7 +51,7 @@ class KKAN_Ultra_Small(nn.Module):
         x = self.conv2(x)
         x = self.pool1(x)
         x = self.flat(x)
-
+        print(x.shape)
         x = self.kan1(x) 
         x = F.log_softmax(x, dim=1)
 

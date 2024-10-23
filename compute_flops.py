@@ -33,7 +33,7 @@ transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.5
 mnist_train = MNIST(root='./data', train=True, download=True, transform=transform)
 
 mnist_test = MNIST(root='./data', train=False, download=True, transform=transform)
-config= {'lr': 0.0005, 'weight_decay': 1e-05, 'batch_size': 128, 'grid_size': 20}
+config= {'lr': 0.0005, 'weight_decay': 1e-05, 'batch_size': 3, 'grid_size': 10}
 DataLoader
 train_loader = DataLoader(mnist_train, batch_size=64, shuffle=True)
 test_loader = DataLoader(mnist_test, batch_size=64, shuffle=False)
@@ -52,6 +52,7 @@ if not os.path.exists(path):
 results_path = os.path.join("results",dataset_name)
 if not os.path.exists(results_path):
     os.mkdir(results_path)
+from fvcore.nn import FlopCountAnalysis
 
 train_tune(config,KANC_MLP,True, mnist_train,  epochs = 1,folds= 1,profile =True)
 
