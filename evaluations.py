@@ -54,7 +54,30 @@ def train(model, device, train_loader, optimizer, epoch_num, criterion, measure_
         import torch.cuda.profiler as profiler
         with torch.autograd.profiler.emit_nvtx():
             profiler.start()
-            avg_loss = epoch(model, device, train_loader, optimizer,criterion)
+            train_loss = 0
+
+            for batch_idx, (data, target) in enumerate(tqdm(train_loader)):
+                # Recall that GPU is optimized for the operations we are dealing with
+                data, target = data.to(device), target.to(device)
+
+                # Reset the optimizer
+                optimizer.zero_grad()
+
+                # Push the data forward through the model layers
+                output = model(data)
+
+                # Get the loss
+                loss = criterion(output, target)
+
+                # Keep a running total
+                train_loss += loss.item()
+                # return average loss for the epoch
+                # Backpropagate
+                loss.backward()
+                optimizer.step()
+                if batch_idx ==15:
+                    break
+            avg_loss = train_loss / (batch_idx+1)
             profiler.stop()
     else:
         avg_loss = epoch(model, device, train_loader, optimizer,criterion)
