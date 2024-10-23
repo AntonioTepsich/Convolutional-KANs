@@ -17,7 +17,7 @@ import torchvision.transforms as transforms
 from torchvision.datasets import FashionMNIST
 from torch.utils.data import DataLoader
 from architectures_28x28.KKAN import KKAN_Convolutional_Network,KKAN_Ultra_Small
-from architectures_28x28.conv_and_kan import NormalConvsKAN
+from architectures_28x28.conv_and_kan import NormalConvsKAN,NormalConvsKAN_Medium
 from architectures_28x28.CKAN_BN import CKAN_BN
 from architectures_28x28.KANConvs_MLP import KANC_MLP
 from architectures_28x28.KANConvs_MLP_2 import KANC_MLP_2
@@ -55,6 +55,8 @@ if not os.path.exists(path):
 results_path = os.path.join("results",dataset_name)
 if not os.path.exists(results_path):
     os.mkdir(results_path)
+search_hiperparams_and_get_final_model(NormalConvsKAN_Medium,True, mnist_train,  test_loader,max_epochs= 20,path = path,search_grid_combinations = 10 ,folds = 1,dataset_name=dataset_name)
+
 search_hiperparams_and_get_final_model(newMediumCNN,False, mnist_train,  test_loader,max_epochs= 20,path = path,search_grid_combinations = 10 ,folds = 1,dataset_name=dataset_name)
 
 search_hiperparams_and_get_final_model(KKAN_Ultra_Small,True, mnist_train,  test_loader,max_epochs= 20,path = path,search_grid_combinations = 10 ,folds = 1,dataset_name=dataset_name)
@@ -63,7 +65,6 @@ search_hiperparams_and_get_final_model(KKAN_Ultra_Small,True, mnist_train,  test
 
 # search_hiperparams_and_get_final_model(KANC_MLP,True, mnist_train,  test_loader,max_epochs= 20,path = path,search_grid_combinations = 10 ,folds = 1,dataset_name=dataset_name)
 
-# #Bigger
 # model_KANC_MLP_2= KANC_MLP_2
 # search_hiperparams_and_get_final_model(model_KANC_MLP_2,True, mnist_train,  test_loader,max_epochs= 20,path = path,search_grid_combinations = 10 ,folds = 1,dataset_name=dataset_name)
 
