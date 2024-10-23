@@ -53,21 +53,32 @@ results_path = os.path.join("results",dataset_name)
 if not os.path.exists(results_path):
     os.mkdir(results_path)
 
-train_tune(config,KANC_MLP,True, mnist_train,  epochs = 1,folds= 1,profile =True)
+from calflops import calculate_flops
+from torchvision import models
+
+model = KANC_MLP()
+batch_size = 1
+input_shape = (batch_size, 1, 28, 28)
+flops, macs, params = calculate_flops(model=model, 
+                                    input_shape=input_shape,
+                                    output_as_string=True,
+                                    output_precision=4)
+print("FLOPs:%s   MACs:%s   Params:%s \n" %(flops, macs, params))
+# train_tune(config,KANC_MLP,True, mnist_train,  epochs = 1,folds= 1,profile =True)
 
 
-train_tune(config,KANC_MLP_2,True, mnist_train,  epochs = 1,folds= 1,profile =True)
+# train_tune(config,KANC_MLP_2,True, mnist_train,  epochs = 1,folds= 1,profile =True)
 
-train_tune(config,CKAN_BN,True, mnist_train,  epochs = 1,folds= 1,profile =True)
+# train_tune(config,CKAN_BN,True, mnist_train,  epochs = 1,folds= 1,profile =True)
 
-train_tune(config,KKAN_Convolutional_Network,True, mnist_train,  epochs = 1,folds= 1,profile =True)
+# train_tune(config,KKAN_Convolutional_Network,True, mnist_train,  epochs = 1,folds= 1,profile =True)
 
-train_tune(config,NormalConvsKAN,True, mnist_train,  epochs = 1,folds= 1,profile =True)
+# train_tune(config,NormalConvsKAN,True, mnist_train,  epochs = 1,folds= 1,profile =True)
 
-train_tune(config,ConvNet,True, mnist_train,  epochs = 1,folds= 1,profile =True)
-train_tune(config,SimpleCNN,True, mnist_train,  epochs = 1,folds= 1,profile =True)
-train_tune(config,SimpleCNN_2,True, mnist_train,  epochs = 1,folds= 1,profile =True)
-train_tune(config,SimpleLinear,True, mnist_train,  epochs = 1,folds= 1,profile =True)
+# train_tune(config,ConvNet,True, mnist_train,  epochs = 1,folds= 1,profile =True)
+# train_tune(config,SimpleCNN,True, mnist_train,  epochs = 1,folds= 1,profile =True)
+# train_tune(config,SimpleCNN_2,True, mnist_train,  epochs = 1,folds= 1,profile =True)
+# train_tune(config,SimpleLinear,True, mnist_train,  epochs = 1,folds= 1,profile =True)
 
-train_tune(config,newMediumCNN,True, mnist_train,  epochs = 1,folds= 1,profile =True)
-train_tune(config,KKAN_Ultra_Small,True, mnist_train,  epochs = 1,folds= 1,profile =True)
+# train_tune(config,newMediumCNN,True, mnist_train,  epochs = 1,folds= 1,profile =True)
+# train_tune(config,KKAN_Ultra_Small,True, mnist_train,  epochs = 1,folds= 1,profile =True)

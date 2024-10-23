@@ -6,10 +6,8 @@ from typing import List, Tuple, Union
 
 def calc_out_dims(matrix, kernel_side, stride, dilation, padding):
     batch_size,n_channels,n, m = matrix.shape
-    print(padding,kernel_side,dilation,stride)
-    h1 = torch.floor((n + 2 * padding[0] - kernel_side - (kernel_side - 1) * (dilation[0] - 1)) / stride[0])
-    print(h1)
-    h_out = h1.astype(int) + 1
+
+    h_out =  np.floor((n + 2 * padding[0] - kernel_side - (kernel_side - 1) * (dilation[0] - 1)) / stride[0]).astype(int) + 1
     w_out = np.floor((m + 2 * padding[1] - kernel_side - (kernel_side - 1) * (dilation[1] - 1)) / stride[1]).astype(int) + 1
     b = [kernel_side // 2, kernel_side// 2]
     return h_out,w_out,batch_size,n_channels
