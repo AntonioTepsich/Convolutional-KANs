@@ -51,7 +51,6 @@ class KKAN_Ultra_Small(nn.Module):
         x = self.conv2(x)
         x = self.pool1(x)
         x = self.flat(x)
-        print(x.shape)
         x = self.kan1(x) 
         x = F.log_softmax(x, dim=1)
 
