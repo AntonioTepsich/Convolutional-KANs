@@ -58,16 +58,16 @@ train_tune(config,KANC_MLP,True, mnist_train,  epochs = 1,folds= 1,profile =True
 
 train_tune(config,KANC_MLP_2,True, mnist_train,  epochs = 1,folds= 1,profile =True)
 
-train_tune(config,CKAN_BN,True, mnist_train,  epochs = 1,folds= 1,profile =True)
+# train_tune(config,CKAN_BN,True, mnist_train,  epochs = 1,folds= 1,profile =True)
 
-train_tune(config,KKAN_Convolutional_Network,True, mnist_train,  epochs = 1,folds= 1,profile =True)
+# train_tune(config,KKAN_Convolutional_Network,True, mnist_train,  epochs = 1,folds= 1,profile =True)
 
-train_tune(config,NormalConvsKAN,True, mnist_train,  epochs = 1,folds= 1,profile =True)
+# train_tune(config,NormalConvsKAN,True, mnist_train,  epochs = 1,folds= 1,profile =True)
 
-train_tune(config,ConvNet,True, mnist_train,  epochs = 1,folds= 1,profile =True)
-train_tune(config,SimpleCNN,True, mnist_train,  epochs = 1,folds= 1,profile =True)
-train_tune(config,SimpleCNN_2,True, mnist_train,  epochs = 1,folds= 1,profile =True)
-train_tune(config,SimpleLinear,True, mnist_train,  epochs = 1,folds= 1,profile =True)
+# train_tune(config,ConvNet,True, mnist_train,  epochs = 1,folds= 1,profile =True)
+# train_tune(config,SimpleCNN,True, mnist_train,  epochs = 1,folds= 1,profile =True)
+# train_tune(config,SimpleCNN_2,True, mnist_train,  epochs = 1,folds= 1,profile =True)
+# train_tune(config,SimpleLinear,True, mnist_train,  epochs = 1,folds= 1,profile =True)
 
-train_tune(config,newMediumCNN,True, mnist_train,  epochs = 1,folds= 1,profile =True)
-train_tune(config,KKAN_Ultra_Small,True, mnist_train,  epochs = 1,folds= 1,profile =True)
+# train_tune(config,newMediumCNN,True, mnist_train,  epochs = 1,folds= 1,profile =True)
+# train_tune(config,KKAN_Ultra_Small,True, mnist_train,  epochs = 1,folds= 1,profile =True)
