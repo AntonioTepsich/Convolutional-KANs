@@ -45,7 +45,8 @@ class KANC_MLP(nn.Module):
         x = self.linear2(x)
         x = F.log_softmax(x, dim=1)
         return x
-
+    def reg_loss(self):
+        return self.conv1.regularization_loss() + self.conv2.regularization_loss()
 class KANC_MLP_sin_grid(nn.Module):
     def __init__(self,device: str = 'cpu'):
         super().__init__()

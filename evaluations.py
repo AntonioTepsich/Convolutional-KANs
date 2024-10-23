@@ -34,7 +34,7 @@ def train(model, device, train_loader, optimizer, epoch, criterion):
         output = model(data)
 
         # Get the loss
-        loss = criterion(output, target)
+        loss = criterion(output, target) + model.reg_loss()
 
         # Keep a running total
         train_loss += loss.item()
