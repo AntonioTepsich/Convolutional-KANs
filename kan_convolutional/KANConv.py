@@ -81,11 +81,11 @@ class KAN_Convolutional_Layer(torch.nn.Module):
     def forward(self, x: torch.Tensor):
         # If there are multiple convolutions, apply them all
         self.device = x.device
-        if self.n_convs>1:
-            return convolution.multiple_convs_kan_conv2d(x, self.convs,self.kernel_size[0],self.stride,self.dilation,self.padding,self.device)
+        #if self.n_convs>1:
+        return convolution.multiple_convs_kan_conv2d(x, self.convs,self.kernel_size[0],self.stride,self.dilation,self.padding,self.device)
         
         # If there is only one convolution, apply it
-        return self.convs[0].forward(x)
+        #return self.convs[0].forward(x)
         
 
 class KAN_Convolution(torch.nn.Module):
