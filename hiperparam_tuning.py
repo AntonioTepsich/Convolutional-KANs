@@ -1,5 +1,4 @@
 
-import torch.nn.functional as F
 import torch.optim as optim
 import torch.nn as nn
 import numpy as np
@@ -49,7 +48,7 @@ class TrainValSplit:
 class kfoldsplit:
     def __init__(self, train_obj, n_splits=3, shuffle=True, random_state=1):
         self.train_obj  = train_obj
-        self.kfold = StratifiedKFold(n_splits=n_splits, shuffle=True, random_state=1)
+        self.kfold = StratifiedKFold(n_splits=n_splits, shuffle=shuffle, random_state=random_state)
     def split(self,indexes, targets):
         train_ids, valid_ids = self.kfold.split(indexes,targets)
         
@@ -57,7 +56,7 @@ class kfoldsplit:
         validset = torch.utils.data.Subset(self.train_obj, valid_ids)
         # Define data loaders for training and testing data in this fold
         return [(trainset,validset)]
-def train_tune(config,model_class, is_kan,train_obj=None,epochs = 20,folds= 3,profile =False):
+def train_tune(config,model_class, is_kan,train_obj=None,epochs = 20,folds= 3):
     device = "cuda" if torch.cuda.is_available() else "cpu"
     torch.manual_seed(0) #Lets set a seed for the weights initialization
     if folds>1:
@@ -89,7 +88,7 @@ def train_tune(config,model_class, is_kan,train_obj=None,epochs = 20,folds= 3,pr
         optimizer = optim.AdamW(model.parameters(), lr=config["lr"],weight_decay = config["weight_decay"])
         #scheduler = optim.lr_scheduler.ExponentialLR(optimizer, gamma=0.8)
 
-        all_train_loss, all_test_loss, all_test_accuracy, all_test_precision, all_test_recall, all_test_f1 = train_and_test_models(model, device, train_loader, valid_loader, optimizer, criterion, epochs=epochs, scheduler=None,path= None,verbose= True,profile = profile)
+        all_train_loss, all_test_loss, all_test_accuracy, all_test_precision, all_test_recall, all_test_f1 = train_and_test_models(model, device, train_loader, valid_loader, optimizer, criterion, epochs=epochs, scheduler=None,path= None,verbose= True)
         accuracys.append(all_test_accuracy)
         losses.append(all_test_loss)
 

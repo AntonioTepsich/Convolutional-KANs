@@ -29,7 +29,7 @@ def epoch(model, device, train_loader, optimizer,criterion):
     avg_loss = train_loss / (batch_idx+1)
 
     return avg_loss
-def train(model, device, train_loader, optimizer, epoch_num, criterion, measure_flops=False):
+def train(model, device, train_loader, optimizer, epoch_num, criterion):
     """
     Train the model for one epoch
 
@@ -48,17 +48,8 @@ def train(model, device, train_loader, optimizer, epoch_num, criterion, measure_
     model.to(device)
     model.train()
     # Process the images in batches
-    if measure_flops:
-        import pyprof
-        pyprof.init()
-        import torch.cuda.profiler as profiler
-        with torch.autograd.profiler.emit_nvtx():
-            profiler.start()
-            avg_loss = epoch(model, device, train_loader, optimizer,criterion)
 
-            profiler.stop()
-    else:
-        avg_loss = epoch(model, device, train_loader, optimizer,criterion)
+    avg_loss = epoch(model, device, train_loader, optimizer,criterion)
 
     # print('Training set: Average loss: {:.6f}'.format(avg_loss))
     return avg_loss
@@ -118,7 +109,7 @@ def test(model, device, test_loader, criterion):
     #     test_loss, correct, len(test_loader.dataset), accuracy, precision, recall, f1))
 
     return test_loss, accuracy, precision, recall, f1
-def train_and_test_models(model, device, train_loader, test_loader, optimizer, criterion, epochs, scheduler, path = "drive/MyDrive/KANs/models",verbose = True,save_last=False,patience = np.inf,profile=False):
+def train_and_test_models(model, device, train_loader, test_loader, optimizer, criterion, epochs, scheduler, path = "drive/MyDrive/KANs/models",verbose = True,save_last=False,patience = np.inf):
     """
     Train and test the model
 
@@ -151,7 +142,7 @@ def train_and_test_models(model, device, train_loader, test_loader, optimizer, c
     havent_improved = 0
     for epoch in range(1, epochs + 1):
         # Train the model
-        train_loss = train(model, device, train_loader, optimizer, epoch, criterion,measure_flops=profile)
+        train_loss = train(model, device, train_loader, optimizer, epoch, criterion)
         all_train_loss.append(train_loss)
         # Test the model
         test_loss, test_accuracy, test_precision, test_recall, test_f1 = test(model, device, test_loader, criterion)
