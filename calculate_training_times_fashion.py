@@ -51,7 +51,7 @@ mnist_train = FashionMNIST(root='./data', train=True, download=True, transform =
 
 mnist_test = FashionMNIST(root='./data', train=False, download=True, transform = transform)
 
-dataset_name = "MNIST"
+dataset_name = "FashionMNIST"
 path = f"models/{dataset_name}"
 
 if not os.path.exists("results"):
