@@ -66,7 +66,7 @@ if not os.path.exists(results_path):
 
 batch_size = 128
 models= [KANC_MLP(10),KANC_MLP_2(10),CKAN_BN(10),KKAN_Convolutional_Network(10),NormalConvsKAN(10),ConvNet(),SimpleCNN(),SimpleCNN_2(),
-         SimpleLinear(),newMediumCNN(),KKAN_Ultra_Small(10),NormalConvsKAN_Medium(10)]
+         SimpleLinear(),newSmallCNN(),KKAN_Ultra_Small(10),NormalConvsKAN_Medium(10)]
 
 import json
 dictionary={}

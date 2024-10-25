@@ -58,7 +58,7 @@ class kfoldsplit:
         return [(trainset,validset)]
 def train_tune(config,model_class, is_kan,train_obj=None,epochs = 20,folds= 3):
     device = "cuda" if torch.cuda.is_available() else "cpu"
-    torch.manual_seed(0) #Lets set a seed for the weights initialization
+    #torch.manual_seed(0) #Lets set a seed for the weights initialization
     if folds>1:
         splitter = kfoldsplit(train_obj)#StratifiedKFold(n_splits=folds, shuffle=True, random_state=1)
     else:
@@ -105,7 +105,7 @@ def train_tune(config,model_class, is_kan,train_obj=None,epochs = 20,folds= 3):
 
 def get_best_model(model_class,epochs,config, train_obj,test_loader,path,is_kan ):
     device = "cuda" if torch.cuda.is_available() else "cpu"
-    torch.manual_seed(0) #Lets set a seed for the weights initialization
+    #torch.manual_seed(0) #Lets set a seed for the weights initialization
     if is_kan:
         model = model_class(grid_size = config["grid_size"])
     else:
