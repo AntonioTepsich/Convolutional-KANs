@@ -131,7 +131,7 @@ def search_hiperparams_and_get_final_model(model_class,is_kan, train_obj, test_l
     "lr":[1e-5, 1e-4,5e-4 ,1e-3],
     "weight_decay": [0, 1e-5, 1e-4],
     "batch_size":[32, 64, 128 ],
-    "grid_size": [10,15,20]
+    "grid_size": [10,15]
     },folds = 3  ,dataset_name="MNIST"):
 
     

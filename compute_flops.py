@@ -35,8 +35,9 @@ config= {'lr': 0.0005, 'weight_decay': 1e-05, 'batch_size': 3, 'grid_size': 10}
 DataLoader
 train_loader = DataLoader(mnist_train, batch_size=64, shuffle=True)
 test_loader = DataLoader(mnist_test, batch_size=64, shuffle=False)
-dataset_name = "MNIST"
+dataset_name = "FashionMNIST"
 path = f"models/{dataset_name}"
+path2 = f"results/{dataset_name}"
 
 if not os.path.exists("models"):
     os.mkdir("models")
@@ -56,14 +57,14 @@ input_shape = (batch_size, 1, 28, 28)
 models= [KANC_MLP(10),KANC_MLP_2(10),CKAN_BN(10),KKAN_Convolutional_Network(10),NormalConvsKAN(10),ConvNet(),SimpleCNN(),SimpleCNN_2(),
          SimpleLinear(),newSmallCNN(),KKAN_Ultra_Small(10),NormalConvsKAN_Medium(10)]
 import json
-if os.path.exists(os.path.join(path,"epoch_times.json")):
-    with open(os.path.join(path,"epoch_times.json"), 'r') as file:
+if os.path.exists(os.path.join(path2,"epoch_times.json")):
+    with open(os.path.join(path2,"epoch_times.json"), 'r') as file:
         times_dict = json.load(file)
 tfps = {}
 for m in models:
     print(m.name)
     time  = 1
-    if os.path.exists(os.path.join(path,"epoch_times.json")):
+    if os.path.exists(os.path.join(path2,"epoch_times.json")):
         time = times_dict[m.name]
     flops, macs, params = calculate_flops(model=m, 
                                         input_shape=input_shape,
@@ -73,4 +74,5 @@ for m in models:
                                         output_unit="T",print_results=False)
     print("TFLOPs:%s   MACs:%s   Params:%s TFLOPS/s: %s \n" %(flops, macs, params,flops/time))
     tfps[m.name ]= flops/time
-json.dump(tfps,os.path.join(path,"TFPLOSps.json"))
+with open(os.path.join(path2,"TFPLOSps.json"), "w") as outfile: 
+    json.dump(tfps,outfile)

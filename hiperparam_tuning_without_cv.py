@@ -38,7 +38,7 @@ mnist_test = MNIST(root='./data', train=False, download=True, transform=transfor
 DataLoader
 train_loader = DataLoader(mnist_train, batch_size=64, shuffle=True)
 test_loader = DataLoader(mnist_test, batch_size=64, shuffle=False)
-dataset_name = "MNIST"
+dataset_name = "MNIST_wo_seeds"
 path = f"models/{dataset_name}"
 
 if not os.path.exists("models"):
@@ -70,17 +70,16 @@ model_KANC_MLP_2= KANC_MLP_2
 search_hiperparams_and_get_final_model(model_KANC_MLP_2,True, mnist_train,  test_loader,max_epochs= 20,path = path,search_grid_combinations = 10 ,folds = 1,dataset_name=dataset_name)
 
 
-model_CKAN_BN= CKAN_BN
-search_hiperparams_and_get_final_model(model_CKAN_BN,True, mnist_train,  test_loader,max_epochs= 20,path = path,search_grid_combinations = 10 ,folds = 1,dataset_name=dataset_name)
-
 model_KKAN_Convolutional_Network = KKAN_Convolutional_Network
 search_hiperparams_and_get_final_model(model_KKAN_Convolutional_Network,True, mnist_train,  test_loader,max_epochs= 20,path = path,search_grid_combinations = 10 ,folds = 1,dataset_name=dataset_name)
 
 model_Convs_and_KAN= NormalConvsKAN
 search_hiperparams_and_get_final_model(model_Convs_and_KAN,True, mnist_train,  test_loader,max_epochs= 20,path = path,search_grid_combinations = 10 ,folds = 1,dataset_name=dataset_name)
 
-model_ConvNet = ConvNet
-search_hiperparams_and_get_final_model(model_ConvNet,False, mnist_train,  test_loader,max_epochs= 20,path = path,search_grid_combinations = 10 ,folds = 1,dataset_name=dataset_name)
+search_hiperparams_and_get_final_model(newSmallCNN,False, mnist_train,  test_loader,max_epochs= 20,path = path,search_grid_combinations = 10 ,folds = 1,dataset_name=dataset_name)
+
+model_CKAN_BN= CKAN_BN
+search_hiperparams_and_get_final_model(model_CKAN_BN,True, mnist_train,  test_loader,max_epochs= 20,path = path,search_grid_combinations = 10 ,folds = 1,dataset_name=dataset_name)
 
 model_SimpleCNN = SimpleCNN
 search_hiperparams_and_get_final_model(model_SimpleCNN,False, mnist_train,  test_loader,max_epochs= 20,path = path,search_grid_combinations = 10 ,folds = 1,dataset_name=dataset_name)
