@@ -63,7 +63,7 @@ class KANC_MLP_deeper(nn.Module):
 
         self.conv3 = KAN_Convolutional_Layer(
             n_convs = 5,
-            kernel_size = (3,3),
+            kernel_size = (2,2),
             grid_size = grid_size,
             padding=(0,0)
 
@@ -75,7 +75,7 @@ class KANC_MLP_deeper(nn.Module):
         
         self.flat = nn.Flatten() 
         
-        self.linear1 = nn.Linear(125, 10)
+        self.linear1 = nn.Linear(4*125, 10)
         self.name = "KAN Conv deeper & 1 Layer MLP"
 
 

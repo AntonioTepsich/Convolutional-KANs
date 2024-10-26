@@ -95,15 +95,15 @@ class SimpleLinear(nn.Module):
         return x
 class CNN_deeper(nn.Module):
     def __init__(self):
-        super(newSmallCNN, self).__init__()
+        super(CNN_deeper, self).__init__()
         self.conv1 = nn.Conv2d(1, 5, kernel_size=3, padding=(0, 0))
         self.conv2 = nn.Conv2d(5, 25, kernel_size=3, padding=(0, 0))
-        self.conv3 = nn.Conv2d(5, 25, kernel_size=3, padding=(0, 0))
+        self.conv3 = nn.Conv2d(25, 25*5, kernel_size=2, padding=(0, 0))
 
         self.maxpool = nn.MaxPool2d(kernel_size=2)
         
         self.flatten = nn.Flatten()
-        self.fc = nn.Linear(625, 10)
+        self.fc = nn.Linear(4*125, 10)
         self.name = "CNN 3 Conv layers & 1 MLP"
 
     def forward(self, x):
