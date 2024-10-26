@@ -48,8 +48,9 @@ class newSmallCNN(nn.Module):
         x = self.flatten(x)
         x = self.fc(x)
         x = F.log_softmax(x, dim=1)
-
         return x
+class newMediumCNN(newSmallCNN):
+    pass
 class SimpleCNN_2(nn.Module):
     def __init__(self):
         super(SimpleCNN_2, self).__init__()
