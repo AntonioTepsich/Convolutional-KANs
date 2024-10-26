@@ -28,9 +28,9 @@ class SimpleCNN(nn.Module):
 
         return x
     
-class newMediumCNN(nn.Module):
+class newSmallCNN(nn.Module):
     def __init__(self):
-        super(newMediumCNN, self).__init__()
+        super(newSmallCNN, self).__init__()
         self.conv1 = nn.Conv2d(1, 5, kernel_size=3, padding=(0, 0))
         self.conv2 = nn.Conv2d(5, 25, kernel_size=3, padding=(0, 0))
 
@@ -38,7 +38,7 @@ class newMediumCNN(nn.Module):
         
         self.flatten = nn.Flatten()
         self.fc = nn.Linear(625, 10)
-        self.name = "New CNN (Medium)"
+        self.name = "New CNN (Small)"
 
     def forward(self, x):
         x = F.relu(self.conv1(x))

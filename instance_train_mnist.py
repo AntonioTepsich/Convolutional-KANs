@@ -58,15 +58,12 @@ if not os.path.exists(results_path):
     os.mkdir(results_path)
 search_hiperparams_and_get_final_model(KANC_MLP,True, mnist_train,  test_loader,max_epochs= 20,path = path,search_grid_combinations = 10 ,folds = 3,dataset_name=dataset_name)
 
-#model_KANC_MLP_sin_grid= KANC_MLP_sin_grid(device = device)
-
-#search_hiperparams_and_get_final_model(model_KANC_MLP_sin_grid,True, mnist_train,  test_loader,max_epochs= 20,path = path,search_grid_combinations = 10 ,folds = 3,dataset_name=dataset_name)
 
 #Bigger
-# model_KANC_MLP_2= KANC_MLP_2(device = device)
-# search_hiperparams_and_get_final_model(model_KANC_MLP_2,True, mnist_train,  test_loader,max_epochs= 20,path = path,search_grid_combinations = 10 ,folds = 3,dataset_name=dataset_name)
+model_KANC_MLP_2= KANC_MLP_2(device = device)
+search_hiperparams_and_get_final_model(model_KANC_MLP_2,True, mnist_train,  test_loader,max_epochs= 20,path = path,search_grid_combinations = 10 ,folds = 3,dataset_name=dataset_name)
 
-# #model_KANC_MLP_sin_grid_2= KANC_MLP_sin_grid_2(device = device)
+#model_KANC_MLP_sin_grid_2= KANC_MLP_sin_grid_2(device = device)
 # #search_hiperparams_and_get_final_model(model_KANC_MLP_sin_grid_2,True, mnist_train,  test_loader,max_epochs= 20,path = path,search_grid_combinations = 10 ,folds = 3,dataset_name=dataset_name)
 
 # model_CKAN_BN= CKAN_BN(device)
