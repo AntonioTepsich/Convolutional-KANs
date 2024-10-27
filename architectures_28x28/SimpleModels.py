@@ -74,7 +74,6 @@ class SimpleCNN_2(nn.Module):
         x = F.relu(x)
         x = self.fc2(x)
         x = F.log_softmax(x, dim=1)
-
         return x
 
 class SimpleLinear(nn.Module):
