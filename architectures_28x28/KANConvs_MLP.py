@@ -42,40 +42,7 @@ class KANC_MLP(nn.Module):
         x = self.linear1(x)
         x = F.log_softmax(x, dim=1)
         return x
-class KANC_MLP_mixed(nn.Module):
-    def __init__(self,grid_size: int = 5):
-        super().__init__()
-        self.conv1 = nn.Conv2d(1, 5, kernel_size=3, padding=(0, 0))
 
-
-        self.conv2 = KAN_Convolutional_Layer(
-            n_convs = 5,
-            kernel_size = (3,3),
-            grid_size = grid_size
-        )
-
-        self.pool1 = nn.MaxPool2d(
-            kernel_size=(2, 2)
-        )
-        
-        self.flat = nn.Flatten() 
-        
-        #self.linear1 = nn.Linear(625, 256)
-        self.linear1 = nn.Linear(625, 10)
-        self.name = "KAN Conv mixed & 1 Layer MLP"
-
-
-    def forward(self, x):
-        x = self.conv1(x)
-
-        x = self.pool1(x)
-
-        x = self.conv2(x)
-        x = self.pool1(x)
-        x = self.flat(x)
-        x = self.linear1(x)
-        x = F.log_softmax(x, dim=1)
-        return x
 class KANC_MLP_deeper(nn.Module):
     def __init__(self,grid_size: int = 5):
         super().__init__()
