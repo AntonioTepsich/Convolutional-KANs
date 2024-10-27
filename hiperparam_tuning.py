@@ -5,12 +5,13 @@ import numpy as np
 import torch
 from evaluations import train_and_test_models
 from sklearn.model_selection import StratifiedKFold
-
+import time
 def tune_hipers(model_class, is_kan, train_obj, max_epochs, n_combs , grid,folds = 3,save_file = True,dataset_name="MNIST" ):
     combinations = select_hipers_randomly(grid, n_combs,seed = 42)
     best_trial = {"accuracy": 0}
     nombre_modelo = model_class().name
     for comb in combinations:
+        start = time.perf_counter()
         loss,accuracy,epochs = train_tune(comb,model_class, is_kan,train_obj=train_obj,epochs = max_epochs,folds =folds)
         if best_trial["accuracy"]<accuracy:
             best_trial["accuracy"] = accuracy
@@ -20,7 +21,7 @@ def tune_hipers(model_class, is_kan, train_obj, max_epochs, n_combs , grid,folds
 
         if save_file:  
             with open(f"results/{dataset_name}/{nombre_modelo} logs.txt", 'a+') as f:
-                f.write(f"Finished Trial with Hipers {comb} and got accuracy {accuracy} with epochs {epochs}")
+                f.write(f"Finished Trial with Hipers {comb} and got accuracy {accuracy} with epochs {epochs}. Took {time.perf_counter- start} seconds \n")
 
         print(f"Finished Trial with Hipers {comb} and got accuracy {accuracy} with epochs {epochs}")
     # Get the best trial

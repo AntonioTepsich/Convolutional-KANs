@@ -57,7 +57,7 @@ results_path = os.path.join("results",dataset_name)
 if not os.path.exists(results_path):
     os.mkdir(results_path)
 
-search_hiperparams_and_get_final_model(KANC_MLP_deeper,True, mnist_train,  test_loader,max_epochs= 20,path = path,search_grid_combinations = 10 ,folds = 1,dataset_name=dataset_name)
+#search_hiperparams_and_get_final_model(KANC_MLP_deeper,True, mnist_train,  test_loader,max_epochs= 20,path = path,search_grid_combinations = 10 ,folds = 1,dataset_name=dataset_name)
 
 
 search_hiperparams_and_get_final_model(KKAN_Ultra_Small,True, mnist_train,  test_loader,max_epochs= 20,path = path,search_grid_combinations = 10 ,folds = 1,dataset_name=dataset_name)

@@ -32,12 +32,12 @@ class newSmallCNN(nn.Module):
     def __init__(self):
         super(newSmallCNN, self).__init__()
         self.conv1 = nn.Conv2d(1, 5, kernel_size=3, padding=(0, 0))
-        self.conv2 = nn.Conv2d(5, 25, kernel_size=3, padding=(0, 0))
+        self.conv2 = nn.Conv2d(5, 10, kernel_size=3, padding=(0, 0))
 
         self.maxpool = nn.MaxPool2d(kernel_size=2)
         
         self.flatten = nn.Flatten()
-        self.fc = nn.Linear(625, 10)
+        self.fc = nn.Linear(250, 10)
         self.name = "New CNN (Small)"
 
     def forward(self, x):
@@ -54,14 +54,14 @@ class newMediumCNN(newSmallCNN):
 class SimpleCNN_2(nn.Module):
     def __init__(self):
         super(SimpleCNN_2, self).__init__()
-        self.conv1 = nn.Conv2d(1, 5, kernel_size=3, padding=0)
-        self.conv2 = nn.Conv2d(5, 25, kernel_size=3, padding=0)
+        self.conv1 = nn.Conv2d(1, 5, kernel_size=3, padding=(0,0))
+        self.conv2 = nn.Conv2d(5, 10, kernel_size=3, padding=(0,0))
 
         self.maxpool = nn.MaxPool2d(kernel_size=2)
         
         self.flatten = nn.Flatten()
-        self.fc = nn.Linear(625, 245)
-        self.fc2 = nn.Linear(245, 10)
+        self.fc = nn.Linear(250, 100)
+        self.fc2 = nn.Linear(100, 10)
         self.name = "CNN (Medium)"
 
     def forward(self, x):

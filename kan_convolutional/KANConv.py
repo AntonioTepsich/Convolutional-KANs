@@ -10,7 +10,8 @@ import convolution
 class KAN_Convolutional_Layer(torch.nn.Module):
     def __init__(
             self,
-            n_convs: int = 1,
+            in_channels: int = 1,
+            out_channels: int = 1,
             kernel_size: tuple = (2,2),
             stride: tuple = (1,1),
             padding: tuple = (0,0),
@@ -47,6 +48,9 @@ class KAN_Convolutional_Layer(torch.nn.Module):
 
 
         super(KAN_Convolutional_Layer, self).__init__()
+        self.out_channels = out_channels
+        self.in_channels = in_channels
+
         self.grid_size = grid_size
         self.spline_order = spline_order
         self.kernel_size = kernel_size
@@ -54,12 +58,11 @@ class KAN_Convolutional_Layer(torch.nn.Module):
         self.dilation = dilation
         self.padding = padding
         self.convs = torch.nn.ModuleList()
-        self.n_convs = n_convs
         self.stride = stride
 
-
+        
         # Create n_convs KAN_Convolution objects
-        for _ in range(n_convs):
+        for _ in range(in_channels*out_channels):
             self.convs.append(
                 KAN_Convolution(
                     kernel_size= kernel_size,
@@ -82,7 +85,7 @@ class KAN_Convolutional_Layer(torch.nn.Module):
         # If there are multiple convolutions, apply them all
         self.device = x.device
         #if self.n_convs>1:
-        return convolution.multiple_convs_kan_conv2d(x, self.convs,self.kernel_size[0],self.stride,self.dilation,self.padding,self.device)
+        return convolution.multiple_convs_kan_conv2d(x, self.convs,self.kernel_size[0],self.out_channels,self.stride,self.dilation,self.padding,self.device)
         
         # If there is only one convolution, apply it
         #return self.convs[0].forward(x)

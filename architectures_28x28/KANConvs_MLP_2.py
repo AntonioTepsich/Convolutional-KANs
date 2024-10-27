@@ -10,13 +10,15 @@ class KANC_MLP_2(nn.Module):
     def __init__(self,grid_size= 5):
         super().__init__()
         self.conv1 = KAN_Convolutional_Layer(
-            n_convs = 5,
+            in_channels=1,
+            out_channels= 5,
             kernel_size= (3,3),
             grid_size = grid_size
         )
 
         self.conv2 = KAN_Convolutional_Layer(
-            n_convs = 5,
+            in_channels=5,
+            out_channels= 10,
             kernel_size = (3,3),
             grid_size= grid_size
 
@@ -28,8 +30,8 @@ class KANC_MLP_2(nn.Module):
         
         self.flat = nn.Flatten() 
         
-        self.linear1 = nn.Linear(625, 256)
-        self.linear2 = nn.Linear(256, 10)
+        self.linear1 = nn.Linear(250, 100)
+        self.linear2 = nn.Linear(100, 10)
         self.name = "KAN Conv & 2 Layer MLP"
 
 
