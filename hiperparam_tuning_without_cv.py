@@ -16,7 +16,7 @@ import torch.optim as optim
 import torchvision.transforms as transforms
 from torchvision.datasets import MNIST
 from torch.utils.data import DataLoader
-from architectures_28x28.KKAN import KKAN_Convolutional_Network,KKAN_Ultra_Small
+from architectures_28x28.KKAN import KKAN_Convolutional_Network,KKAN_Ultra_Small,KKAN_3_Convs   
 from architectures_28x28.conv_and_kan import NormalConvsKAN,NormalConvsKAN_Medium
 from architectures_28x28.CKAN_BN import CKAN_BN
 from architectures_28x28.KANConvs_MLP import *
@@ -38,7 +38,7 @@ mnist_test = MNIST(root='./data', train=False, download=True, transform=transfor
 DataLoader
 train_loader = DataLoader(mnist_train, batch_size=64, shuffle=True)
 test_loader = DataLoader(mnist_test, batch_size=64, shuffle=False)
-dataset_name = "MNIST_wo_seeds"
+dataset_name = "MNIST"
 path = f"models/{dataset_name}"
 
 if not os.path.exists("models"):
@@ -56,10 +56,11 @@ if not os.path.exists(path):
 results_path = os.path.join("results",dataset_name)
 if not os.path.exists(results_path):
     os.mkdir(results_path)
-search_hiperparams_and_get_final_model(KANC_MLP_deeper,True, mnist_train,  test_loader,max_epochs= 20,path = path,search_grid_combinations = 10 ,folds = 1,dataset_name=dataset_name)
+search_hiperparams_and_get_final_model(KKAN_3_Convs,False, mnist_train,  test_loader,max_epochs= 20,path = path,search_grid_combinations = 10 ,folds = 1,dataset_name=dataset_name)
 
 search_hiperparams_and_get_final_model(CNN_deeper,False, mnist_train,  test_loader,max_epochs= 20,path = path,search_grid_combinations = 10 ,folds = 1,dataset_name=dataset_name)
 
+search_hiperparams_and_get_final_model(KANC_MLP_deeper,True, mnist_train,  test_loader,max_epochs= 20,path = path,search_grid_combinations = 10 ,folds = 1,dataset_name=dataset_name)
 
 """
 search_hiperparams_and_get_final_model(KKAN_Ultra_Small,True, mnist_train,  test_loader,max_epochs= 20,path = path,search_grid_combinations = 10 ,folds = 1,dataset_name=dataset_name)
