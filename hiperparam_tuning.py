@@ -6,13 +6,16 @@ import torch
 from evaluations import train_and_test_models
 from sklearn.model_selection import StratifiedKFold
 import time
-def tune_hipers(model_class, is_kan, train_obj, max_epochs, n_combs , grid,folds = 3,save_file = True,dataset_name="MNIST" ):
+def tune_hipers(model_class, is_kan, train_obj, max_epochs, n_combs , grid,folds = 3,save_file = True,dataset_name="MNIST" ,grid_size = 20):
     combinations = select_hipers_randomly(grid, n_combs,seed = 42)
     best_trial = {"accuracy": 0}
-    nombre_modelo = model_class().name
+    if is_kan:
+        nombre_modelo = model_class(grid_size=grid_size).name
+    else:
+        nombre_modelo = model_class().name
     for comb in combinations:
         start = time.perf_counter()
-        loss,accuracy,epochs = train_tune(comb,model_class, is_kan,train_obj=train_obj,epochs = max_epochs,folds =folds)
+        loss,accuracy,epochs = train_tune(comb,model_class, is_kan,grid_size,train_obj=train_obj,epochs = max_epochs,folds =folds)
         if best_trial["accuracy"]<accuracy:
             best_trial["accuracy"] = accuracy
             best_trial["epochs"] = epochs
@@ -57,7 +60,7 @@ class kfoldsplit:
         validset = torch.utils.data.Subset(self.train_obj, valid_ids)
         # Define data loaders for training and testing data in this fold
         return [(trainset,validset)]
-def train_tune(config,model_class, is_kan,train_obj=None,epochs = 20,folds= 3):
+def train_tune(config,model_class, is_kan,grid_size,train_obj=None,epochs = 20,folds= 3):
     device = "cuda" if torch.cuda.is_available() else "cpu"
     torch.manual_seed(0) #Lets set a seed for the weights initialization
     if folds>1:
@@ -66,15 +69,14 @@ def train_tune(config,model_class, is_kan,train_obj=None,epochs = 20,folds= 3):
         splitter = TrainValSplit(train_obj)
     accuracys = []
     losses = []
-    print(config)
+    #print(config)
     for trainset, validset in splitter.split(np.arange(len(train_obj)),train_obj.targets):
         #print("starting fold", fold)
         if is_kan:
-            model = model_class(grid_size = config["grid_size"])
+            model = model_class(grid_size = grid_size)
         else:
             model = model_class()
         # Sample elements randomly from a given list of ids, no replacement.
-
         train_loader = torch.utils.data.DataLoader(
                         trainset, 
                         batch_size=int(config["batch_size"]))
@@ -104,11 +106,11 @@ def train_tune(config,model_class, is_kan,train_obj=None,epochs = 20,folds= 3):
     return best_loss,best_accuracy,best_epochs
 
 
-def get_best_model(model_class,epochs,config, train_obj,test_loader,path,is_kan ):
+def get_best_model(model_class,epochs,config, train_obj,test_loader,path,is_kan ,grid_size):
     device = "cuda" if torch.cuda.is_available() else "cpu"
     torch.manual_seed(0) #Lets set a seed for the weights initialization
     if is_kan:
-        model = model_class(grid_size = config["grid_size"])
+        model = model_class(grid_size = grid_size)
     else:
         model = model_class()
  
@@ -129,18 +131,17 @@ def get_best_model(model_class,epochs,config, train_obj,test_loader,path,is_kan 
     return best_accuracy,best_loss
 
 def search_hiperparams_and_get_final_model(model_class,is_kan, train_obj, test_loader,max_epochs,path,search_grid_combinations = 10,grid= {
-    "lr":[1e-5, 1e-4,5e-4 ,1e-3],
+    "lr":[ 1e-4,5e-4 ,1e-3],
     "weight_decay": [0, 1e-5, 1e-4],
-    "batch_size":[32, 64, 128 ],
-    "grid_size": [10,15,20]
-    },folds = 3  ,dataset_name="MNIST"):
+    "batch_size":[32, 64, 128 ]
+    },grid_size = 20,folds = 3  ,dataset_name="MNIST"):
 
     
     best_trial = tune_hipers(model_class, is_kan, train_obj,max_epochs = max_epochs, n_combs = search_grid_combinations,
-                              grid = grid,folds = folds, dataset_name=dataset_name)
+                              grid = grid,folds = folds, dataset_name = dataset_name, grid_size = grid_size)
     epochs = best_trial['epochs']
 
-    get_best_model(model_class,epochs,best_trial, train_obj,test_loader,path,is_kan)
+    get_best_model(model_class,epochs,best_trial, train_obj,test_loader,path,is_kan,grid_size)
 
 
 def select_hipers_randomly(grid, n_combs,seed = 42):

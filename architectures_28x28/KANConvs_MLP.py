@@ -26,9 +26,8 @@ class KANC_MLP(nn.Module):
         
         self.flat = nn.Flatten() 
         
-        #self.linear1 = nn.Linear(625, 256)
         self.linear1 = nn.Linear(125, 10)
-        self.name = "KAN Conv & 1 Layer MLP"
+        self.name = f"KANC MLP (Small) (gs = {grid_size})"
 
 
     def forward(self, x):
@@ -43,7 +42,7 @@ class KANC_MLP(nn.Module):
         x = self.linear1(x)
         x = F.log_softmax(x, dim=1)
         return x
-class KANC_MLP_new(nn.Module):
+class KANC_MLP_Medium(nn.Module):
     def __init__(self,grid_size: int = 5):
         super().__init__()
         self.conv1 = KAN_Convolutional_Layer(in_channels=1,
@@ -65,7 +64,7 @@ class KANC_MLP_new(nn.Module):
         self.flat = nn.Flatten() 
         
         self.linear1 = nn.Linear(250, 10)
-        self.name = "KAN Conv & 1 Layer MLP (New)"
+        self.name = f"KANC MLP (Medium) (gs = {grid_size})"
 
 
     def forward(self, x):
@@ -79,55 +78,7 @@ class KANC_MLP_new(nn.Module):
         x = self.linear1(x)
         x = F.log_softmax(x, dim=1)
         return x
-# class KANC_MLP_deeper(nn.Module):
-#     def __init__(self,grid_size: int = 5):
-#         super().__init__()
-#         self.conv1 = KAN_Convolutional_Layer(
-#             n_convs = 5,
-#             kernel_size= (3,3),
-#             grid_size = grid_size,
-#             padding=(0,0)
-#         )
 
-#         self.conv2 = KAN_Convolutional_Layer(
-#             n_convs = 5,
-#             kernel_size = (3,3),
-#             grid_size = grid_size,
-#             padding=(0,0)
-
-#         )
-
-#         self.conv3 = KAN_Convolutional_Layer(
-#             n_convs = 5,
-#             kernel_size = (2,2),
-#             grid_size = grid_size,
-#             padding=(0,0)
-
-#         )
-
-#         self.pool1 = nn.MaxPool2d(
-#             kernel_size=(2, 2)
-#         )
-        
-#         self.flat = nn.Flatten() 
-        
-#         self.linear1 = nn.Linear(4*125, 10)
-#         self.name = "KAN Conv deeper & 1 Layer MLP"
-
-
-#     def forward(self, x):
-#         x = self.conv1(x)
-
-#         x = self.pool1(x)
-
-#         x = self.conv2(x)
-#         x = self.pool1(x)
-#         x = self.conv3(x)
-#         x = self.pool1(x)
-#         x = self.flat(x)
-#         x = self.linear1(x)
-#         x = F.log_softmax(x, dim=1)
-#         return x
 
 
 

@@ -8,13 +8,13 @@ import torch.nn.functional as F
 class SimpleCNN(nn.Module):
     def __init__(self):
         super(SimpleCNN, self).__init__()
-        self.conv1 = nn.Conv2d(1, 5, kernel_size=3, padding=1)
-        self.conv2 = nn.Conv2d(5, 5, kernel_size=3, padding=1)
+        self.conv1 = nn.Conv2d(1, 5, kernel_size=3, padding=(0,0))
+        self.conv2 = nn.Conv2d(5, 5, kernel_size=3, padding=(0,0))
 
         self.maxpool = nn.MaxPool2d(kernel_size=2)
         
         self.flatten = nn.Flatten()
-        self.fc = nn.Linear(245, 10)
+        self.fc = nn.Linear(125, 10)
         self.name = "CNN (Small)"
 
     def forward(self, x):
@@ -28,9 +28,9 @@ class SimpleCNN(nn.Module):
 
         return x
     
-class newSmallCNN(nn.Module):
+class MediumCNN(nn.Module):
     def __init__(self):
-        super(newSmallCNN, self).__init__()
+        super(MediumCNN, self).__init__()
         self.conv1 = nn.Conv2d(1, 5, kernel_size=3, padding=(0, 0))
         self.conv2 = nn.Conv2d(5, 10, kernel_size=3, padding=(0, 0))
 
@@ -38,7 +38,7 @@ class newSmallCNN(nn.Module):
         
         self.flatten = nn.Flatten()
         self.fc = nn.Linear(250, 10)
-        self.name = "New CNN (Small)"
+        self.name = "CNN (Medium)"
 
     def forward(self, x):
         x = F.relu(self.conv1(x))
@@ -49,11 +49,10 @@ class newSmallCNN(nn.Module):
         x = self.fc(x)
         x = F.log_softmax(x, dim=1)
         return x
-class newMediumCNN(newSmallCNN):
-    pass
-class SimpleCNN_2(nn.Module):
+
+class CNN_Big(nn.Module):
     def __init__(self):
-        super(SimpleCNN_2, self).__init__()
+        super(CNN_Big, self).__init__()
         self.conv1 = nn.Conv2d(1, 5, kernel_size=3, padding=(0,0))
         self.conv2 = nn.Conv2d(5, 10, kernel_size=3, padding=(0,0))
 
@@ -62,7 +61,7 @@ class SimpleCNN_2(nn.Module):
         self.flatten = nn.Flatten()
         self.fc = nn.Linear(250, 100)
         self.fc2 = nn.Linear(100, 10)
-        self.name = "CNN (Medium)"
+        self.name = "CNN (Big)"
 
     def forward(self, x):
         x = F.relu(self.conv1(x))
@@ -75,6 +74,31 @@ class SimpleCNN_2(nn.Module):
         x = self.fc2(x)
         x = F.log_softmax(x, dim=1)
         return x
+
+
+    
+class CNN_more_convs(nn.Module):
+    def __init__(self):
+        super(CNN_more_convs, self).__init__()
+        self.conv1 = nn.Conv2d(1, 10, kernel_size=3, padding=(0, 0))
+        self.conv2 = nn.Conv2d(10, 20, kernel_size=3, padding=(0, 0))
+
+        self.maxpool = nn.MaxPool2d(kernel_size=2)
+        
+        self.flatten = nn.Flatten()
+        self.fc = nn.Linear(500, 10)
+        self.name = "CNN  (Medium, but with more convs)"
+
+    def forward(self, x):
+        x = F.relu(self.conv1(x))
+        x = self.maxpool(x)
+        x = F.relu(self.conv2(x))
+        x = self.maxpool(x)
+        x = self.flatten(x)
+        x = self.fc(x)
+        x = F.log_softmax(x, dim=1)
+        return x
+
 
 class SimpleLinear(nn.Module):
     def __init__(self):

@@ -11,9 +11,9 @@ class NormalConvsKAN(nn.Module):
         super(NormalConvsKAN, self).__init__()
         # Convolutional layer, assuming an input with 1 channel (grayscale image)
         # and producing 16 output channels, with a kernel size of 3x3
-        self.conv1 = nn.Conv2d(1, 5, kernel_size=3, padding=1)
-        self.conv2 = nn.Conv2d(5, 5, kernel_size=3, padding=1)
-        self.name = "Conv & KAN"
+        self.conv1 = nn.Conv2d(1, 5, kernel_size=3, padding=(0,0))
+        self.conv2 = nn.Conv2d(5, 5, kernel_size=3, padding=(0,0))
+        self.name = f"Conv & KAN (Small) (gs = {grid_size})"
 
         # Max pooling layer
         self.maxpool = nn.MaxPool2d(kernel_size=2)
@@ -23,7 +23,7 @@ class NormalConvsKAN(nn.Module):
 
         # KAN layer
         self.kan1 = KANLinear(
-            245,
+            125,
             10,
             grid_size=grid_size,
             spline_order=3,
@@ -48,11 +48,10 @@ class NormalConvsKAN(nn.Module):
 class NormalConvsKAN_Medium(nn.Module):
     def __init__(self, grid_size=5):
         super(NormalConvsKAN_Medium, self).__init__()
-        # Convolutional layer, assuming an input with 1 channel (grayscale image)
-        # and producing 16 output channels, with a kernel size of 3x3
+
         self.conv1 = nn.Conv2d(1, 5, kernel_size=3, padding=(0,0))
-        self.conv2 = nn.Conv2d(5, 25, kernel_size=3,  padding=(0,0))
-        self.name = "Conv & KAN (Medium)"
+        self.conv2 = nn.Conv2d(5, 10, kernel_size=3,  padding=(0,0))
+        self.name = f"Conv & KAN (Medium) (gs = {grid_size})"
 
         # Max pooling layer
         self.maxpool = nn.MaxPool2d(kernel_size=2)
@@ -62,7 +61,7 @@ class NormalConvsKAN_Medium(nn.Module):
 
         # KAN layer
         self.kan1 = KANLinear(
-            625,
+            250,
             10,
             grid_size=grid_size,
             spline_order=3,
