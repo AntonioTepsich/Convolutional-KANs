@@ -21,7 +21,7 @@ def tune_hipers(model_class, is_kan, train_obj, max_epochs, n_combs , grid,folds
 
         if save_file:  
             with open(f"results/{dataset_name}/{nombre_modelo} logs.txt", 'a+') as f:
-                f.write(f"Finished Trial with Hipers {comb} and got accuracy {accuracy} with epochs {epochs}. Took {time.perf_counter- start} seconds \n")
+                f.write(f"Finished Trial with Hipers {comb} and got accuracy {accuracy} with epochs {epochs}. Took {time.perf_counter()- start} seconds \n")
 
         print(f"Finished Trial with Hipers {comb} and got accuracy {accuracy} with epochs {epochs}")
     # Get the best trial

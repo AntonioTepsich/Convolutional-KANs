@@ -65,7 +65,7 @@ class KANC_MLP_new(nn.Module):
         self.flat = nn.Flatten() 
         
         self.linear1 = nn.Linear(250, 10)
-        self.name = "KAN Conv & 1 Layer MLP"
+        self.name = "KAN Conv & 1 Layer MLP (New)"
 
 
     def forward(self, x):

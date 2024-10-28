@@ -35,7 +35,6 @@ mnist_train = MNIST(root='./data', train=True, download=True, transform=transfor
 
 mnist_test = MNIST(root='./data', train=False, download=True, transform=transform)
 
-DataLoader
 train_loader = DataLoader(mnist_train, batch_size=64, shuffle=True)
 test_loader = DataLoader(mnist_test, batch_size=64, shuffle=False)
 dataset_name = "MNIST"
