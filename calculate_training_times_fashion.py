@@ -1,7 +1,6 @@
 import sys
 sys.path.insert(1,'Convolutional-KANs')
-sys.path.append('.../ckan')
-sys.path.append('../architectures_28x28')
+
 
 
 import os
@@ -9,16 +8,16 @@ import torch
 import torch.optim as optim
 import torch.nn as nn
 import torchvision.transforms as transforms
-from torchvision.datasets import FashionMNIST
+from torchvision.datasets import MNIST
 from torch.utils.data import DataLoader
-from architectures_28x28.KKAN import KKAN_Convolutional_Network,KKAN_Ultra_Small
-from architectures_28x28.conv_and_kan import NormalConvsKAN,NormalConvsKAN_Medium
-from architectures_28x28.CKAN_BN import CKAN_BN
-from architectures_28x28.KANConvs_MLP import KANC_MLP
-from architectures_28x28.KANConvs_MLP_2 import KANC_MLP_2
+from architectures_28x28.KKAN import *
+from architectures_28x28.conv_and_kan import *
+
+from architectures_28x28.KANConvs_MLP import *
+from architectures_28x28.KANConvs_MLP_2 import *
 from architectures_28x28.SimpleModels import *
-from architectures_28x28.ConvNet import ConvNet
 from evaluations import *
+import time
 import time
 #from hiperparam_tuning import *
 #from calflops import calculate_flops
@@ -47,11 +46,11 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.5,), (0.5,))])
 
 #Load MNIST and filter by classes
-mnist_train = FashionMNIST(root='./data', train=True, download=True, transform = transform)
+mnist_train = MNIST(root='./data', train=True, download=True, transform = transform)
 
-mnist_test = FashionMNIST(root='./data', train=False, download=True, transform = transform)
+mnist_test = MNIST(root='./data', train=False, download=True, transform = transform)
 
-dataset_name = "FashionMNIST"
+dataset_name = "MNIST"
 path = f"models/{dataset_name}"
 
 if not os.path.exists("results"):
@@ -65,8 +64,10 @@ if not os.path.exists(results_path):
     os.mkdir(results_path)
 
 batch_size = 128
-models= [KANC_MLP(10),KANC_MLP_2(10),CKAN_BN(10),KKAN_Convolutional_Network(10),NormalConvsKAN(10),ConvNet(),SimpleCNN(),SimpleCNN_2(),
-         SimpleLinear(),newSmallCNN(),KKAN_Ultra_Small(10),NormalConvsKAN_Medium(10)]
+models= [KANC_MLP(grid_size=10), KANC_MLP_Medium(grid_size=10),KANC_MLP_Big(grid_size=10),KANC_MLP(grid_size=20), KANC_MLP_Medium(grid_size=20),KANC_MLP_Big(grid_size=20),
+          SimpleCNN(),MediumCNN(),CNN_Big(),CNN_more_convs(),KKAN_Convolutional_Network(grid_size=10),
+          KKAN_Small(grid_size=10),NormalConvsKAN(grid_size=10),NormalConvsKAN_Medium(grid_size=10),KKAN_Convolutional_Network(grid_size=20),
+          KKAN_Small(grid_size=20),NormalConvsKAN(grid_size=20),NormalConvsKAN_Medium(grid_size=20)]
 
 import json
 dictionary={}
