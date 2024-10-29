@@ -144,7 +144,7 @@ def search_hiperparams_and_get_final_model(model_class,is_kan, train_obj, test_l
     get_best_model(model_class,epochs,best_trial, train_obj,test_loader,path,is_kan,grid_size)
 
 
-def select_hipers_randomly(grid, n_combs,seed = 42):
+def select_hipers_randomly(grid, n_combs,seed = 42,special_comb=False):
     np.random.seed(seed) #Lets set a seed for the weights initialization
     combinations = []
     for i in range(n_combs):
@@ -152,7 +152,8 @@ def select_hipers_randomly(grid, n_combs,seed = 42):
         for hiperparam in grid:
             combination[hiperparam] = (np.random.choice(grid[hiperparam]))
         combinations.append(combination)
-    special_comb= {'lr': 0.0005, 'weight_decay': 1e-05, 'batch_size': 128}
-    if not special_comb in combinations: 
-        combinations.append(special_comb) #this seems to be one of the best and we dont want to leave it out to the random wheter its in or not
+    if special_comb:
+        special_comb= {'lr': 0.0005, 'weight_decay': 1e-05, 'batch_size': 128}
+        if not special_comb in combinations: 
+            combinations.append(special_comb) #this seems to be one of the best and we dont want to leave it out to the random wheter its in or not
     return combinations

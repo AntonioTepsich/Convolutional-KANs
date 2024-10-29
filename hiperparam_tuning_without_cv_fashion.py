@@ -53,18 +53,17 @@ if not os.path.exists(results_path):
     os.mkdir(results_path)
 
 def train_all_kans(grid_size ):
-    if grid_size!=10:
 
-        search_hiperparams_and_get_final_model(KANC_MLP,True, mnist_train,  test_loader,max_epochs= 20,path = path,search_grid_combinations = 7 ,folds = 1,dataset_name=dataset_name, grid_size  = grid_size)
-        search_hiperparams_and_get_final_model(KANC_MLP_Big,True, mnist_train,  test_loader,max_epochs= 20,path = path,search_grid_combinations = 7 ,folds = 1,dataset_name=dataset_name,grid_size  = grid_size)
-    search_hiperparams_and_get_final_model(KANC_MLP_Medium,True, mnist_train,  test_loader,max_epochs= 20,path = path,search_grid_combinations = 7 ,folds = 1,dataset_name=dataset_name, grid_size  = grid_size)
-    search_hiperparams_and_get_final_model(KKAN_Convolutional_Network,True, mnist_train,  test_loader,max_epochs= 20,path = path,search_grid_combinations = 7 ,folds = 1,dataset_name=dataset_name, grid_size  = grid_size)
+    search_hiperparams_and_get_final_model(KANC_MLP,True, mnist_train,  test_loader,max_epochs= 20,path = path,search_grid_combinations = 8 ,folds = 1,dataset_name=dataset_name, grid_size  = grid_size)
+    search_hiperparams_and_get_final_model(KANC_MLP_Big,True, mnist_train,  test_loader,max_epochs= 20,path = path,search_grid_combinations = 8 ,folds = 1,dataset_name=dataset_name,grid_size  = grid_size)
+    search_hiperparams_and_get_final_model(KANC_MLP_Medium,True, mnist_train,  test_loader,max_epochs= 20,path = path,search_grid_combinations = 8 ,folds = 1,dataset_name=dataset_name, grid_size  = grid_size)
+    search_hiperparams_and_get_final_model(KKAN_Convolutional_Network,True, mnist_train,  test_loader,max_epochs= 20,path = path,search_grid_combinations = 8 ,folds = 1,dataset_name=dataset_name, grid_size  = grid_size)
 
-    search_hiperparams_and_get_final_model(KKAN_Small,True, mnist_train,  test_loader,max_epochs= 20,path = path,search_grid_combinations = 7 ,folds = 1,dataset_name=dataset_name, grid_size  = grid_size)
+    search_hiperparams_and_get_final_model(KKAN_Small,True, mnist_train,  test_loader,max_epochs= 20,path = path,search_grid_combinations = 8 ,folds = 1,dataset_name=dataset_name, grid_size  = grid_size)
 
-    search_hiperparams_and_get_final_model(NormalConvsKAN,True, mnist_train,  test_loader,max_epochs= 20,path = path,search_grid_combinations = 7 ,folds = 1,dataset_name=dataset_name, grid_size  = grid_size)
+    search_hiperparams_and_get_final_model(NormalConvsKAN,True, mnist_train,  test_loader,max_epochs= 20,path = path,search_grid_combinations = 8 ,folds = 1,dataset_name=dataset_name, grid_size  = grid_size)
 
-    search_hiperparams_and_get_final_model(NormalConvsKAN_Medium,True, mnist_train,  test_loader,max_epochs= 20,path = path,search_grid_combinations = 7 ,folds = 1,dataset_name=dataset_name,grid_size  = grid_size)
+    search_hiperparams_and_get_final_model(NormalConvsKAN_Medium,True, mnist_train,  test_loader,max_epochs= 20,path = path,search_grid_combinations = 8 ,folds = 1,dataset_name=dataset_name,grid_size  = grid_size)
 
 
 
@@ -73,10 +72,10 @@ train_all_kans(grid_size = 10)
 train_all_kans(grid_size = 20)
 
 
-search_hiperparams_and_get_final_model(SimpleCNN,False, mnist_train,  test_loader,max_epochs= 20,path = path,search_grid_combinations = 7 ,folds = 1,dataset_name=dataset_name)
-search_hiperparams_and_get_final_model(MediumCNN,False, mnist_train,  test_loader,max_epochs= 20,path = path,search_grid_combinations = 7 ,folds = 1,dataset_name=dataset_name)
-search_hiperparams_and_get_final_model(CNN_Big,False, mnist_train,  test_loader,max_epochs= 20,path = path,search_grid_combinations = 7 ,folds = 1,dataset_name=dataset_name)
+search_hiperparams_and_get_final_model(SimpleCNN,False, mnist_train,  test_loader,max_epochs= 20,path = path,search_grid_combinations = 8 ,folds = 1,dataset_name=dataset_name)
+search_hiperparams_and_get_final_model(MediumCNN,False, mnist_train,  test_loader,max_epochs= 20,path = path,search_grid_combinations = 8 ,folds = 1,dataset_name=dataset_name)
+search_hiperparams_and_get_final_model(CNN_Big,False, mnist_train,  test_loader,max_epochs= 20,path = path,search_grid_combinations = 8 ,folds = 1,dataset_name=dataset_name)
 
-search_hiperparams_and_get_final_model(CNN_more_convs,False, mnist_train,  test_loader,max_epochs= 20,path = path,search_grid_combinations = 7 ,folds = 1,dataset_name=dataset_name)
+search_hiperparams_and_get_final_model(CNN_more_convs,False, mnist_train,  test_loader,max_epochs= 20,path = path,search_grid_combinations = 8 ,folds = 1,dataset_name=dataset_name)
 
 
