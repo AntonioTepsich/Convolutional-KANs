@@ -50,7 +50,7 @@ mnist_train = MNIST(root='./data', train=True, download=True, transform = transf
 
 mnist_test = MNIST(root='./data', train=False, download=True, transform = transform)
 
-dataset_name = "MNIST"
+dataset_name = "FasionMNIST_torchstyle"
 path = f"models/{dataset_name}"
 
 if not os.path.exists("results"):

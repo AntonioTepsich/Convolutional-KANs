@@ -33,7 +33,7 @@ mnist_train = FashionMNIST(root='./data', train=True, download=True, transform=t
 
 mnist_test = FashionMNIST(root='./data', train=False, download=True, transform=transform)
 
-DataLoader
+
 test_loader = DataLoader(mnist_test, batch_size=64, shuffle=False)
 dataset_name = "FashionMNIST_torchlike"
 path = f"models/{dataset_name}"
