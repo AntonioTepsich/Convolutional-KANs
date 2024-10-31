@@ -8,7 +8,7 @@ import torch
 import torch.optim as optim
 import torch.nn as nn
 import torchvision.transforms as transforms
-from torchvision.datasets import MNIST
+from torchvision.datasets import FashionMNIST
 from torch.utils.data import DataLoader
 from architectures_28x28.KKAN import *
 from architectures_28x28.conv_and_kan import *
@@ -46,9 +46,9 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.5,), (0.5,))])
 
 #Load MNIST and filter by classes
-mnist_train = MNIST(root='./data', train=True, download=True, transform = transform)
+mnist_train = FashionMNIST(root='./data', train=True, download=True, transform = transform)
 
-mnist_test = MNIST(root='./data', train=False, download=True, transform = transform)
+mnist_test = FashionMNIST(root='./data', train=False, download=True, transform = transform)
 
 dataset_name = "FasionMNIST_torchstyle"
 path = f"models/{dataset_name}"
