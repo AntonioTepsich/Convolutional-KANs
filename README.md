@@ -47,11 +47,12 @@ The different architectures we have tested are:
 - Normal Conv & KAN (Classic Convolutions and KANs after the flatten.
 They can be seen in the following Figures:
 
-**CNN arquitectures**
+**CNN architectures**
 ![image](./images/arq1.png)
-**KAN alternatives arquitectures**
+**KAN alternatives architectures**
 ![image](./images/arq2.png)
 
+The experiments were run using the script: "hiperparam_tuning_without_cv_fashion.py"
 
 | Model                          | Accuracy | Precision | Recall | F1 Score | # Params | Minutes per epoch |
 |--------------------------------|----------|-----------|--------|----------|----------|--------------------|
