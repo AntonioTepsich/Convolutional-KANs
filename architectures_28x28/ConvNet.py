@@ -7,9 +7,11 @@ import sys
 
 class ConvNet(nn.Module):
     def __init__(self):
+        
         super(ConvNet, self).__init__()
         self.conv1 = nn.Conv2d(1, 32, kernel_size=5, padding='same')
         self.conv2 = nn.Conv2d(32, 32, kernel_size=5, padding='same')
+        self.name = "CNN (Big)"
 
         self.conv3 = nn.Conv2d(32, 64, kernel_size=3, padding='same')
         self.conv4 = nn.Conv2d(64, 64, kernel_size=3, padding='same')

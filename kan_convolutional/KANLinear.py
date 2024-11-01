@@ -3,6 +3,11 @@ import torch.nn.functional as F
 import math
 
 
+import torch
+import torch.nn.functional as F
+import math
+
+
 class KANLinear(torch.nn.Module):
     def __init__(
         self,
@@ -151,14 +156,19 @@ class KANLinear(torch.nn.Module):
         )
 
     def forward(self, x: torch.Tensor):
-        assert x.dim() == 2 and x.size(1) == self.in_features
+        assert x.size(-1) == self.in_features
+        original_shape = x.shape
+        x = x.reshape(-1, self.in_features)
 
         base_output = F.linear(self.base_activation(x), self.base_weight)
         spline_output = F.linear(
             self.b_splines(x).view(x.size(0), -1),
             self.scaled_spline_weight.view(self.out_features, -1),
         )
-        return base_output + spline_output
+        output = base_output + spline_output
+        
+        output = output.reshape(*original_shape[:-1], self.out_features)
+        return output
 
     @torch.no_grad()
     def update_grid(self, x: torch.Tensor, margin=0.01):
@@ -231,6 +241,53 @@ class KANLinear(torch.nn.Module):
             + regularize_entropy * regularization_loss_entropy
         )
 
+
+class KAN(torch.nn.Module):
+    def __init__(
+        self,
+        layers_hidden,
+        grid_size=5,
+        spline_order=3,
+        scale_noise=0.1,
+        scale_base=1.0,
+        scale_spline=1.0,
+        base_activation=torch.nn.SiLU,
+        grid_eps=0.02,
+        grid_range=[-1, 1],
+    ):
+        super(KAN, self).__init__()
+        self.grid_size = grid_size
+        self.spline_order = spline_order
+
+        self.layers = torch.nn.ModuleList()
+        for in_features, out_features in zip(layers_hidden, layers_hidden[1:]):
+            self.layers.append(
+                KANLinear(
+                    in_features,
+                    out_features,
+                    grid_size=grid_size,
+                    spline_order=spline_order,
+                    scale_noise=scale_noise,
+                    scale_base=scale_base,
+                    scale_spline=scale_spline,
+                    base_activation=base_activation,
+                    grid_eps=grid_eps,
+                    grid_range=grid_range,
+                )
+            )
+
+    def forward(self, x: torch.Tensor, update_grid=True):
+        for layer in self.layers:
+            if update_grid:
+                layer.update_grid(x)
+            x = layer(x)
+        return x
+
+    def regularization_loss(self, regularize_activation=1.0, regularize_entropy=1.0):
+        return sum(
+            layer.regularization_loss(regularize_activation, regularize_entropy)
+            for layer in self.layers
+        )
 
 class KAN(torch.nn.Module):
     def __init__(
