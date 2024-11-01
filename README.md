@@ -49,7 +49,7 @@ They can be seen in the following Figures:
 
 **CNN architectures**
 ![image](./images/arq1.png)
-**KAN alternatives architectures**
+**KAN  architectures**
 ![image](./images/arq2.png)
 
 The experiments were run using the script: "hiperparam_tuning_without_cv_fashion.py"
@@ -80,7 +80,14 @@ The results analysis can be seen in the paper.
 
 
 ### Conclusion
-At the moment we aren't seeing a significant improvement in the performance of the KAN Convolutional Networks compared to the traditional Convolutional Networks. We believe that this is due to the fact that we are using simple datasets and small models since the strength of our architecture lies in its requirement for significantly fewer parameters compared to the best architecture we have tried (ConvNet Big, which is an unfair comparison because of its size). The comparison between 2 equal convolutional and KAN convolutional layers with the same MLP connected at the end showed a small win to the classic approach, getting 0.06 better accuracy, while the KAN convolutions and a KAN Linear Layer with almost half the parameter count got 0.04 less Accuracy. We are confident that as we increase the complexity of the models and the datasets we will see a significant improvement in the performance of the KAN Convolutional Networks. But also the parameter count of our models will grow faster with higher dimentional inputs. 
+ We have found out that with equal architectures, KAN Convolutions seem to "learn more", showing better accuracy in the analogous models except in the "Big" ones, where the difference was that we added more fully connected layers, which may be doing the learning instead of the convolutions. 
+
+When using KANs after the flatten, KAN Convolutions achieve better accuracy than we can classic convolutions even using half the parameters. This is seen in the comparisons between KKAN and Normal Conv \& KAN. 
+
+When trying an MLP, KAN convolutions achieve higher accuracy in the small models, but when having a 2 layer MLP, the classic CNN wins by 0.41\% with $\sim 26.62$k parameters. But the key factor is that KANs seem to maintain accuracy with lower parameter count, KANC MLP (Medium) achieves 88.99 with almost $15K$ parameters, but the training time is almost 10 times slower with the current implementations of KANs and its derivatives.  
+
+Also, MLPs show a better performance than KANs for image classification tasks. In the "Small" and "Medium" cases, when using KAN Convolutions, using MLPs after the flatten gives both better accuracy and smaller parameters counts than using KANs. As expected, KKANs achieve better accuracy than its equal CNNs, but the parameter count difference is too big (22k vs 1.5k and 38k vs 3k).
+
 
 ### Work in progress
 - Experiments on more complex datasets.
