@@ -1,0 +1,8 @@
+Finished Trial with Hipers {'lr': 0.001, 'weight_decay': 0.0, 'batch_size': 128} and got accuracy 0.8858333333333334 with epochs 16. Took 2443.841157212999 seconds 
+Finished Trial with Hipers {'lr': 0.001, 'weight_decay': 0.0, 'batch_size': 32} and got accuracy 0.8815 with epochs 6. Took 4794.577706773998 seconds 
+Finished Trial with Hipers {'lr': 0.001, 'weight_decay': 1e-05, 'batch_size': 128} and got accuracy 0.8855833333333333 with epochs 17. Took 2436.801824694994 seconds 
+Finished Trial with Hipers {'lr': 0.001, 'weight_decay': 0.0001, 'batch_size': 128} and got accuracy 0.8868333333333334 with epochs 17. Took 2443.2433307079773 seconds 
+Finished Trial with Hipers {'lr': 0.0001, 'weight_decay': 0.0001, 'batch_size': 64} and got accuracy 0.8654166666666666 with epochs 20. Took 2834.973255025019 seconds 
+Finished Trial with Hipers {'lr': 0.0001, 'weight_decay': 1e-05, 'batch_size': 64} and got accuracy 0.86525 with epochs 20. Took 2807.095632423996 seconds 
+Finished Trial with Hipers {'lr': 0.0005, 'weight_decay': 1e-05, 'batch_size': 32} and got accuracy 0.8855 with epochs 15. Took 4454.999372568011 seconds 
+Finished Trial with Hipers {'lr': 0.0001, 'weight_decay': 1e-05, 'batch_size': 64} and got accuracy 0.8653333333333333 with epochs 20. Took 2799.117679783987 seconds 

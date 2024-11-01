@@ -23,4 +23,4 @@ get_best_model(KKAN_Convolutional_Network,epochs=20,config = {'lr': 0.0005, 'wei
 get_best_model(KKAN_Small,epochs=20,config = {'lr': 0.0005, 'weight_decay': 1e-05, 'batch_size': 128}, train_obj= mnist_train,test_loader= test_loader,path ="models/FashionMNIST" ,is_kan= True,grid_size = 20)
 get_best_model(NormalConvsKAN_Medium,epochs=20,config = {'lr': 0.0005, 'weight_decay': 1e-05, 'batch_size': 128}, train_obj= mnist_train,test_loader= test_loader,path ="models/FashionMNIST" ,is_kan= True,grid_size = 20)
 
-#get_best_model(KANC_MLP_Big,epochs=20,config = {'lr': 0.0005, 'weight_decay': 1e-05, 'batch_size': 128}, train_obj= mnist_train,test_loader= test_loader,path ="models/FashionMNIST" ,is_kan= True,grid_size = 20)
+get_best_model(KANC_MLP_Big,epochs=20,config = {'lr': 0.0005, 'weight_decay': 1e-05, 'batch_size': 128}, train_obj= mnist_train,test_loader= test_loader,path ="models/FashionMNIST" ,is_kan= True,grid_size = 20)
