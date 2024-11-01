@@ -1,1 +1,0 @@
-Finished Trial with Hipers {'lr': 0.0005, 'weight_decay': 0.0, 'batch_size': 128, 'grid_size': 20} and got accuracy 0.9853333333333333 with epochs 18
