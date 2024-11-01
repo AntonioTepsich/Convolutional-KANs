@@ -38,47 +38,53 @@ Suppose that we have a KxK kernel. In this case, for each element of this matrix
 ![image](./images/splines.png)
 
 This gives more expressability to the activation function b. So the parameter count for a linear layer is gridsize + 2. So in total we have K²(gridsize + 2) parameters for KAN Convolution, vs only K² for a common convolution. Consider that gridsize is typically (in our experiments) between k and k², but k tends to be a small value, between 2 and 16. 
-## Preliminary Evaluations
+## Results
 The different architectures we have tested are:
 - KAN Convolutional Layers connected to Kan Linear Layers (KKAN)
-- Kan Convolutional Layers connected to a MLP (CKAN)
+- Kan Convolutional Layers connected to a MLP (KANC MLP)
 - CKAN with Batch Normalization between convolutions (CKAN_BN)
-- ConvNet (Classic Convolutions connected to a MLP) (ConvNet)
-- Simple MLPs 
+- CNN (Classic Convolutions connected to a MLP) 
+- Normal Conv & KAN (Classic Convolutions and KANs after the flatten.
+They can be seen in the following Figures:
 
-![image](./images/experiment_28x28.png)
+**CNN arquitectures**
+![image](./images/arq1.png)
+**KAN alternatives arquitectures**
+![image](./images/arq2.png)
 
-**Here we have some results:**
-| Model               | Test Accuracy | Test Precision | Test Recall | Test F1 Score | Number of Parameters | Convolutional Layers |
-|---------------------|---------------|----------------|-------------|---------------|----------------------|----------------------|
-| 1 Layer MLP         | 0.922         | 0.922          | 0.921       | 0.921         | 7850                 |          -           |
-| ConvNet (Small)     | 0.976         | 0.976          | 0.976       | 0.976         | 2740                 |  [5,1] k=[3,3]       |
-| ConvNet (Medium)    | 0.991         | 0.991          | 0.991       | 0.991         | 157 030               | [5,5] k=[3,3]       |
-| ConvNet (Big)       | **0.995**     | 0.995          | 0.995       | 0.995         | 887 530               | [32,1,2,1] k=[5,5,3,3] |
-| KANConv & MLP       | 0.985         | 0.985          | 0.984       | 0.984         | 163 726               |KanConvs[5,5] k =[3,3] |
-| Simple Conv & KAN   | 0.980         | 0.980          | 0.980       | 0.980         | 37 030                |    [5,1] k=[3,3]  |
-| KKAN                | 0.987         | 0.987          | 0.987       | 0.987         | 94 650                | KanConvs[5,5] k =[3,3]|
 
-*The lists in Convolutional Layers contain in each element the number of convolutions and then the corresponding kernel size.*
+| Model                          | Accuracy | Precision | Recall | F1 Score | # Params | Minutes per epoch |
+|--------------------------------|----------|-----------|--------|----------|----------|--------------------|
+| CNN (Medium, but with more convs) | 89.56%   | 89.60%    | 89.56% | 89.55%   | 6.93K    | 0.2103             |
+| CNN (Big)                      | 89.44%   | 89.40%    | 89.44% | 89.39%   | 26.62K   | 0.2114             |
+| CNN (Medium)                   | 88.34%   | 88.20%    | 88.34% | 88.22%   | 3.02K    | 0.2103             |
+| CNN (Small)                    | 87.10%   | 87.08%    | 87.10% | 87.01%   | 1.54K    | 0.2328             |
+| Conv & KAN (Medium) (gs = 10)  | 87.92%   | 87.84%    | 87.92% | 87.80%   | 38.01K   | 0.2306             |
+| Conv & KAN (Medium) (gs = 20)  | 87.90%   | 88.08%    | 87.90% | 87.95%   | 63.01K   | 0.2266             |
+| Conv & KAN (Small) (gs = 10)   | 87.55%   | 87.37%    | 87.55% | 87.42%   | 19.03K   | 0.2303             |
+| Conv & KAN (Small) (gs = 20)   | 87.67%   | 87.74%    | 87.67% | 87.59%   | 31.53K   | 0.2254             |
+| KANC MLP (Big) (gs = 10)       | 89.15%   | 89.22%    | 89.15% | 89.14%   | 33.54K   | 1.6523             |
+| KANC MLP (Big) (gs = 20)       | 89.11%   | 89.05%    | 89.11% | 89.06%   | 38.48K   | 2.4633             |
+| KANC MLP (Medium) (gs = 10)    | 88.99%   | 88.97%    | 88.99% | 88.96%   | 9.94K    | 1.6441             |
+| KANC MLP (Medium) (gs = 20)    | 88.90%   | 88.85%    | 88.90% | 88.83%   | 14.89K   | 2.4615             |
+| KANC MLP (Small) (gs = 10)     | 87.43%   | 87.41%    | 87.43% | 87.41%   | 5.31K    | 1.1704             |
+| KANC MLP (Small) (gs = 20)     | 88.15%   | 88.02%    | 88.15% | 87.94%   | 8.01K    | 1.6262             |
+| KKAN (Medium) (gs = 10)        | 87.91%   | 88.37%    | 87.91% | 87.99%   | 44.93K   | 1.6425             |
+| KKAN (Medium) (gs = 20)        | 88.56%   | 88.52%    | 88.56% | 88.52%   | 74.88K   | 2.4753             |
+| KKAN (Small) (gs = 10)         | 88.01%   | 87.87%    | 88.01% | 87.76%   | 22.80K   | 1.1599             |
+| KKAN (Small) (gs = 20)         | 87.94%   | 87.80%    | 87.94% | 87.72%   | 38.00K   | 1.6336             |
+
  
- Based on a 28x28 MNIST dataset, we can observe that the KANConv & MLP model achieves acceptable accuracy compared to the ConvNet (Big). However, the difference is that the number of parameters required by the KANConv & MLP is seven times less than those needed by the standard ConvNet. Also the KKAN achieved 0.04 less Accuracy than ConvNet Medium, with almost half the parameter count (94k vs 157k), which shows the potential of the architecture. Experiments on more datasets need to be conducted to take certain conclussions on this.
+The results analysis can be seen in the paper. 
 
-### Discussion
-
-The implementation of KAN Convolutions is a promising idea, although it is still in its early stages. We have conducted some preliminary experiments to evaluate the performance of KAN Convolutions. The reason we say preliminary is because we wanted to publish this idea as soon as possible, so that the community can start working on it. 
-
-We are aware that there are many hyperparameters to tune, and many experiments to conduct. In the coming days and weeks we will be thoroughly tuning the hyperparameters of our model and the models we use to compare. We have tried some variations in the hyperparameters and architectures, but it was heuristically and not done with any precise method. 
-We also recognize that we have not used large or more complex datasets because of computational power and time reasons and we are working on that.  
-We will be conducting experiments on more complex datasets in the future, this implies that the amount parameters of the KANS will increase since we will need to implement more Kan Convolutional layers.
 
 ### Conclusion
 At the moment we aren't seeing a significant improvement in the performance of the KAN Convolutional Networks compared to the traditional Convolutional Networks. We believe that this is due to the fact that we are using simple datasets and small models since the strength of our architecture lies in its requirement for significantly fewer parameters compared to the best architecture we have tried (ConvNet Big, which is an unfair comparison because of its size). The comparison between 2 equal convolutional and KAN convolutional layers with the same MLP connected at the end showed a small win to the classic approach, getting 0.06 better accuracy, while the KAN convolutions and a KAN Linear Layer with almost half the parameter count got 0.04 less Accuracy. We are confident that as we increase the complexity of the models and the datasets we will see a significant improvement in the performance of the KAN Convolutional Networks. But also the parameter count of our models will grow faster with higher dimentional inputs. 
 
 ### Work in progress
 - Experiments on more complex datasets.
-- Hyperparameter tuning with Random Search.
 - Experiments with more architectures.
-- Dinamically updating grid ranges.
+
 
 # Installation
 ```bash
@@ -101,18 +107,18 @@ import torch.nn.functional as F
 from kan_convolutional.KANConv import KAN_Convolutional_Layer
 
 class KANC_MLP(nn.Module):
-    def __init__(self,device: str = 'cpu'):
+    def __init__(self,grid_size: int = 5):
         super().__init__()
-        self.conv1 = KAN_Convolutional_Layer(
-            n_convs = 5,
+        self.conv1 = KAN_Convolutional_Layer(in_channels=1,
+            out_channels= 5,
             kernel_size= (3,3),
-            device = device
+            grid_size = grid_size
         )
 
-        self.conv2 = KAN_Convolutional_Layer(
-            n_convs = 5,
+        self.conv2 = KAN_Convolutional_Layer(in_channels=5,
+            out_channels= 5,
             kernel_size = (3,3),
-            device = device
+            grid_size = grid_size
         )
 
         self.pool1 = nn.MaxPool2d(
@@ -121,8 +127,8 @@ class KANC_MLP(nn.Module):
         
         self.flat = nn.Flatten() 
         
-        self.linear1 = nn.Linear(625, 256)
-        self.linear2 = nn.Linear(256, 10)
+        self.linear1 = nn.Linear(125, 10)
+        self.name = f"KANC MLP (Small) (gs = {grid_size})"
 
 
     def forward(self, x):
@@ -133,8 +139,8 @@ class KANC_MLP(nn.Module):
         x = self.conv2(x)
         x = self.pool1(x)
         x = self.flat(x)
+        #print(x.shape)
         x = self.linear1(x)
-        x = self.linear2(x)
         x = F.log_softmax(x, dim=1)
         return x
 ```
