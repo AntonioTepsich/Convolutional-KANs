@@ -2,7 +2,7 @@
 
 ## Paper
 All the mathematical explanation and experiments are explained in the 
-[Academic Paper](https://arxiv.org/abs/2406.13155)
+[Academic Paper](https://arxiv.org/abs/2406.13155) (New version coming up on November the 5th!)
 
 ### Introducing Convolutional KAN Networks!
 This project extends the idea of the innovative architecture of Kolmogorov-Arnold Networks (KAN) to the Convolutional Layers, changing the classic linear transformation of the convolution to learnable non linear activations in each pixel. 
