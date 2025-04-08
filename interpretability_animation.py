@@ -27,13 +27,21 @@ class ConvolutionAnimation(Scene):
     def convolution_result(self, pixels, kanconv_layer):
         """Compute the convolution of the pixel matrix with the given kernel."""
         pixels_tensor = torch.tensor(pixels, dtype=torch.float32).unsqueeze(0).unsqueeze(0).to(device)
-        convolved_tensor = kanconv_layer.forward(pixels_tensor)
-        convolved = convolved_tensor.squeeze().detach().cpu().numpy()
-        convolved = convolved[0]  # Use the result of the first convolution in the layer
+        convolved_tensor = kanconv_layer.forward(pixels_tensor/255)
+        convolved_tensor = torch.nn.ReLU()(convolved_tensor)
 
-        # Normalize the convolved values to range 0 to 1 for grayscale mapping
-        min_val, max_val = convolved.min(), convolved.max()
-        normalized_convolved = (convolved - min_val) / (max_val - min_val)
+        convolved = convolved_tensor.squeeze().detach().cpu().numpy()
+        convolved = convolved[3]  # Use the result of the first convolution in the layer
+        normalized_convolved = convolved
+
+
+        #kernel = [[0,0,0],[-1,0,1],[0,0,0]]
+        #kernel_tensor = torch.tensor(kernel, dtype=torch.float32).unsqueeze(0).unsqueeze(0).to(device)
+
+        #convolved_tensor = F.conv2d(pixels_tensor, kernel_tensor, padding=(0,0))
+        #normalized_convolved = torch.nn.ReLU()(convolved_tensor)/ 255
+        #normalized_convolved = convolved_tensor.squeeze().detach().cpu().numpy() #not to index if done with torch
+
         
         # Create the result grid
         result_grid = VGroup()
@@ -52,24 +60,30 @@ class ConvolutionAnimation(Scene):
 
         # Define common patterns for the first convolutional layer
         patterns =  [
-            np.zeros((10, 10), dtype=int),                # All pixels off
-            np.ones((10, 10), dtype=int) * 255,           # All pixels on
-            np.eye(10, dtype=int) * 255,                  # Diagonal line
-            np.fliplr(np.eye(10, dtype=int)) * 255,       # Other diagonal
-            np.array([[255] * 10 if i % 2 == 0 else [0] * 10 for i in range(10)]), # Horizontal stripes
-            np.array([[255 if (i + j) % 2 == 0 else 0 for j in range(10)] for i in range(10)]),  # Checkerboard
-            np.array([[255 if j < 5 else 0 for j in range(10)] for i in range(10)]),  # Vertical half-filled
-            np.array([[255 if i < 5 else 0 for j in range(10)] for i in range(10)]),  # Horizontal half-filled
-            np.pad(np.ones((6, 6)) * 255, pad_width=2, mode='constant'),  # Centered square
-            np.array([[i * 25 for j in range(10)] for i in range(10)]),   # Vertical gradient
-            np.array([[j * 25 for j in range(10)] for i in range(10)]),   # Horizontal gradient
-            np.array([[255 if j < 5 and i < 5 else 0 for j in range(10)] for i in range(10)]),  # Top-left quarter filled
+            # np.zeros((10, 10), dtype=int),                # All pixels off
+            # np.ones((10, 10), dtype=int) * 255,           # All pixels on
+            # np.eye(10, dtype=int) * 255,                  # Diagonal line
+            # np.fliplr(np.eye(10, dtype=int)) * 255,       # Other diagonal
+            # np.array([[255] * 10 if i % 2 == 0 else [0] * 10 for i in range(10)]), # Horizontal stripes
+            # np.array([[255 if (i + j) % 2 == 0 else 0 for j in range(10)] for i in range(10)]),  # Checkerboard
+            # np.array([[255 if j < 5 else 0 for j in range(10)] for i in range(10)]),  # Vertical half-filled
+            # np.array([[255 if i < 5 else 0 for j in range(10)] for i in range(10)]),  # Horizontal half-filled
+            # np.pad(np.ones((6, 6)) * 255, pad_width=2, mode='constant'),  # Centered square
+            # np.array([[i * 25 for j in range(10)] for i in range(10)]),   # Vertical gradient
+            # np.array([[j * 25 for j in range(10)] for i in range(10)]),   # Horizontal gradient
+            # np.array([[255 if j < 5 and i < 5 else 0 for j in range(10)] for i in range(10)]),  # Top-left quarter filled
             np.array([[255 if (i - 5) ** 2 + (j - 5) ** 2 <= 9 else 0 for j in range(10)] for i in range(10)]),  # Circle
             np.array([[255 if (i == 5 or j == 5) else 0 for j in range(10)] for i in range(10)]),  # Cross
             # New patterns
             np.array([[255 if i + j < 10 else 0 for j in range(10)] for i in range(10)]),  # Diagonal half-white
+            np.array([[255 if i > j else 0 for j in range(10)] for i in range(10)]),  # Below diagonal
+
             np.array([[255 if i < 5 and j < 5 else 0 for j in range(10)] for i in range(10)]),  # Top-left quarter
+
             np.array([[255 if i < j else 0 for j in range(10)] for i in range(10)]),  # Below diagonal
+            np.array([[125 if i < j else 0 for j in range(10)] for i in range(10)]),  # Below diagonal 2
+            np.array([[30 if i < j else 0 for j in range(10)] for i in range(10)]),  # Below diagonal 3
+
             np.array([[255 if i + j > 9 else 0 for j in range(10)] for i in range(10)]),  # Above diagonal
         ]
         # Normalize the gradient patterns to ensure visibility
