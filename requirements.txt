@@ -6,3 +6,6 @@ tqdm==4.66.4
 torch==2.3.0
 torchvision==0.18.0
 pyprof
+flake8
+pylint
+black

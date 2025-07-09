@@ -4,7 +4,9 @@ from sklearn.metrics import precision_score, recall_score, f1_score
 import os
 import matplotlib.pyplot as plt
 import numpy as np
-def epoch(model, device, train_loader, optimizer,criterion):
+
+
+def epoch(model, device, train_loader, optimizer, criterion):
     train_loss = 0
 
     for batch_idx, (data, target) in enumerate(tqdm(train_loader)):
@@ -26,9 +28,11 @@ def epoch(model, device, train_loader, optimizer,criterion):
         # Backpropagate
         loss.backward()
         optimizer.step()
-    avg_loss = train_loss / (batch_idx+1)
+    avg_loss = train_loss / (batch_idx + 1)
 
     return avg_loss
+
+
 def train(model, device, train_loader, optimizer, epoch_num, criterion):
     """
     Train the model for one epoch
@@ -49,10 +53,11 @@ def train(model, device, train_loader, optimizer, epoch_num, criterion):
     model.train()
     # Process the images in batches
 
-    avg_loss = epoch(model, device, train_loader, optimizer,criterion)
+    avg_loss = epoch(model, device, train_loader, optimizer, criterion)
 
     # print('Training set: Average loss: {:.6f}'.format(avg_loss))
     return avg_loss
+
 
 def test(model, device, test_loader, criterion):
     """
@@ -97,9 +102,9 @@ def test(model, device, test_loader, criterion):
             all_predictions.extend(predicted.cpu().numpy())
 
     # Calculate overall metrics
-    precision = precision_score(all_targets, all_predictions, average='macro')
-    recall = recall_score(all_targets, all_predictions, average='macro')
-    f1 = f1_score(all_targets, all_predictions, average='macro')
+    precision = precision_score(all_targets, all_predictions, average="macro")
+    recall = recall_score(all_targets, all_predictions, average="macro")
+    f1 = f1_score(all_targets, all_predictions, average="macro")
 
     # Normalize test loss
     test_loss /= len(test_loader.dataset)
@@ -109,7 +114,22 @@ def test(model, device, test_loader, criterion):
     #     test_loss, correct, len(test_loader.dataset), accuracy, precision, recall, f1))
 
     return test_loss, accuracy, precision, recall, f1
-def train_and_test_models(model, device, train_loader, test_loader, optimizer, criterion, epochs, scheduler, path = "drive/MyDrive/KANs/models",verbose = True,save_last=False,patience = np.inf):
+
+
+def train_and_test_models(
+    model,
+    device,
+    train_loader,
+    test_loader,
+    optimizer,
+    criterion,
+    epochs,
+    scheduler,
+    path="drive/MyDrive/KANs/models",
+    verbose=True,
+    save_last=False,
+    patience=np.inf,
+):
     """
     Train and test the model
 
@@ -145,23 +165,28 @@ def train_and_test_models(model, device, train_loader, test_loader, optimizer, c
         train_loss = train(model, device, train_loader, optimizer, epoch, criterion)
         all_train_loss.append(train_loss)
         # Test the model
-        test_loss, test_accuracy, test_precision, test_recall, test_f1 = test(model, device, test_loader, criterion)
+        test_loss, test_accuracy, test_precision, test_recall, test_f1 = test(
+            model, device, test_loader, criterion
+        )
         all_test_loss.append(test_loss)
         all_test_accuracy.append(test_accuracy)
         all_test_precision.append(test_precision)
         all_test_recall.append(test_recall)
         all_test_f1.append(test_f1)
         if verbose:
-            print(f'End of Epoch {epoch}: Train Loss: {train_loss:.6f}, Test Loss: {test_loss:.4f}, Accuracy: {test_accuracy:.2%}')
-        if test_accuracy>best_acc:
+            print(
+                f"End of Epoch {epoch}: Train Loss: {train_loss:.6f}, Test Loss: {test_loss:.4f}, Accuracy: {test_accuracy:.2%}"
+            )
+        if test_accuracy > best_acc:
             havent_improved = 0
             best_acc = test_accuracy
             if not path is None:
-                torch.save(model,os.path.join(path,model.name+".pt"))
-        else: havent_improved+=1
+                torch.save(model, os.path.join(path, model.name + ".pt"))
+        else:
+            havent_improved += 1
         if not (scheduler is None):
             scheduler.step()
-        if havent_improved>patience:#early stopping
+        if havent_improved > patience:  # early stopping
             break
     model.all_test_accuracy = all_test_accuracy
     model.all_test_precision = all_test_precision
@@ -170,18 +195,32 @@ def train_and_test_models(model, device, train_loader, test_loader, optimizer, c
     if verbose:
         print("Best test accuracy", best_acc)
     if save_last:
-        torch.save(model,os.path.join(path,model.name+".pt"))
+        torch.save(model, os.path.join(path, model.name + ".pt"))
 
-    return all_train_loss, all_test_loss, all_test_accuracy, all_test_precision, all_test_recall, all_test_f1
+    return (
+        all_train_loss,
+        all_test_loss,
+        all_test_accuracy,
+        all_test_precision,
+        all_test_recall,
+        all_test_f1,
+    )
+
 
 def count_parameters(model):
     return sum(p.numel() for p in model.parameters() if p.requires_grad)
+
+
 def highlight_max(s):
     is_max = s == s.max()
-    return ['font-weight: bold' if v else '' for v in is_max]
+    return ["font-weight: bold" if v else "" for v in is_max]
+
+
 import numpy as np
 import pandas as pd
-def final_plots(models,test_loader,criterion,device,use_time = False):
+
+
+def final_plots(models, test_loader, criterion, device, use_time=False):
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(16, 5))
     accs = []
     precisions = []
@@ -190,27 +229,29 @@ def final_plots(models,test_loader,criterion,device,use_time = False):
     params_counts = []
     times = []
     for model in models:
-        test_loss, accuracy, precision, recall, f1 = test(model, device, test_loader, criterion)
+        test_loss, accuracy, precision, recall, f1 = test(
+            model, device, test_loader, criterion
+        )
         ax1.plot(model.test_lossses, label=model.name)
-        ax2.scatter(count_parameters(model),accuracy,  label=model.name)
+        ax2.scatter(count_parameters(model), accuracy, label=model.name)
         accs.append(accuracy)
         precisions.append(precision)
         recalls.append(recall)
-        f1s.append(f1)  
+        f1s.append(f1)
         params_counts.append(count_parameters(model))
-        if use_time :
+        if use_time:
             times.append(model.training_time)
         else:
             times.append(np.nan)
-    ax1.set_title('Loss Test vs Epochs')    
-    ax1.set_xlabel('Epochs')
-    ax1.set_ylabel('Loss')
+    ax1.set_title("Loss Test vs Epochs")
+    ax1.set_xlabel("Epochs")
+    ax1.set_ylabel("Loss")
     ax1.legend()
     ax1.grid(True)
-    ax2.set_title('Number of Parameters vs Accuracy')
-    ax2.set_xlabel('Number of Parameters')
-    ax2.set_ylabel('Accuracy (%)')
-    ax2.legend() 
+    ax2.set_title("Number of Parameters vs Accuracy")
+    ax2.set_xlabel("Number of Parameters")
+    ax2.set_ylabel("Accuracy (%)")
+    ax2.legend()
     ax2.grid(True)
 
     plt.tight_layout()
@@ -219,26 +260,37 @@ def final_plots(models,test_loader,criterion,device,use_time = False):
     # Listas para acumular datos
 
     # Creación del DataFrame
-    df = pd.DataFrame({
-        "Test Accuracy": accs,
-        "Test Precision": precisions,
-        "Test Recall": recalls,
-        "Test F1 Score": f1s,
-        "Number of Parameters": params_counts,
-        "Time":times
-    }, index=[m.name for m in models])
+    df = pd.DataFrame(
+        {
+            "Test Accuracy": accs,
+            "Test Precision": precisions,
+            "Test Recall": recalls,
+            "Test F1 Score": f1s,
+            "Number of Parameters": params_counts,
+            "Time": times,
+        },
+        index=[m.name for m in models],
+    )
 
-    df.to_csv('experiment_28x28.csv', index=False)
+    df.to_csv("experiment_28x28.csv", index=False)
 
     # Aplicando el estilo
-    df_styled = df.style.apply(highlight_max, subset=df.columns[:], axis=0).format('{:.3f}')
+    df_styled = df.style.apply(highlight_max, subset=df.columns[:], axis=0).format(
+        "{:.3f}"
+    )
     return df_styled
+
+
 from sklearn.metrics import RocCurveDisplay
-def plot_roc_one_vs_rest_all_models(models, dataloader,n_classes,device):
-    fig,axs = plt.subplots(len(models), figsize=(6, 6*n_classes))
+
+
+def plot_roc_one_vs_rest_all_models(models, dataloader, n_classes, device):
+    fig, axs = plt.subplots(len(models), figsize=(6, 6 * n_classes))
     for m in range(len(models)):
-        plot_roc_one_vs_rest(models[m],dataloader,n_classes,device,axs[m])
-def plot_roc_one_vs_rest(model,dataloader,n_classes,device,ax):
+        plot_roc_one_vs_rest(models[m], dataloader, n_classes, device, axs[m])
+
+
+def plot_roc_one_vs_rest(model, dataloader, n_classes, device, ax):
     with torch.no_grad():
         preds = []
         model.eval()
@@ -251,14 +303,14 @@ def plot_roc_one_vs_rest(model,dataloader,n_classes,device,ax):
             preds.append(output.cpu().data.numpy())
     predictions = np.concatenate(preds)
     targets = np.concatenate(targets)
-    predictions = np.exp(predictions) #porque usamos log softmax
+    predictions = np.exp(predictions)  # porque usamos log softmax
     for class_id in range(n_classes):
         RocCurveDisplay.from_predictions(
             targets == class_id,
-            predictions[:,class_id],
+            predictions[:, class_id],
             name=f"ROC curve for {class_id}",
             ax=ax,
         )
-    ax.set_title(f'ROC OvR {model.name}')    
-    ax.set_xlabel('FP Rate')
-    ax.set_ylabel('TP Rate')
+    ax.set_title(f"ROC OvR {model.name}")
+    ax.set_xlabel("FP Rate")
+    ax.set_ylabel("TP Rate")
